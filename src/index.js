@@ -6,5 +6,14 @@ import { Provider } from "react-redux";
 import rootReducer from './redux/reducers/index'
 import { configureStore } from "@reduxjs/toolkit";
 
-const root = ReactDOMClient.createRoot(document.getElementById("root"));
-root.render(<App />);
+const store = configureStore({
+    reducer: rootReducer,
+    devTools: true
+})
+
+ReactDOM.render(
+    <Provider store={store}>
+        <App />
+    </Provider>,
+    document.getElementById('root')
+)
