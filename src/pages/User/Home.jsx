@@ -17,13 +17,13 @@ const Title = styled.div`
 const Home = () => {
   return (
     <>
-      <HeaderUser/>
-      <Slider/>
+      <HeaderUser />
+      <Slider />
       <Title>Categories</Title>
       <Categories />
       <Title>Favorites Product</Title>
-      <Products/>
-      <Footer/>
+      <Products />
+      <Footer />
     </>
   );
 };
