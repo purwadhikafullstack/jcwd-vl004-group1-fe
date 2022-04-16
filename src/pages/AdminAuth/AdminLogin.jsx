@@ -5,7 +5,7 @@ import { useFormik } from 'formik'
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from 'react-redux';
 
-const Login = () => {
+const AdminLogin = () => {
     const dispatch = useDispatch()
     const navigate = useNavigate();
     const formik = useFormik({
@@ -30,7 +30,7 @@ const Login = () => {
                         type: "ADMIN_LOGIN",
                         payload: res.data.dataAdmin
                     })
-                    navigate('/category')
+                    // navigate('/category')
                 })
                 .catch(err => console.log(err))
         }
@@ -98,4 +98,4 @@ const Login = () => {
     )
 }
 
-export default Login
+export default AdminLogin

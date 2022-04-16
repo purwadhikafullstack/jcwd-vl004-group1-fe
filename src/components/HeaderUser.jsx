@@ -1,18 +1,19 @@
 import React, { useState } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { Link, useHistory, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import "../assets/styles/user.css";
 import "../assets/styles/responsive.css";
 
 const Header = () => {
   const dispatch = useDispatch()
+  const navigate = useNavigate();
   const userGlobal = useSelector((state) => state.user)
   const logout = () => {
     dispatch({
       type: "USER_LOGOUT"
-
     })
     localStorage.removeItem("userDataEmmerce")
+    navigate('/')
   }
   return (
     <div>

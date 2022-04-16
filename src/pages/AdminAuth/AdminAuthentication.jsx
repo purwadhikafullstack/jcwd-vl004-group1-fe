@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useParams } from "react-router-dom";
 import Axios from "axios"
 
-const Authentication = () => {
+const AdminAuthentication = () => {
     const { token } = useParams();
     const [message, setMessage] = useState("You are not verified yet!")
 
@@ -31,4 +31,4 @@ const Authentication = () => {
     )
 }
 
-export default Authentication
+export default AdminAuthentication
