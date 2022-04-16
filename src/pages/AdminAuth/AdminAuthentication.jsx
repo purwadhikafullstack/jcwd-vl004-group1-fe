@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Axios from "axios"
 
 const AdminAuthentication = () => {
     const { token } = useParams();
+    const navigate = useNavigate();
     const [message, setMessage] = useState("You are not verified yet!")
 
     const sendVerification = () => {
@@ -15,6 +16,7 @@ const AdminAuthentication = () => {
             .then((res) => {
                 if (res.data.success === true) {
                     setMessage(res.data.message)
+                    navigate('/')
                 }
                 console.log(res)
             })

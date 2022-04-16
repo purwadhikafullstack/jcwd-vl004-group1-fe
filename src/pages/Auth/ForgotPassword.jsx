@@ -14,21 +14,14 @@ const ForgotPassword = () => {
         },
         validationSchema: Yup.object({
             email: Yup.string().email("Invalid email address").required("Email is Required"),
-            password: Yup.string().required("Password is Required"),
         }),
         onSubmit: (values) => {
             console.log(values)
-            Axios.post(`http://localhost:9990/users/login`, {
+            Axios.post(`http://localhost:9990/users/forgotpassword`, {
                 email: values.email,
-                password: values.password
             })
                 .then(res => {
-                    localStorage.setItem("userDataEmmerce", JSON.stringify(res.data.token))
-                    dispatch({
-                        type: "USER_LOGIN",
-                        payload: res.data.dataUser
-                    })
-                    navigate('/')
+                    console.log(res)
                 })
                 .catch(err => console.log(err))
         }

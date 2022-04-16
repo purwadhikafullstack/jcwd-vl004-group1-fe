@@ -89,13 +89,13 @@ function App() {
 
           <Route path="/adminauthentication/:token" element={<AdminAuthentication />} />
           {/* <Route path="/adminforgotpassword" element={<AdminForgotPassword />} /> */}
-          {/* <Route path="/adminrecoverpassword" element={<AdminRecoverPassword />} /> */}
+          {/* <Route path="/adminrecoverpassword/:token" element={<AdminRecoverPassword />} /> */}
           <Route path="/adminregister" element={<AdminRegister />} />
           <Route path="/admin" element={<AdminLogin />} />
 
           <Route path="/authentication/:token" element={<Authentication />} />
           <Route path="/forgotpassword" element={<ForgotPassword />} />
-          <Route path="/recoverpassword" element={<RecoverPassword />} />
+          <Route path="/recoverpassword/:token" element={<RecoverPassword />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
 

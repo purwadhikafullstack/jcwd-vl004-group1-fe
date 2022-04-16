@@ -18,20 +18,6 @@ const RecoverPassword = () => {
             confirmPassword: Yup.string().oneOf([Yup.ref('password'), null], "Password must match").required("Password Confirmation is Required"),
         }),
         onSubmit: (values) => {
-            console.log(values)
-            Axios.post(`http://localhost:9990/users/login`, {
-                email: values.email,
-                password: values.password
-            })
-                .then(res => {
-                    localStorage.setItem("userDataEmmerce", JSON.stringify(res.data.token))
-                    dispatch({
-                        type: "USER_LOGIN",
-                        payload: res.data.dataUser
-                    })
-                    navigate('/')
-                })
-                .catch(err => console.log(err))
         }
     })
 
