@@ -11,7 +11,9 @@ import ProductEditScreen from "./pages/ProductEditScreen";
 import Authentication from "./pages/Auth/Authentication";
 import Register from "./pages/Auth/Register";
 import Login from "./pages/Auth/Login";
+import AdminAuthentication from "./pages/AdminAuth/AdminAuthentication";
 import AdminLogin from "./pages/AdminAuth/AdminLogin";
+import AdminRegister from "./pages/AdminAuth/AdminRegister";
 
 import Home from "./pages/User/Home";
 import Catalog from "./pages/User/Catalog";
@@ -26,6 +28,9 @@ import { useDispatch } from 'react-redux'
 function App() {
   const dispatch = useDispatch()
   const userLocalStorage = localStorage.getItem("userDataEmmerce")
+  const adminLocalStorage = localStorage.getItem("adminDataEmmerce")
+
+
   const userKeepLogin = () => {
     console.log(userLocalStorage)
     Axios.post(`http://localhost:9990/users/auth`, {}, {
@@ -44,9 +49,28 @@ function App() {
         console.log(err)
       })
   }
+  const adminKeepLogin = () => {
+    console.log(adminLocalStorage)
+    Axios.post(`http://localhost:9990/admins/auth`, {}, {
+      headers: {
+        'Authorization': `Bearer ${adminLocalStorage}`
+      }
+    })
+      .then((res) => {
+        console.log(res)
+        dispatch({
+          type: "ADMIN_KEEP_LOGIN",
+          payload: res.data
+        })
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
 
   useEffect(() => {
     userKeepLogin()
+    adminKeepLogin()
   }, [])
 
   return (
@@ -58,10 +82,12 @@ function App() {
           <Route path="/addproduct" element={<AddProduct />} />
           <Route path="/product/edit/:id" element={<ProductEditScreen />} />
 
+          <Route path="/adminauthentication/:token" element={<AdminAuthentication />} />
+          <Route path="/adminregister" element={<AdminRegister />} />
+          <Route path="/admin" element={<AdminLogin />} />
           <Route path="/authentication/:token" element={<Authentication />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/admin" element={<AdminLogin />} />
 
           <Route path="/catalog" element={<Catalog />} />
           <Route path="/detail/:id" element={<Details />} />

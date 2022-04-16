@@ -2,9 +2,12 @@ import React from 'react'
 import Axios from "axios"
 import * as Yup from "yup"
 import { useFormik } from 'formik'
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from 'react-redux';
 
 const Login = () => {
+    const dispatch = useDispatch()
+    const navigate = useNavigate();
     const formik = useFormik({
         initialValues: {
             email: "",
@@ -22,7 +25,12 @@ const Login = () => {
             })
                 .then(res => {
                     console.log(res)
-                    localStorage.setItem("userDataEmmerce", JSON.stringify(res.data.token))
+                    localStorage.setItem("adminDataEmmerce", JSON.stringify(res.data.token))
+                    dispatch({
+                        type: "ADMIN_LOGIN",
+                        payload: res.data.dataAdmin
+                    })
+                    navigate('/category')
                 })
                 .catch(err => console.log(err))
         }
@@ -72,13 +80,17 @@ const Login = () => {
                             {formik.touched.password && formik.errors.password ? <p class="text-red-600 text-xs font-light">{formik.errors.password}</p> : null}
                         </div>
                         <div class="py-2">
-                            <button type="submit" class="border-2 border-gray-100 focus:outline-none bg-pink-600 text-white font-bold tracking-wider block w-full p-2 rounded-lg focus:border-gray-700 hover:bg-teal-700">
+                            <button type="submit" class="border-2 border-gray-100 focus:outline-none bg-pink-600 text-white font-bold tracking-wider block w-full p-2 rounded-lg focus:border-gray-700 hover:bg-pink-700">
                                 Login
                             </button>
                         </div>
                     </form>
                     <div class="text-center">
                         <a href="/#" class="hover:underline">Forgot password?</a>
+                    </div>
+                    <div class="text-center mt-12">
+                        <span>Don't have an account? </span>
+                        <a href="/adminregister" class="text-md text-pink-600 underline font-light hover:font-semibold hover:text-pink-800">Create One</a>
                     </div>
                 </div>
             </div>
