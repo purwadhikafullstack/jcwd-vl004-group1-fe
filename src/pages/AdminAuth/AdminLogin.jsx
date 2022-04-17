@@ -3,9 +3,9 @@ import Axios from "axios"
 import * as Yup from "yup"
 import { useFormik } from 'formik'
 import { Link, useNavigate } from "react-router-dom";
-import { useDispatch } from 'react-redux'
+import { useDispatch } from 'react-redux';
 
-const Login = () => {
+const AdminLogin = () => {
     const dispatch = useDispatch()
     const navigate = useNavigate();
     const formik = useFormik({
@@ -19,17 +19,18 @@ const Login = () => {
         }),
         onSubmit: (values) => {
             console.log(values)
-            Axios.post(`http://localhost:9990/users/login`, {
+            Axios.post(`http://localhost:9990/admins/login`, {
                 email: values.email,
                 password: values.password
             })
                 .then(res => {
-                    localStorage.setItem("userDataEmmerce", JSON.stringify(res.data.token))
+                    console.log(res)
+                    localStorage.setItem("adminDataEmmerce", JSON.stringify(res.data.token))
                     dispatch({
-                        type: "USER_LOGIN",
-                        payload: res.data.dataUser
+                        type: "ADMIN_LOGIN",
+                        payload: res.data.dataAdmin
                     })
-                    navigate('/')
+                    // navigate('/category')
                 })
                 .catch(err => console.log(err))
         }
@@ -50,7 +51,7 @@ const Login = () => {
                     </div>
                     <form class="text-center" onSubmit={formik.handleSubmit}>
                         <h1 class="font-bold tracking-wider text-3xl mb-8 w-full text-gray-600">
-                            Login
+                            Admin Login
                         </h1>
                         <div className='input-container py-2 text-left'>
                             <input
@@ -79,17 +80,17 @@ const Login = () => {
                             {formik.touched.password && formik.errors.password ? <p class="text-red-600 text-xs font-light">{formik.errors.password}</p> : null}
                         </div>
                         <div class="py-2">
-                            <button type="submit" class="border-2 border-gray-100 focus:outline-none bg-teal-600 text-white font-bold tracking-wider block w-full p-2 rounded-lg focus:border-gray-700 hover:bg-teal-700">
+                            <button type="submit" class="border-2 border-gray-100 focus:outline-none bg-pink-600 text-white font-bold tracking-wider block w-full p-2 rounded-lg focus:border-gray-700 hover:bg-pink-700">
                                 Login
                             </button>
                         </div>
                     </form>
                     <div class="text-center">
-                        <a href="/forgotpassword" class="hover:underline">Forgot password?</a>
+                        <a href="/#" class="hover:underline">Forgot password?</a>
                     </div>
                     <div class="text-center mt-12">
                         <span>Don't have an account? </span>
-                        <a href="/register" class="text-md text-teal-600 underline font-light hover:font-semibold hover:text-teal-800">Create One</a>
+                        <a href="/adminregister" class="text-md text-pink-600 underline font-light hover:font-semibold hover:text-pink-800">Create One</a>
                     </div>
                 </div>
             </div>
@@ -97,4 +98,4 @@ const Login = () => {
     )
 }
 
-export default Login
+export default AdminLogin

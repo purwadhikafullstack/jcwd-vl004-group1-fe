@@ -5,31 +5,23 @@ import { useFormik } from 'formik'
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from 'react-redux'
 
-const Login = () => {
+const ForgotPassword = () => {
     const dispatch = useDispatch()
     const navigate = useNavigate();
     const formik = useFormik({
         initialValues: {
             email: "",
-            password: "",
         },
         validationSchema: Yup.object({
             email: Yup.string().email("Invalid email address").required("Email is Required"),
-            password: Yup.string().required("Password is Required"),
         }),
         onSubmit: (values) => {
             console.log(values)
-            Axios.post(`http://localhost:9990/users/login`, {
+            Axios.post(`http://localhost:9990/users/forgotpassword`, {
                 email: values.email,
-                password: values.password
             })
                 .then(res => {
-                    localStorage.setItem("userDataEmmerce", JSON.stringify(res.data.token))
-                    dispatch({
-                        type: "USER_LOGIN",
-                        payload: res.data.dataUser
-                    })
-                    navigate('/')
+                    console.log(res)
                 })
                 .catch(err => console.log(err))
         }
@@ -50,8 +42,9 @@ const Login = () => {
                     </div>
                     <form class="text-center" onSubmit={formik.handleSubmit}>
                         <h1 class="font-bold tracking-wider text-3xl mb-8 w-full text-gray-600">
-                            Login
+                            Forgot Password
                         </h1>
+                        <p className="mb-8">Enter your email address to retrieve your password</p>
                         <div className='input-container py-2 text-left'>
                             <input
                                 className={formik.touched.email && formik.errors.email ? "border-2 border-gray-100 focus:outline-none bg-red-100 hover:bg-red-200 block w-full py-2 px-4 rounded-lg focus:border-red-700 focus:bg-red-100" : "border-2 border-gray-100 focus:outline-none bg-gray-100 hover:bg-gray-200 block w-full py-2 px-4 rounded-lg focus:border-gray-700"}
@@ -65,31 +58,14 @@ const Login = () => {
                             />
                             {formik.touched.email && formik.errors.email ? <p class="text-red-600 text-xs font-light">{formik.errors.email}</p> : null}
                         </div>
-                        <div className='input-container py-2 text-left'>
-                            <input
-                                className={formik.touched.password && formik.errors.password ? "border-2 border-gray-100 focus:outline-none bg-red-100 hover:bg-red-200 block w-full py-2 px-4 rounded-lg focus:border-red-700 focus:bg-red-100" : "border-2 border-gray-100 focus:outline-none bg-gray-100 hover:bg-gray-200 block w-full py-2 px-4 rounded-lg focus:border-gray-700"}
-                                id="password"
-                                name="password"
-                                type="password"
-                                placeholder="Password"
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                                value={formik.values.password}
-                            />
-                            {formik.touched.password && formik.errors.password ? <p class="text-red-600 text-xs font-light">{formik.errors.password}</p> : null}
-                        </div>
                         <div class="py-2">
                             <button type="submit" class="border-2 border-gray-100 focus:outline-none bg-teal-600 text-white font-bold tracking-wider block w-full p-2 rounded-lg focus:border-gray-700 hover:bg-teal-700">
-                                Login
+                                Retrieve Password
                             </button>
                         </div>
                     </form>
-                    <div class="text-center">
-                        <a href="/forgotpassword" class="hover:underline">Forgot password?</a>
-                    </div>
                     <div class="text-center mt-12">
-                        <span>Don't have an account? </span>
-                        <a href="/register" class="text-md text-teal-600 underline font-light hover:font-semibold hover:text-teal-800">Create One</a>
+                        <a href="/login" class="text-md text-teal-600 underline font-light hover:font-semibold hover:text-teal-800">Back to login page</a>
                     </div>
                 </div>
             </div>
@@ -97,4 +73,4 @@ const Login = () => {
     )
 }
 
-export default Login
+export default ForgotPassword

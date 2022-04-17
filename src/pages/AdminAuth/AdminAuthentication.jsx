@@ -2,13 +2,13 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from "react-router-dom";
 import Axios from "axios"
 
-const Authentication = () => {
+const AdminAuthentication = () => {
     const { token } = useParams();
     const navigate = useNavigate();
     const [message, setMessage] = useState("You are not verified yet!")
 
     const sendVerification = () => {
-        Axios.patch(`http://localhost:9990/users/verification`, {}, {
+        Axios.patch(`http://localhost:9990/admins/verification`, {}, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
@@ -16,9 +16,9 @@ const Authentication = () => {
             .then((res) => {
                 if (res.data.success === true) {
                     setMessage(res.data.message)
+                    navigate('/')
                 }
                 console.log(res)
-                navigate('/')
             })
             .catch((err) => {
                 console.log(err)
@@ -33,4 +33,4 @@ const Authentication = () => {
     )
 }
 
-export default Authentication
+export default AdminAuthentication

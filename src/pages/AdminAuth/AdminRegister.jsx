@@ -4,13 +4,12 @@ import * as Yup from "yup"
 import { useFormik } from 'formik'
 import { Link } from "react-router-dom";
 
-const Register = () => {
+const AdminRegister = () => {
     const formik = useFormik({
         initialValues: {
             full_name: "",
             username: "",
             email: "",
-            phone: "",
             password: "",
             confirmPassword: ""
         },
@@ -18,17 +17,15 @@ const Register = () => {
             full_name: Yup.string().required("Full Name is Required"),
             username: Yup.string().required("Username is Required"),
             email: Yup.string().email("Invalid email address").required("Email is Required"),
-            phone: Yup.string(),
             password: Yup.string().required("Password is Required"),
             confirmPassword: Yup.string().oneOf([Yup.ref('password'), null], "Password must match").required("Password Confirmation is Required"),
         }),
         onSubmit: (values) => {
             console.log(values)
-            Axios.post(`http://localhost:9990/users/register`, {
+            Axios.post(`http://localhost:9990/admins/register`, {
                 full_name: values.full_name,
                 username: values.username,
                 email: values.email,
-                phone: values.phone,
                 password: values.password
             })
                 .then(res => console.log(res.data))
@@ -51,7 +48,7 @@ const Register = () => {
                     </div>
                     <form class="text-center" onSubmit={formik.handleSubmit}>
                         <h1 class="font-bold tracking-wider text-3xl mb-8 w-full text-gray-600">
-                            Register
+                            Admin Register
                         </h1>
                         <div className='input-container py-2 text-left'>
                             <input
@@ -94,19 +91,6 @@ const Register = () => {
                         </div>
                         <div className='input-container py-2 text-left'>
                             <input
-                                className={formik.touched.phone && formik.errors.phone ? "border-2 border-gray-100 focus:outline-none bg-red-100 hover:bg-red-200 block w-full py-2 px-4 rounded-lg focus:border-red-700 focus:bg-red-100" : "border-2 border-gray-100 focus:outline-none bg-gray-100 hover:bg-gray-200 block w-full py-2 px-4 rounded-lg focus:border-gray-700"}
-                                id="phone"
-                                name="phone"
-                                type="text"
-                                placeholder="Phone Number"
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                                value={formik.values.phone}
-                            />
-                            {formik.touched.phone && formik.errors.phone ? <p class="text-red-600 text-xs font-light">{formik.errors.phone}</p> : null}
-                        </div>
-                        <div className='input-container py-2 text-left'>
-                            <input
                                 className={formik.touched.password && formik.errors.password ? "border-2 border-gray-100 focus:outline-none bg-red-100 hover:bg-red-200 block w-full py-2 px-4 rounded-lg focus:border-red-700 focus:bg-red-100" : "border-2 border-gray-100 focus:outline-none bg-gray-100 hover:bg-gray-200 block w-full py-2 px-4 rounded-lg focus:border-gray-700"}
                                 id="password"
                                 name="password"
@@ -132,14 +116,14 @@ const Register = () => {
                             {formik.touched.confirmPassword && formik.errors.confirmPassword ? <p class="text-red-600 text-xs font-light">{formik.errors.confirmPassword}</p> : null}
                         </div>
                         <div class="py-2">
-                            <button type="submit" class="border-2 border-gray-100 focus:outline-none bg-teal-600 text-white font-bold tracking-wider block w-full p-2 rounded-lg focus:border-gray-700 hover:bg-teal-700">
+                            <button type="submit" class="border-2 border-gray-100 focus:outline-none bg-pink-600 text-white font-bold tracking-wider block w-full p-2 rounded-lg focus:border-gray-700 hover:bg-pink-700">
                                 Register
                             </button>
                         </div>
                     </form>
                     <div class="text-center mt-12">
                         <span>Already have an account? </span>
-                        <a href="/login" class="text-md text-teal-600 underline font-light hover:font-semibold hover:text-teal-800">Login</a>
+                        <a href="/admin" class="text-md text-pink-600 underline font-light hover:font-semibold hover:text-pink-800">Login</a>
                     </div>
                 </div>
             </div>
@@ -147,4 +131,4 @@ const Register = () => {
     )
 }
 
-export default Register
+export default AdminRegister
