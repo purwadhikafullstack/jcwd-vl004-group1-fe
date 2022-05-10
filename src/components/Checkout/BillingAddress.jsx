@@ -183,8 +183,28 @@ const BillingAddress = () => {
         userId: userGlobal.id,
         isDefault,
       });
+      document.getElementById("my-modal-4").click();
       navigate("/cart/billing");
       toast.success("New Address Added!", {
+        position: "top-center",
+        autoClose: 1500,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const deleteAddress = async (id) => {
+    try {
+      await Axios.delete(`${API_URL}/users/deleteaddress/${id}`);
+      localStorage.removeItem("addressId");
+      removeAddressCookie();
+      toast.success("Delete Successful!", {
         position: "top-center",
         autoClose: 1500,
         hideProgressBar: true,
@@ -256,7 +276,10 @@ const BillingAddress = () => {
                       {val.isDefault ? null : (
                         <>
                           <td>
-                            <i className="hover:cursor-pointer fas fa-trash-alt align-middle mr-2"></i>
+                            <i
+                              onClick={() => deleteAddress(val.id)}
+                              className="hover:cursor-pointer fas fa-trash-alt align-middle mr-2"
+                            ></i>
                           </td>
                           <button
                             onClick={() => {
@@ -322,7 +345,7 @@ const BillingAddress = () => {
           </div>
           <div>
             <label
-              for="my-modal-4"
+              htmlFor="my-modal-4"
               className="btn modal-button text-accent btn-ghost btn-sm hover:bg-gray-200 normal-case"
             >
               + Add New Address
@@ -332,13 +355,13 @@ const BillingAddress = () => {
             <div className="modal">
               <div className="modal-box relative">
                 <label
-                  for="my-modal-4"
+                  htmlFor="my-modal-4"
                   className="btn btn-sm btn-circle absolute right-2 top-2"
                 >
                   ✕
                 </label>
                 <h3 className="text-lg font-bold text-center mb-2">
-                  Please Input Your New Address for
+                  Please Input Your New Address For
                   <br />
                   {userGlobal.full_name}
                 </h3>

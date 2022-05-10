@@ -9,7 +9,7 @@ import {
 
 import { AiOutlineCheck } from "react-icons/ai";
 
-const OrderProgress = ({ change, setChange }) => {
+const OrderProgress = ({ change, setChange, cartItems }) => {
   const cartCookie = getCartCookie() ? JSON.parse(getCartCookie()) : null;
 
   const paymentCookie = getPaymentCookie()
@@ -55,7 +55,7 @@ const OrderProgress = ({ change, setChange }) => {
         <div className="mr-60">
           {/* PROGRESS BAR-NYA */}
           <div className="w-full flex justify-center space-x-5 text-center items-center">
-            {cartCookie ? (
+            {cartItems?.length && cartCookie ? (
               <>
                 <span className="text-xl text-green-600">
                   <AiOutlineCheck />
@@ -99,7 +99,7 @@ const OrderProgress = ({ change, setChange }) => {
                 className={
                   cartCookie
                     ? "italic text-black font-bold tab hover:text-accent"
-                    : "text-sm text-black font-bold tab"
+                    : "text-sm text-black font-bold tab animate-pulse"
                 }
               >
                 Cart
@@ -111,7 +111,7 @@ const OrderProgress = ({ change, setChange }) => {
                 className={
                   addressCookie
                     ? "italic text-black font-bold tab hover:text-accent"
-                    : "text-sm text-gray-400 hover:text-gray-400 font-bold tab"
+                    : "text-sm text-gray-400 hover:text-gray-400 font-bold tab animate-pulse"
                 }
               >
                 {" "}
@@ -122,9 +122,9 @@ const OrderProgress = ({ change, setChange }) => {
               <NavLink
                 to={cartCookie && addressCookie ? "payment" : "#"}
                 className={
-                  paymentCookie
+                  paymentCookie && shipmentCookie
                     ? "italic text-black font-bold tab hover:text-accent"
-                    : "text-sm text-gray-400 hover:text-gray-400 font-bold tab"
+                    : "text-sm text-gray-400 hover:text-gray-400 font-bold tab animate-pulse"
                 }
               >
                 Payment

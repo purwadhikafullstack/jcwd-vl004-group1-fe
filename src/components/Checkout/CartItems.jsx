@@ -6,28 +6,60 @@ import { currencyFormatter } from "../../helpers/currencyFormatter";
 import { useSelector } from "react-redux";
 import { getCartCookie } from "../../hooks/getCookie";
 import { setCartCookie } from "../../hooks/setCookie";
+import { toast } from "react-toastify";
+import {
+  removeAddressCookie,
+  removeCartCookie,
+  removePaymentCookie,
+  removeShipmentCookie,
+} from "../../hooks/removeCookie";
 
 const CartItems = ({ val, setCartItems, cartItems }) => {
   let [quantity, setQuantity] = useState(val.quantity);
 
   const userGlobal = useSelector((state) => state.user);
+  const userId = userGlobal.id;
   const stockReady = val.product.warehouse_products[0].stock_ready;
+  const getCart = getCartCookie() ? JSON.parse(getCartCookie()) : null;
+
+  const getUserCart = async () => {
+    const results = await Axios.get(`${API_URL}/carts/get/${userGlobal.id}`);
+    setCartItems(results.data.carts);
+  };
+
+  const onDeleteCart = async (id) => {
+    try {
+      const results = await Axios.post(`${API_URL}/carts/delete/${id}`, {
+        userId,
+      });
+      toast.success("Delete Successfull", {
+        position: "top-center",
+        autoClose: 1500,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      setCartItems(results.data);
+      if (getCart) setCartCookie(JSON.stringify(results.data));
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const qtyHandler = useCallback(
     debounce(1000, async (quantity) => {
       const results = await Axios.patch(`${API_URL}/carts/quantity/${val.id}`, {
-        userId: userGlobal.id,
+        userId,
         quantity,
       });
       setCartItems(results.data.getUserCart);
-      if (getCart) {
-        setCartCookie(JSON.stringify(results.data.getUserCart));
-      }
+
+      if (getCart) setCartCookie(JSON.stringify(results.data.getUserCart));
     }),
     []
   );
-
-  const getCart = getCartCookie() ? JSON.parse(getCartCookie()) : null;
 
   useEffect(() => {
     let maxQty = quantity;
@@ -115,7 +147,10 @@ const CartItems = ({ val, setCartItems, cartItems }) => {
       <td className="text-center">{currencyFormatter(val.subtotal)}</td>
 
       <td>
-        <i className="hover:cursor-pointer fas fa-trash-alt"></i>
+        <i
+          onClick={() => onDeleteCart(val.id)}
+          className="hover:cursor-pointer fas fa-trash-alt"
+        ></i>
       </td>
     </tr>
   );

@@ -36,20 +36,37 @@ const Cart = () => {
   return (
     <>
       <div className="w-1/2">
-        <div className="w-full rounded-xl shadow-sm">
-          <div className="p-3 rounded-t-xl">
-            <h2 className="font-bold">
-              Cart{" "}
-              <span className="text-gray-400">({cartItems?.length} Items)</span>
-            </h2>
+        {cartItems?.length ? (
+          <div className="w-full rounded-xl shadow-sm">
+            <div className="p-3 rounded-t-xl">
+              <h2 className="font-bold">
+                Cart{" "}
+                <span className="text-gray-400">
+                  ({cartItems?.length} Items)
+                </span>
+              </h2>
+            </div>
+            <div className="h-3/5 flex space-x-5 w-full px-2">
+              <table className="w-full my-2">
+                {TableHead()}
+                <tbody className="text-sm">{cartList()}</tbody>
+              </table>
+            </div>
           </div>
-          <div className="h-3/5 flex space-x-5 w-full px-2">
-            <table className="w-full my-2">
-              {TableHead()}
-              <tbody className="text-sm">{cartList()}</tbody>
-            </table>
+        ) : (
+          <div className="container my-5">
+            <div className="row justify-content-center align-items-center">
+              <h4 className="text-center mb-2 mb-sm-5 font-bold text-gray-400">
+                No Cart Items Found
+              </h4>
+              <img
+                style={{ width: "100%", height: "300px", objectFit: "contain" }}
+                src="/images/not-found.png"
+                alt="Not-found"
+              />
+            </div>
           </div>
-        </div>
+        )}
         <div>
           <Link to="/">
             <div className="text-gray-600 hover:text-gray-500 text-sm space-x-2 my-6 flex group">
