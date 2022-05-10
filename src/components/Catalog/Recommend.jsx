@@ -1,25 +1,58 @@
-import React, { useEffect } from "react";
-import styled from "styled-components";
-import { mobile } from "../../assets/styles/responsive";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import Rating from "../Home/Rating";
-// import Pagination from "./pagination";
-import { useDispatch, useSelector } from "react-redux";
-// import { listProduct } from "../../Redux/Actions/ProductActions";
-// import Loading from "../LoadingError/Loading";
-// import Message from "../LoadingError/Error";
-import {allProducts} from '../../data/HomePage';
+import { API_URL } from "../../constant/api";
+import Axios from "axios";
+import { currencyFormatter } from '../../helpers/currencyFormatter';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Recommend = () => {
-  // const { keyword, pagenumber } = props;
-  // const dispatch = useDispatch();
+  const [data, setData] = useState([]);
+  const [upTo, setUpTo] = useState(false);
 
-  // const productList = useSelector((state) => state.productList);
-  // const { loading, error, products, page, pages } = productList;
+  useEffect(() => {
+    getProducts();
+    window.scrollTo(0, 0);
+  }, []);
 
-  // useEffect(() => {
-  //   dispatch(listProduct(keyword, pagenumber));
-  // }, [dispatch, keyword, pagenumber]);
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    setUpTo(false)
+  },[upTo]);
+
+  const getProducts = async () => {
+    await Axios.get(`${API_URL}/catalog`)
+      .then((results) => {
+        results.data.map((item)=>{
+          let sum = 0;
+          item.warehouse_products.forEach(element => {
+            sum += element.stock_ready-element.stock_reserved
+          });
+          item["stock"] = sum;
+        })
+        setData(results.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const addToCart = async (id) => {
+    await Axios.post(`${API_URL}/carts/add`, 
+      { quantity: 1,
+        productId: id,
+        userId: 1})
+      .then((results) => {
+        toast.success("Product has been added to cart !", {
+          position: toast.POSITION.TOP_CENTER,
+          className: 'alert-addtocart'
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   return (
     <>
       <div className="container">
@@ -27,23 +60,16 @@ const Recommend = () => {
           <div className="row">
             <div className="col-lg-12 col-md-12 article">
               <div className="shopcontainer row">
-                {/* {loading ? (
-                  <div className="mb-5">
-                    <Loading />
-                  </div>
-                ) : error ? (
-                  <Message variant="alert-danger">{error}</Message>
-                ) : ( */}
                   <>
-                    {allProducts.slice(0,6).map((product) => (
+                    {data.slice(0,6).map((product) => (
                       <div
                         className="shop col-lg-2 col-md-6 col-sm-6"
                         key={product._id}
                       >
                         <div className="border-product">
-                          <Link to={`/detail/${product.id}`}>
+                          <Link to={`/detail/${product.id}`} onClick={()=>setUpTo(true)}>
                             <div className="shopBack">
-                              <img src={product.image} alt={product.name} 
+                              <img src={product.product_image} alt={product.name} 
                               />
                               <i className="icon fas fa-search box-icon-catalog"><p>See details</p></i>
                             </div>
@@ -51,36 +77,29 @@ const Recommend = () => {
 
                           <div className="shoptext">
                             <p className="shopname">
-                              <Link to={`/details/${product._id}`}>
+                              <Link to={`/detail/${product.id}`}>
                               {product.name}
                               </Link>
                             </p>
 
-                            {/* <Rating
-                              value={product.rating}
-                              text={`${product.numReviews} reviews`}
-                            /> */}
-                            <h3>Rp {product.price}.000,00</h3>
+                            <h3>{currencyFormatter(product.price)}</h3>
                             {product.stock==0 ? (
+                              <>
                                 <p className="shopoutofstock">Out of stock</p>
+                                <button className="shopbutton" disabled>Buy now</button>
+                              </>
                             ):(
-                                <p className="shopoutstock">Available Stock : {product.stock}</p>
+                              <>
+                                <p className="shopoutstock">Available Stock : {product.stock} pcs</p>
+                                <button className="shopbutton" onClick={()=>addToCart(product.id)}>Buy now</button>
+                              </>
                             )}
-                            <button className="shopbutton">Buy now</button>
                           </div>
                         </div>
                       </div>
                       
                     ))}
                   </>
-                {/* )} */}
-
-                {/* Pagination */}
-                {/* <Pagination
-                  pages={pages}
-                  page={page}
-                  keyword={keyword ? keyword : ""}
-                /> */}
               </div>
             </div>
           </div>

@@ -175,6 +175,7 @@ textarea:focus {
   background-color: #f3fbf7;
 }
 .shopBack img {
+  border-radius: 15px;
   width: 100%;
   height: 250px;
   object-fit: contain;
@@ -183,11 +184,10 @@ textarea:focus {
 .shopBack img:hover {
   width: 100%;
   height: 250px;
-  background-color: coral;
   object-fit: contain;
   border-radius: 10px;
   position: absolute;
-  opacity: 0.4;
+  opacity: 0.1;
 }
 .shopname {
   height: 50px;
@@ -223,6 +223,14 @@ textarea:focus {
   border-radius: 15px;
   color: white;
   box-shadow: 3px 3px 3px grey;
+}
+.shopbutton:hover {
+  background-color: turquoise;
+  color: white;
+}
+.shopbutton:disabled {
+  background-color: grey;
+  color: white;
 }
 .rating {
   margin: 5px 0;
@@ -324,6 +332,11 @@ textarea:focus {
   margin-bottom: 50px;
 }
 .single-image {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.single-image img {
   background-color: #f3fbf7;
   margin-right: 20px;
   height: 520px;
@@ -332,11 +345,6 @@ textarea:focus {
   display: flex;
   justify-content: center;
   align-items: center;
-}
-.single-image img {
-  width: 90%;
-  height: 700px;
-  object-fit: contain;
 }
 .product-name {
   font-size: 25px;
@@ -360,6 +368,7 @@ textarea:focus {
   border-radius: 5px;
   margin-top: 40px;
   border-radius: 15px;
+  padding: 10px;
 }
 .product-count .flex-box {
   padding: 15px 25px;
@@ -391,6 +400,7 @@ textarea:focus {
   font-weight: bold;
   font-size: 15px;
   transition: all 0.5s ease-in-out 0s;
+  margin-top: 20px;
 }
 .round-black-btn:hover,
 .round-black-btn:focus {
@@ -689,7 +699,18 @@ textarea:focus {
 /* Pagination */
 .pagination .page-link {
   padding: 10px 30px;
-  color: black;
+  color: white;
+  background-color: teal;
+}
+.pagination .page-link:hover {
+  padding: 10px 30px;
+  color: white;
+  background-color: turquoise;
+}
+.pagination .page-link-select {
+  padding: 10px 30px;
+  color: white;
+  background-color: teal;
 }
 .page-item.active .page-link {
   background-color: black;
@@ -725,11 +746,31 @@ textarea:focus {
 }
 
 .btn-to-product {
+  background-color: white;
+  width: fit-content;
+  padding: 10px 100px;
+  border-radius: 15px;
+  border-color: teal;
+  border-width: 1px;
+  margin: auto;
+  box-shadow: 3px 3px 3px teal;
+  font-weight: bold;
+  color: teal;
+}
+
+.btn-to-product:hover {
   background-color: turquoise;
   width: fit-content;
   padding: 10px 100px;
   border-radius: 15px;
+  border-color: teal;
+  border-width: 1px;
   margin: auto;
-  box-shadow: 3px 3px 3px grey;
+  box-shadow: 3px 3px 3px teal;
   font-weight: bold;
+  color: white;
+}
+.alert-addtocart {
+  background-color: teal;
+  color: white;
 }

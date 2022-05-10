@@ -26,33 +26,33 @@
     export const categories = [
       {
         id: 1,
-        img: "https://images.pexels.com/photos/5886041/pexels-photo-5886041.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-        title: "SHIRT STYLE!",
+        img: "https://5.imimg.com/data5/IOS/Default/2021/1/RN/RO/JP/17552598/product-jpeg-250x250.png",
+        title: "JORDAN SHOES",
       },
       {
         id: 2,
-        img: "https://images.pexels.com/photos/2983464/pexels-photo-2983464.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-        title: "LOUNGEWEAR LOVE",
+        img: "https://rukminim1.flixcart.com/image/332/398/kxrvi4w0/shoe/c/0/k/6-dd9311-003-7-nike-black-white-original-imaga5z4p3ap6ndz.jpeg?q=50",
+        title: "BASKETBALL SHOES",
       },
       {
         id: 3,
-        img: "https://images.pexels.com/photos/5480696/pexels-photo-5480696.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500",
-        title: "LIGHT JACKETS",
+        img: "https://i.pinimg.com/236x/b1/45/70/b1457065202f02317ae3ee5851abaa7e.jpg",
+        title: "LIFESTYLE SHOES",
       },
       {
-        id: 1,
-        img: "https://images.pexels.com/photos/5886041/pexels-photo-5886041.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-        title: "SHIRT STYLE!",
+        id: 4,
+        img: "https://cdn.newsapi.com.au/image/v1/8850d4fab61904e5e37b88c8dec8ded4?width=650",
+        title: "RUNNING SHOES",
       },
       {
-        id: 2,
-        img: "https://images.pexels.com/photos/2983464/pexels-photo-2983464.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-        title: "LOUNGEWEAR LOVE",
+        id: 5,
+        img: "https://i.ytimg.com/vi/25jZMktp1B4/maxresdefault.jpg",
+        title: "SKATEBOARDING SHOES",
       },
       {
-        id: 3,
-        img: "https://images.pexels.com/photos/5480696/pexels-photo-5480696.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500",
-        title: "LIGHT JACKETS",
+        id: 6,
+        img: "https://www.golfdiscount.com/blog/wp-content/uploads/2018/06/best-nike-golf-shoes-under-100-702x335.jpg",
+        title: "GOLF SHOES",
       },
     ];
   

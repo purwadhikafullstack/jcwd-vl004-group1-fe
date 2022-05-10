@@ -23,7 +23,6 @@ const CreateCategory = () => {
       await Axios.post(`${API_URL}/products/addcategory`, category).then(
         (results) => {
           toast.success("Category Added!");
-          console.log(results.data);
           setCategory("");
         }
       );
