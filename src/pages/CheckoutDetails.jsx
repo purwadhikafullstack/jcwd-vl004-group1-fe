@@ -8,6 +8,12 @@ import TableAddress from "../components/Checkout/TableAddress";
 import TablePayment from "../components/Checkout/TablePayment";
 import Axios from "axios";
 import { getAddressCookie, getPaymentCookie } from "../hooks/getCookie";
+import {
+  removeAddressCookie,
+  removeCartCookie,
+  removePaymentCookie,
+  removeShipmentCookie,
+} from "../hooks/removeCookie";
 
 const CheckoutDetails = () => {
   const [change, setChange] = useState(0);
@@ -38,8 +44,17 @@ const CheckoutDetails = () => {
   }, [userGlobal]);
 
   return (
-    <div>
-      <OrderProgress />
+    <div
+      style={{
+        backgroundImage: `url(https://wallpaperaccess.com/full/1448083.jpg)`,
+        backgroundRepeat: "no-repeat",
+        backgroundSize: 350,
+        backgroundPositionY: 80,
+        backgroundPositionX: -50,
+        opacity: 80,
+      }}
+    >
+      <OrderProgress cartItems={cartItems} />
       <div className="flex w-screen space-x-4 pt-5 justify-end pr-48">
         <Outlet context={[cartItems, setCartItems, change, setChange]} />
         <div className="w-3/12 space-y-4 flex flex-col">
