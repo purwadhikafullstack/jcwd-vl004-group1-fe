@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Axios from "axios";
 import { API_URL } from "../../constant/api";
 
@@ -7,54 +7,56 @@ const AddProductMain = () => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState(0);
-  const [stockReady, setStockReady] = useState(0);
-  const [optionCategories, setOptionCategories] = useState([]);
-  const [optionWarehouse, setOptionWarehouse] = useState([]);
+  const [stock_ready, setStock_ready] = useState(0);
+  const [productCategoryId, setProductCategoryId] = useState("");
+  const [warehouseId, setWarehouseId] = useState("");
   const [warehouses, setWarehouses] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [product_image, setProduct_Image] = useState("");
+
+  const navigate = useNavigate();
 
   useEffect(() => {
+    const getWarehouses = async () => {
+      try {
+        await Axios.get(`${API_URL}/products/warehouses`).then((results) => {
+          setWarehouses(results.data);
+        });
+      } catch (err) {
+        console.log(err);
+      }
+    };
     getWarehouses();
   }, []);
 
   useEffect(() => {
+    const getCategories = async () => {
+      try {
+        await Axios.get(`${API_URL}/products/categories`).then((results) => {
+          setCategories(results.data);
+        });
+      } catch (err) {
+        console.log(err);
+      }
+    };
     getCategories();
   }, []);
 
-  const onSubmit = (e) => {
-    e.preventDefault();
-    alert({
-      name,
-      description,
-      price,
-      stockReady,
-      optionCategories,
-      optionWarehouse,
-    });
-    // Axios.post(`${API_URL}/products/add`, newData)
-    //   .then((results) => {
-    //     console.log(results.data);
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //   });
-  };
-
-  const getCategories = async () => {
+  const onSubmit = async () => {
     try {
-      await Axios.get(`${API_URL}/products/categories`).then((results) => {
-        setCategories(results.data);
-      });
-    } catch (err) {
-      console.log(err);
-    }
-  };
+      const formData = new FormData();
+      formData.append("product_image", product_image);
+      formData.append("name", name);
+      formData.append("description", description);
+      formData.append("price", price);
+      formData.append("stock_ready", stock_ready);
+      formData.append("productCategoryId", productCategoryId);
+      formData.append("warehouseId", warehouseId);
+      console.log(formData);
 
-  const getWarehouses = async () => {
-    try {
-      await Axios.get(`${API_URL}/products/warehouses`).then((results) => {
-        setWarehouses(results.data);
-      });
+      const results = await Axios.post(`${API_URL}/products/add`, formData);
+      console.log(results.data);
+      navigate("/products");
     } catch (err) {
       console.log(err);
     }
@@ -123,7 +125,7 @@ const AddProductMain = () => {
                       name="price"
                       id="product_price"
                       required
-                      onChange={(e) => setPrice(e.target.value)}
+                      onChange={(e) => setPrice(+e.target.value)}
                     />
                   </div>
                   <div className="mb-2">
@@ -137,7 +139,7 @@ const AddProductMain = () => {
                       name="stock"
                       id="product_stock"
                       required
-                      onChange={(e) => setStockReady(e.target.value)}
+                      onChange={(e) => setStock_ready(+e.target.value)}
                     />
                   </div>
 
@@ -147,15 +149,15 @@ const AddProductMain = () => {
                     </label>
                     <select
                       onChange={(e) => {
-                        setOptionCategories(e.target.value);
+                        setProductCategoryId(+e.target.value);
                         e.preventDefault();
                       }}
                       className="form-select"
                       name="productCategoryId"
-                      value={optionCategories}
+                      value={productCategoryId}
                     >
                       <option>Choose Category</option>
-                      <SelectCategories />
+                      {SelectCategories()}
                     </select>
                   </div>
 
@@ -166,26 +168,34 @@ const AddProductMain = () => {
                     <select
                       onChange={(e) => {
                         e.preventDefault();
-                        setOptionWarehouse(e.target.value);
+                        setWarehouseId(+e.target.value);
                       }}
                       className="form-select"
                       name="warehouseId"
-                      value={optionWarehouse}
+                      value={warehouseId}
                     >
                       <option>Choose Warehouse</option>
-                      <SelectWarehouse />
+                      {SelectWarehouse()}
                     </select>
                   </div>
 
                   <div className="mb-2">
-                    <label className="form-label">Images</label>
-                    <input className="form-control mt-1" type="file" />
+                    <label className="form-label">Upload Images</label>
+                    <input
+                      className="form-control mt-1"
+                      type="file"
+                      size="lg"
+                      name="product_image"
+                      id="fileName"
+                      onChange={(e) => setProduct_Image(e.target.files[0])}
+                    />
                   </div>
                   <div>
                     <button
                       type="submit"
                       className="btn btn-primary"
                       onClick={(e) => onSubmit(e)}
+                      encType="multipart/form-data"
                     >
                       Publish now
                     </button>

@@ -1,80 +1,64 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import Products from "../../data/Products";
+import { Link, Navigate } from "react-router-dom";
 import { API_URL } from "../../constant/api";
 import Axios from "axios";
+import { toast } from "react-toastify";
+import { currencyFormatter } from "../../helpers/currencyFormatter";
 
 const MainProducts = () => {
   const [data, setData] = useState([]);
-  const [sortValue, setSortValue] = useState("");
+  const [sortValue, setSortValue] = useState([]);
   const [warehouses, setWarehouses] = useState([]);
   const [categories, setCategories] = useState([]);
   const [search, setSearch] = useState("");
 
-  // useEffect(() => {
-  //   getProducts();
-  // }, []);
-
-  // useEffect(() => {
-  //   getCategories();
-  // }, []);
-
-  // useEffect(() => {
-  //   getWarehouses();
-  // }, []);
-
-  // GET PRODUCTS
-  const getProducts = async () => {
-    await Axios.get(`${API_URL}/products`)
-      .then((results) => {
+  useEffect(() => {
+    const getProducts = async () => {
+      try {
+        const results = await Axios.get(`${API_URL}/products`);
         setData(results.data);
-        console.log(data);
-      })
-      .catch((err) => {
+      } catch (err) {
         console.log(err);
-      });
-  };
+      }
+    };
+    getProducts();
+  }, []);
 
-  const onSearch = () => {
-    Axios.post(`${API_URL}/products/search`, { name: search })
-      .then((results) => {
-        setData(results.data);
-      })
-      .catch((err) => {
+  useEffect(() => {
+    const getCategories = async () => {
+      try {
+        await Axios.get(`${API_URL}/products/categories`).then((results) => {
+          setCategories(results.data);
+        });
+      } catch (err) {
         console.log(err);
-      });
-  };
+      }
+    };
+    getCategories();
+  }, []);
 
-  const getCategories = async () => {
+  useEffect(() => {
+    const getWarehouses = async () => {
+      try {
+        await Axios.get(`${API_URL}/products/warehouses`).then((results) => {
+          setWarehouses(results.data);
+        });
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    getWarehouses();
+  }, []);
+
+  const onDelete = async (id) => {
     try {
-      await Axios.get(`${API_URL}/products/categories`).then((results) => {
-        setCategories(results.data);
+      await Axios.delete(`${API_URL}/products/delete/${id}`).then((results) => {
+        toast("Product Has Been Deleted");
+        Navigate("/products");
       });
     } catch (err) {
       console.log(err);
     }
-  };
-
-  const getWarehouses = async () => {
-    try {
-      await Axios.get(`${API_URL}/products/warehouses`).then((results) => {
-        setWarehouses(results.data);
-      });
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const SelectCategories = () => {
-    return categories.map((val) => {
-      return <option>{val.name}</option>;
-    });
-  };
-
-  const SelectWarehouse = () => {
-    return warehouses.map((val) => {
-      return <option>{val.name}</option>;
-    });
   };
 
   // SORTING PRODUCTS
@@ -93,14 +77,36 @@ const MainProducts = () => {
         } else if (sortValue === "sort") {
           results = await Axios.get(`${API_URL}/products`);
         }
-        console.log(results.data);
         setData(results.data);
+        console.log(results.data);
       } catch (err) {
         console.log(err);
       }
     };
     getBySort();
   }, [sortValue]);
+
+  const onSearch = async () => {
+    await Axios.post(`${API_URL}/products/search`, { name: search })
+      .then((results) => {
+        setData(results.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const SelectCategories = () => {
+    return categories.map((val, idx) => {
+      return <option key={idx}>{val.name}</option>;
+    });
+  };
+
+  const SelectWarehouse = () => {
+    return warehouses.map((val, idx) => {
+      return <option key={idx}>{val.name}</option>;
+    });
+  };
 
   const TableHead = () => {
     return (
@@ -127,9 +133,9 @@ const MainProducts = () => {
   };
 
   const TableBody = () => {
-    return data.map((val) => {
+    return data.map((val, idx) => {
       return (
-        <tr key={val.id}>
+        <tr key={idx}>
           <td>
             <div className="form-check">
               <input className="form-check-input" type="checkbox" value="" />
@@ -137,24 +143,31 @@ const MainProducts = () => {
           </td>
           <th>{val.id}</th>
           <td>
-            <img className="mask mask-squircle w-12" src={val.product_image} />
+            <img
+              className="mask mask-squircle w-12"
+              src={`${API_URL}/${val.product_image}`}
+            />
           </td>
           <td>{val.name}</td>
           <td>{val.description.slice(0, 12)}...</td>
-          <td>{val.price}</td>
+          <td className="tracking-wide">{currencyFormatter(val.price)}</td>
           <td>{val.product_category.name}</td>
-          <td>{val.stockReady}</td>
-          <td>{val.stockReserved}</td>
-          <td>{val.warehouse}</td>
+          <td>{val.warehouse_products[0].stock_ready}</td>
+          <td>{val.warehouse_products[0].stock_reserved}</td>
+          <td>{val.warehouse_products[0].warehouse.name}</td>
           <td>
             <div className="my-2 space-x-1">
               <Link
-                to={`/product/edit/${val.id}`}
+                to={`/products/find/${val.id}`}
                 className="btn btn-sm btn-accent p-2 pb-3"
               >
                 <i className="fas fa-pen"></i>
               </Link>
-              <Link to="#" className="btn btn-sm btn-error p-2 pb-3">
+              <Link
+                to="#"
+                className="btn btn-sm btn-error p-2 pb-3"
+                onClick={() => onDelete(val.id)}
+              >
                 <i className="fas fa-trash-alt"></i>
               </Link>
             </div>
@@ -168,10 +181,16 @@ const MainProducts = () => {
     return (
       <tfoot>
         <tr className="">
+          <th>
+            <div className="form-check">
+              <input className="form-check-input" type="checkbox" value="" />
+            </div>
+          </th>
           <th></th>
           <th>Image</th>
           <th>Name</th>
           <th>Description</th>
+          <th>Category</th>
           <th>Price</th>
           <th>Stock Ready</th>
           <th>Stock Reserved</th>
@@ -182,49 +201,85 @@ const MainProducts = () => {
     );
   };
 
-  const SearchAndFilter = () => {
+  const Pagination = () => {
     return (
+      <div className="btn-group flex flex-row m-auto w-1/6 ">
+        <button className="btn btn-outline">1</button>
+        <button className="btn btn-outline btn-active">2</button>
+        <button className="btn btn-outline">3</button>
+        <button className="btn btn-outline">4</button>
+      </div>
+    );
+  };
+
+  return (
+    <section className="content-main">
+      <div className="space-y-2 flex flex-row items-center space-x-3">
+        <h2 className="text-2xl">Manage Products</h2>
+        <div>
+          <Link to="/addproduct" className="btn btn-primary">
+            Add New Product
+          </Link>
+        </div>
+      </div>
+
+      {/* Search and Filter Section */}
       <div className="card my-4 shadow-sm">
         <header className="card-header bg-white ">
-          <div className="row gx-3 py-3">
+          <div className="row gx-3 py-3 space-x-2">
             <div className="col-lg-4 col-md-6 me-auto flex flex-row">
-              <input
-                type="text"
-                placeholder="Search Product"
-                className="form-control p-2"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-              <button
-                onClick={onSearch}
-                className="btn btn-outline border-0 hover:btn-ghost"
-              >
-                Search
-              </button>
+              <div className="input-group">
+                <input
+                  type="text"
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Search Product…"
+                  className="input input-bordered w-60"
+                  value={search}
+                />
+                <button
+                  onClick={onSearch}
+                  className="btn btn-square btn-primary"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                    />
+                  </svg>
+                </button>
+              </div>
             </div>
 
             <div className="col-lg-2 col-6 col-md-3">
-              <select className="form-select">
+              <select className="select w-full max-w-xs input-bordered text-gray-500">
                 <option>Choose Warehouse</option>
-                <SelectWarehouse />
+                {SelectWarehouse()}
               </select>
             </div>
             <div className="col-lg-2 col-6 col-md-3">
-              <select className="form-select">
+              <select className="select w-full max-w-xs input-bordered text-gray-500">
                 <option>All category</option>
-                <SelectCategories />
+                {SelectCategories()}
               </select>
             </div>
+            {/* SELECTED */}
             <div className="col-lg-2 col-6 col-md-3">
               <select
-                onChange={(e) => {
-                  e.preventDefault();
-                  setSortValue(e.target.value);
-                }}
-                className="form-select"
+                className="select w-full max-w-xs input-bordered text-gray-500"
+                onChange={(e) => setSortValue(e.target.value)}
                 name="sort"
               >
-                <option value="sort">Default</option>
+                <option name="sort" value="sort">
+                  Default
+                </option>
                 <option name="az" value="az">
                   A-Z
                 </option>
@@ -242,44 +297,14 @@ const MainProducts = () => {
           </div>
         </header>
       </div>
-    );
-  };
-
-  const Pagination = () => {
-    return (
-      <div className="btn-group flex justify-center">
-        <div className="btn-group space-x-2 mt-2">
-          <button className="btn btn-primary">«</button>
-          <button className="btn text-black bg-base-200">Page 1</button>
-          <button className="btn btn-primary">»</button>
-        </div>
-      </div>
-    );
-  };
-
-  return (
-    <section className="content-main">
-      <div className="space-y-2 flex flex-row items-center space-x-3">
-        <h2 className="text-2xl">Manage Products</h2>
-        <div>
-          <Link to="/addproduct" className="btn btn-primary">
-            Add New Product
-          </Link>
-        </div>
-      </div>
-
-      {/* Search and Filter Section */}
-      <SearchAndFilter />
 
       <div className="overflow-x-auto">
         <table className="table table-compact w-full text-center">
-          <TableHead />
-          <tbody>
-            <TableBody />
-          </tbody>
-          <TableFoot />
+          {TableHead()}
+          <tbody>{TableBody()}</tbody>
+          {TableFoot()}
         </table>
-        <Pagination />
+        {Pagination()}
       </div>
     </section>
   );

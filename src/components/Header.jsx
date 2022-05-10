@@ -1,8 +1,19 @@
 import React, { useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import $ from "jquery";
+import { useDispatch, useSelector } from "react-redux";
 
 const Header = () => {
+  const dispatch = useDispatch()
+  const navigate = useNavigate();
+  const adminGlobal = useSelector((state) => state.admin);
+  const logout = () => {
+    dispatch({
+      type: "ADMIN_LOGOUT"
+    })
+    localStorage.removeItem("adminDataEmmerce")
+    navigate('/')
+  }
   useEffect(() => {
     $("[data-trigger]").on("click", function (e) {
       e.preventDefault();
@@ -44,6 +55,9 @@ const Header = () => {
         </button>
         <ul className="nav">
           <li className="nav-item">
+            WELCOME {adminGlobal.username}!
+          </li>
+          <li className="nav-item">
             <Link className={`nav-link btn-icon `} title="Dark mode" to="#">
               <i className="fas fa-moon"></i>
             </Link>
@@ -73,8 +87,8 @@ const Header = () => {
               <Link className="dropdown-item" to="#">
                 Settings
               </Link>
-              <Link className="dropdown-item text-danger" to="#">
-                Exit
+              <Link onClick={logout} className="dropdown-item text-danger" to="/">
+                Log Out
               </Link>
             </div>
           </li>

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from "react-router-dom";
 import Axios from "axios"
+import Header from "../../components/HeaderUser"
 
 const Authentication = () => {
     const { token } = useParams();
@@ -18,7 +19,7 @@ const Authentication = () => {
                     setMessage(res.data.message)
                 }
                 console.log(res)
-                navigate('/')
+                // navigate('/')
             })
             .catch((err) => {
                 console.log(err)
@@ -29,7 +30,10 @@ const Authentication = () => {
         sendVerification()
     }, [])
     return (
-        <div>Authentication: {message}</div>
+        <>
+            <Header />
+            <div className='text-gray-600'>Authentication: {message}</div>
+        </>
     )
 }
 

@@ -14,6 +14,7 @@ const init_state = {
 const reducer = (state = init_state, action) => {
     switch (action.type) {
         case "ADMIN_LOGIN":
+            console.log(action.payload)
             return { ...state, ...action.payload, storageIsChecked: true }
         case "ADMIN_KEEP_LOGIN":
             return { ...state, ...action.payload, storageIsChecked: true }

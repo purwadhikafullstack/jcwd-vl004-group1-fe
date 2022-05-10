@@ -6,7 +6,7 @@ const Sidebar = () => {
     <div>
       <aside className="navbar-aside" id="offcanvas_aside">
         <div className="aside-top">
-          <Link to="/" className="brand-wrap">
+          <Link to="/category" className="brand-wrap">
             <img
               src="/images/logo.png"
               style={{ height: "46" }}
@@ -26,7 +26,7 @@ const Sidebar = () => {
             <li className="menu-item">
               <NavLink
                 activeclassname="active"
-                className="menu-link"
+                className="menu-link ml-1"
                 to="/products"
               >
                 <i className="icon fas fa-shopping-bag"></i>
@@ -51,6 +51,16 @@ const Sidebar = () => {
               >
                 <i className="icon fas fa-list"></i>
                 <span className="text">Categories</span>
+              </NavLink>
+            </li>
+            <li className="menu-item">
+              <NavLink
+                activeclassname="active"
+                className="menu-link"
+                to="/transaction"
+              >
+                <i className="icon fas fa-list"></i>
+                <span className="text">Transaction</span>
               </NavLink>
             </li>
           </ul>

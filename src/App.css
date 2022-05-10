@@ -8,6 +8,15 @@
 INCLUDE STYLES AND COMPONENTS
 ===================== */
 /* ================== HELPERS =================== */
+
+* {
+  font-family: "Public Sans", sans-serif;
+  /* font-family: "Montserrat", sans-serif; */
+  /* font-family: "Open Sans", sans-serif; */
+  /* font-family: "Poppins", sans-serif; */
+  /* font-family: "Urbanist", sans-serif; */
+}
+
 .table thead th {
   color: #adb5bd;
   font-weight: 400;
