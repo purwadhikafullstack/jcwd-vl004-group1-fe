@@ -18,6 +18,7 @@ import {
 const CheckoutDetails = () => {
   const [change, setChange] = useState(0);
   const [cartItems, setCartItems] = useState([]);
+  const [isPaymentMode, setIsPaymentMode] = useState(false);
   const userGlobal = useSelector((state) => state.user);
   const summaryGlobal = useSelector((state) => state.summary);
 
@@ -54,19 +55,27 @@ const CheckoutDetails = () => {
         opacity: 80,
       }}
     >
-      <OrderProgress cartItems={cartItems} />
-      <div className="flex w-screen space-x-4 pt-5 justify-end pr-48">
+      <OrderProgress cartItems={cartItems} isPaymentMode={isPaymentMode} />
+      <div
+        className={
+          isPaymentMode
+            ? "flex w-screen space-x-4 pt-5 justify-center pr-48"
+            : "flex w-screen space-x-4 pt-5 justify-end pr-48"
+        }
+      >
         <Outlet context={[cartItems, setCartItems, change, setChange]} />
-        <div className="w-3/12 space-y-4 flex flex-col">
-          {addressCookie && <TableAddress />}
-          {paymentCookie && <TablePayment setChange={setChange} />}
-          <OrderSummary
-            cartItems={cartItems}
-            setCartItems={setCartItems}
-            change={change}
-            setChange={setChange}
-          />
-        </div>
+        {isPaymentMode ? null : (
+          <div className="w-3/12 space-y-4 flex flex-col">
+            {addressCookie && <TableAddress />}
+            {paymentCookie && <TablePayment setChange={setChange} />}
+            <OrderSummary
+              cartItems={cartItems}
+              setCartItems={setCartItems}
+              change={change}
+              setChange={setChange}
+            />
+          </div>
+        )}
       </div>
     </div>
   );

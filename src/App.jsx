@@ -46,6 +46,7 @@ import CheckoutDetails from "./pages/CheckoutDetails";
 import BillingDetails from "./pages/BillingDetails";
 import PaymentDetails from "./pages/PaymentDetails";
 import Cart from "./components/Checkout/Cart";
+import PaymentUploader from "./components/Checkout/PaymentUploader";
 
 function App() {
   const dispatch = useDispatch();
@@ -53,7 +54,7 @@ function App() {
   const adminLocalStorage = localStorage.getItem("adminDataEmmerce");
   const userGlobal = useSelector((state) => state.user);
   const adminGlobal = useSelector((state) => state.admin);
-  const [currentUser, setCurrentUser] = useState(0)
+  const [currentUser, setCurrentUser] = useState(0);
 
   const userKeepLogin = () => {
     Axios.post(
@@ -101,8 +102,6 @@ function App() {
       });
   };
 
-
-
   useEffect(() => {
     userKeepLogin();
     adminKeepLogin();
@@ -111,31 +110,32 @@ function App() {
   useEffect(() => {
     if (adminGlobal.id) {
       console.log("aku admin");
-      setCurrentUser(2)
+      setCurrentUser(2);
     }
     if (userGlobal.id) {
       console.log("aku user");
-      setCurrentUser(1)
+      setCurrentUser(1);
     }
     if (!userGlobal.id && !adminGlobal.id) {
-      console.log("aku belom daftar")
-      setCurrentUser(0)
+      console.log("aku belom daftar");
+      setCurrentUser(0);
     }
-  }, [userGlobal, adminGlobal])
-
-
+  }, [userGlobal, adminGlobal]);
 
   return (
     <>
       <BrowserRouter>
         <Routes>
           {/* PRODUCTS */}
-          {currentUser === 2 ?
+          {currentUser === 2 ? (
             <>
               <Route path="/category" element={<CategoriesScreen />} />
               <Route path="/products" element={<ProductScreen />} />
               <Route path="/addproduct" element={<AddProduct />} />
-              <Route path="/products/find/:id" element={<ProductEditScreen />} />
+              <Route
+                path="/products/find/:id"
+                element={<ProductEditScreen />}
+              />
               <Route path="/transaction" element={<Transaction />} />
               <Route path="/transaction/:id" element={<TransactionsSlug />} />
               <Route path="/report" element={<Report />} />
@@ -148,14 +148,14 @@ function App() {
               <Route path="/user" element={<User />} />
               <Route path="/dashboard" element={<Dashboard />} />
             </>
-            :
+          ) : (
             <>
               <Route path="*" element={<NotFound />} />
             </>
-          }
+          )}
 
           {/* CARTS */}
-          {currentUser === 1 ?
+          {currentUser === 1 ? (
             <>
               <Route path="/checkout" element={<CheckoutDetails />} />
               <Route path="/billing" element={<BillingDetails />} />
@@ -164,41 +164,57 @@ function App() {
                 <Route index element={<Cart />} />
                 <Route path="billing" element={<BillingDetails />} />
                 <Route path="payment" element={<PaymentDetails />} />
+                <Route path="paymentupload" element={<PaymentUploader />} />
               </Route>
               <Route path="/detail/:id" element={<Details />} />
               <Route path="/catalog" element={<Catalog />} />
               <Route path="/" element={<Home />} />
             </>
-            :
+          ) : (
             <>
               <Route path="*" element={<NotFound />} />
             </>
-          }
+          )}
 
-          {currentUser === 0 ?
+          {currentUser === 0 ? (
             <>
               {/* ADMIN */}
-              <Route path="/adminauthentication/:token" element={<AdminAuthentication />} />
-              <Route path="/adminforgotpassword" element={<AdminForgotPassword />} />
-              <Route path="/adminrecoverpassword/:token" element={<AdminRecoverPassword />} />
+              <Route
+                path="/adminauthentication/:token"
+                element={<AdminAuthentication />}
+              />
+              <Route
+                path="/adminforgotpassword"
+                element={<AdminForgotPassword />}
+              />
+              <Route
+                path="/adminrecoverpassword/:token"
+                element={<AdminRecoverPassword />}
+              />
               <Route path="/adminregister" element={<AdminRegister />} />
               <Route path="/admin" element={<AdminLogin />} />
 
               {/* USER */}
-              <Route path="/authentication/:token" element={<Authentication />} />
+              <Route
+                path="/authentication/:token"
+                element={<Authentication />}
+              />
               <Route path="/forgotpassword" element={<ForgotPassword />} />
-              <Route path="/recoverpassword/:token" element={<RecoverPassword />} />
+              <Route
+                path="/recoverpassword/:token"
+                element={<RecoverPassword />}
+              />
               <Route path="/register" element={<Register />} />
               <Route path="/login" element={<Login />} />
 
               <Route path="/catalog" element={<Catalog />} />
               <Route path="/" element={<Home />} />
             </>
-            :
+          ) : (
             <>
               <Route path="*" element={<NotFound />} />
             </>
-          }
+          )}
 
           {/* HOMEPAGE */}
           <Route path="/catalog" element={<Catalog />} />

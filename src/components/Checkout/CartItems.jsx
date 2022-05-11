@@ -32,7 +32,7 @@ const CartItems = ({ val, setCartItems, cartItems }) => {
       const results = await Axios.post(`${API_URL}/carts/delete/${id}`, {
         userId,
       });
-      toast.success("Delete Successfull", {
+      toast.success("One of your Cart Item has been deleted", {
         position: "top-center",
         autoClose: 1500,
         hideProgressBar: true,

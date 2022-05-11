@@ -175,9 +175,9 @@ const PaymentSummary = () => {
                 </h2>
                 {getCart?.map((val) => {
                   return (
-                    <div className="form-control rounded-xl border-0 ">
+                    <div className="form-control rounded-xl border-0 my-1">
                       <div className="flex justify-between w-full items-center">
-                        <div className="flex space-x-4">
+                        <div className="flex space-x-6">
                           <img
                             src={`${API_URL}/${val.product.product_image}`}
                             alt=""

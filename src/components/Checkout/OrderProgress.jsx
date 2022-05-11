@@ -9,7 +9,7 @@ import {
 
 import { AiOutlineCheck } from "react-icons/ai";
 
-const OrderProgress = ({ change, setChange, cartItems }) => {
+const OrderProgress = ({ change, setChange, cartItems, isPaymentMode }) => {
   const cartCookie = getCartCookie() ? JSON.parse(getCartCookie()) : null;
 
   const paymentCookie = getPaymentCookie()
@@ -52,86 +52,91 @@ const OrderProgress = ({ change, setChange, cartItems }) => {
           </div>
         </div>
 
-        <div className="mr-60">
-          {/* PROGRESS BAR-NYA */}
-          <div className="w-full flex justify-center space-x-5 text-center items-center">
-            {cartItems?.length && cartCookie ? (
-              <>
+        {isPaymentMode ? null : (
+          <div className="mr-60">
+            {/* PROGRESS BAR-NYA */}
+            <div className="w-full flex justify-center space-x-5 text-center items-center">
+              {cartItems?.length && cartCookie ? (
+                <>
+                  <span className="text-xl text-green-600">
+                    <AiOutlineCheck />
+                  </span>
+                  <span className="flex border-top bg-green-600 h-[3px] w-[200px]"></span>
+                </>
+              ) : (
+                <>
+                  <span className="text-4xl text-gray-400">•</span>
+                  <span className="flex border-top h-[3px] bg-slate-100 w-[200px]"></span>
+                </>
+              )}
+              {cartCookie && addressCookie ? (
+                <>
+                  <span className="text-xl text-green-600">
+                    <AiOutlineCheck />
+                  </span>
+                  <span className="flex border-top bg-green-600 h-[3px] w-[200px]"></span>
+                </>
+              ) : (
+                <>
+                  <span className="text-4xl text-gray-400">•</span>
+                  <span className="flex border-top h-[3px] bg-slate-100 w-[200px]"></span>
+                </>
+              )}
+              {cartCookie &&
+              addressCookie &&
+              paymentCookie &&
+              shipmentCookie ? (
                 <span className="text-xl text-green-600">
                   <AiOutlineCheck />
                 </span>
-                <span className="flex border-top bg-green-600 h-[3px] w-[200px]"></span>
-              </>
-            ) : (
-              <>
+              ) : (
                 <span className="text-4xl text-gray-400">•</span>
-                <span className="flex border-top h-[3px] bg-slate-100 w-[200px]"></span>
-              </>
-            )}
-            {cartCookie && addressCookie ? (
-              <>
-                <span className="text-xl text-green-600">
-                  <AiOutlineCheck />
-                </span>
-                <span className="flex border-top bg-green-600 h-[3px] w-[200px]"></span>
-              </>
-            ) : (
-              <>
-                <span className="text-4xl text-gray-400">•</span>
-                <span className="flex border-top h-[3px] bg-slate-100 w-[200px]"></span>
-              </>
-            )}
-            {cartCookie && addressCookie && paymentCookie && shipmentCookie ? (
-              <span className="text-xl text-green-600">
-                <AiOutlineCheck />
-              </span>
-            ) : (
-              <span className="text-4xl text-gray-400">•</span>
-            )}
-          </div>
+              )}
+            </div>
 
-          {/* Progress Head-nya */}
-          <div className="w-full justify-center tabs ">
-            <div className="">
-              <NavLink
-                to="/cart"
-                end
-                className={
-                  cartCookie
-                    ? "italic text-black font-bold tab hover:text-accent"
-                    : "text-sm text-black font-bold tab animate-pulse"
-                }
-              >
-                Cart
-              </NavLink>
-            </div>
-            <div className="mx-40 ">
-              <NavLink
-                to={cartCookie ? "billing" : "#"}
-                className={
-                  addressCookie
-                    ? "italic text-black font-bold tab hover:text-accent"
-                    : "text-sm text-gray-400 hover:text-gray-400 font-bold tab animate-pulse"
-                }
-              >
-                {" "}
-                Billing & Address
-              </NavLink>
-            </div>
-            <div>
-              <NavLink
-                to={cartCookie && addressCookie ? "payment" : "#"}
-                className={
-                  paymentCookie && shipmentCookie
-                    ? "italic text-black font-bold tab hover:text-accent"
-                    : "text-sm text-gray-400 hover:text-gray-400 font-bold tab animate-pulse"
-                }
-              >
-                Payment
-              </NavLink>
+            {/* Progress Head-nya */}
+            <div className="w-full justify-center tabs ">
+              <div className="">
+                <NavLink
+                  to="/cart"
+                  end
+                  className={
+                    cartCookie
+                      ? "italic text-black font-bold tab hover:text-accent"
+                      : "text-sm text-black font-bold tab animate-pulse"
+                  }
+                >
+                  Cart
+                </NavLink>
+              </div>
+              <div className="mx-40 ">
+                <NavLink
+                  to={cartCookie ? "billing" : "#"}
+                  className={
+                    addressCookie
+                      ? "italic text-black font-bold tab hover:text-accent"
+                      : "text-sm text-gray-400 hover:text-gray-400 font-bold tab animate-pulse"
+                  }
+                >
+                  {" "}
+                  Billing & Address
+                </NavLink>
+              </div>
+              <div>
+                <NavLink
+                  to={cartCookie && addressCookie ? "payment" : "#"}
+                  className={
+                    paymentCookie && shipmentCookie
+                      ? "italic text-black font-bold tab hover:text-accent"
+                      : "text-sm text-gray-400 hover:text-gray-400 font-bold tab animate-pulse"
+                  }
+                >
+                  Payment
+                </NavLink>
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
       {/* HEADER ENDS */}
     </>
