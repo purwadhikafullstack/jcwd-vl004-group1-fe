@@ -774,3 +774,130 @@ textarea:focus {
   background-color: teal;
   color: white;
 }
+
+
+.react-calendar { 
+  width: 400px;
+  max-width: 100%;
+  background-color: #fff;
+  color: #222;
+  border-radius: 8px;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+  font-family: Arial, Helvetica, sans-serif;
+  line-height: 1.125em;
+  position: fixed;
+  z-index: 1;
+ }
+ .react-calendar__navigation button {
+  color: teal;
+  min-width: 44px;
+  background: #fff;
+  font-size: 16px;
+  margin-top: 8px;
+ }
+ .react-calendar__navigation button:enabled:hover,
+ .react-calendar__navigation button:enabled:focus {
+  background-color: #f8f8fa;
+ }
+ .react-calendar__navigation button[disabled] {
+  background-color: #f0f0f0;
+ }
+ abbr[title] {
+  text-decoration: none;
+ }
+ /* .react-calendar__month-view__days__day--weekend {
+  color: #d10000;
+ } */
+ .react-calendar__tile:enabled:hover,
+ .react-calendar__tile:enabled:focus {
+  background: #f8f8fa;
+  color: teal;
+  border-radius: 6px;
+ }
+ .react-calendar__tile--now {
+  background: #6f48eb33;
+  border-radius: 6px;
+  font-weight: bold;
+  color: teal;
+ }
+ .react-calendar__tile--now:enabled:hover,
+ .react-calendar__tile--now:enabled:focus {
+  background: #6f48eb33;
+  border-radius: 6px;
+  font-weight: bold;
+  color: teal;
+ }
+ .react-calendar__tile--hasActive:enabled:hover,
+ .react-calendar__tile--hasActive:enabled:focus {
+  background: #f8f8fa;
+ }
+ .react-calendar__tile--active {
+  background: teal;
+  border-radius: 6px;
+  font-weight: bold;
+  color: white;
+ }
+ .react-calendar__tile--active:enabled:hover,
+ .react-calendar__tile--active:enabled:focus {
+  background: teal;
+  color: white;
+ }
+ .react-calendar--selectRange .react-calendar__tile--hover {
+  background-color: #f8f8fa;
+ }
+ .react-calendar__tile--range {
+  background: #f8f8fa;
+  color: teal;
+  border-radius: 0;
+ }
+ .react-calendar__tile--rangeStart {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-top-left-radius: 6px;
+  border-bottom-left-radius: 6px;
+  background: teal;
+  color: white;
+ }
+ .react-calendar__tile--rangeEnd {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  border-top-right-radius: 6px;
+  border-bottom-right-radius: 6px;
+  background: teal;
+  color: white;
+ }
+
+
+ .tabs{
+  padding: 0px 4%;
+  margin-left: auto;
+  margin-right: auto;
+ }
+
+ .tab-lifted.tab-active {
+  background-color: teal;
+  border-width: var(--tab-border, 1px) var(--tab-border, 1px) 0 var(--tab-border, 1px);
+  border-left-color: teal;
+  border-right-color: teal;
+  border-top-color: var(--tab-border-color);
+  padding-left: calc(var(--tab-padding, 1rem) - var(--tab-border, 1px));
+  padding-right: calc(var(--tab-padding, 1rem) - var(--tab-border, 1px));
+  padding-bottom: var(--tab-border, 1px);
+  padding-top: 0;
+  color: white;
+}
+
+.tab {
+  --tab-bg: teal;
+  --tab-border-color: teal;
+}
+
+.card-custom {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background-color: white;
+  border-radius:  0px var(--rounded-box, 1rem) var(--rounded-box, 1rem) var(--rounded-box, 1rem);
+}
+

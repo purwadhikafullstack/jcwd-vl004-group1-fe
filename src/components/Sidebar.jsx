@@ -6,16 +6,16 @@ const Sidebar = () => {
     <div>
       <aside className="navbar-aside" id="offcanvas_aside">
         <div className="aside-top">
-          <Link to="/category" className="brand-wrap">
+          <Link to="/dashboard" className="brand-wrap">
             <img
-              src="/images/logo.png"
+              src="/images/logo.jpg"
               style={{ height: "46" }}
               className="logo"
               alt="Ecommerce dashboard template"
             />
           </Link>
           <div>
-            <button className="btn btn-primary btn-aside-minimize">
+            <button className="btn btn-accent btn-aside-minimize">
               <i className="fas fa-stream"></i>
             </button>
           </div>
@@ -52,6 +52,36 @@ const Sidebar = () => {
                 <i className="icon fas fa-list"></i>
                 <span className="text">Categories</span>
               </NavLink>
+            </li>
+            <li className="menu-item">
+              <NavLink
+                activeclassname="active"
+                className="menu-link"
+                to="/user"
+              >
+                <i className="icon fas fa-user"></i>
+                <span className="text">Users</span>
+              </NavLink>
+            </li>
+            <li className="menu-item">
+              <NavLink
+                activeclassname="active"
+                className="menu-link"
+                to="/warehouse"
+              >
+                <i className="icon fas fa-building"></i>
+                <span className="text">Warehouses</span>
+              </NavLink>
+            </li>
+            <li className="menu-item">
+              <NavLink
+                activeclassname="active"
+                className="menu-link"
+                to="/report"
+              >
+                <i className="icon fas fa-file"></i>
+                <span className="text">Report</span>
+                </NavLink>
             </li>
             <li className="menu-item">
               <NavLink

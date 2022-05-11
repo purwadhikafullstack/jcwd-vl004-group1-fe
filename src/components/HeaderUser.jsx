@@ -62,7 +62,7 @@ const Header = () => {
                   </Link>
                 </div>
                 <div className="col-6 d-flex align-items-center justify-content-end Login-Register">
-                  {/* {userInfo ? (
+                  {userGlobal.id === 0 ? (
                     <div className="btn-group">
                       <button
                         type="button"
@@ -81,13 +81,13 @@ const Header = () => {
                         <Link
                           className="dropdown-item"
                           to="#"
-                          onClick={logoutHandler}
+                          onClick={logout}
                         >
                           Logout
                         </Link>
                       </div>
                     </div>
-                  ) : ( */}
+                  ) : (
                   <div className="btn-group">
                     <button
                       type="button"
@@ -108,25 +108,13 @@ const Header = () => {
                       </Link>
                     </div>
                   </div>
-                  {/* )} */}
+                  )}
 
                   <Link to="/cart" className="cart-mobile-icon">
                     <i className="fas fa-shopping-bag"></i>
                     <span className="badge">9</span>
                   </Link>
                 </div>
-                {/* <div className="col-12 d-flex align-items-center">
-                  <form className="input-group">
-                    <input
-                      type="search"
-                      className="form-control rounded search"
-                      placeholder="Search"
-                    />
-                    <button type="submit" className="search-button">
-                      search
-                    </button>
-                  </form>
-                </div> */}
               </div>
             </div>
           </div>
@@ -143,70 +131,43 @@ const Header = () => {
                   />
                 </Link>
               </div>
-              {/* <div className="col-md-6 col-8 d-flex align-items-center">
-                <form className="input-group">
-                  <input
-                    type="search"
-                    className="form-control rounded search"
-                    placeholder="Search"
-                  />
-                  <button type="submit" className="search-button">
-                    search
-                  </button>
-                </form>
-              </div> */}
               <div className="col-md-9 d-flex align-items-center justify-content-end Login-Register">
-                {/* {userInfo ? (
-                  <div className="btn-group">
-                    <button
-                      type="button"
-                      className="name-button dropdown-toggle"
-                      data-toggle="dropdown"
-                      aria-haspopup="true"
-                      aria-expanded="false"
-                    >
-                      Hi, {userInfo.name}
-                    </button>
-                    <div className="dropdown-menu">
-                      <Link className="dropdown-item" to="/profile">
-                        Profile
-                      </Link>
-
-                      <Link
-                        className="dropdown-item"
-                        to="#"
-                        onClick={logoutHandler}
-                      >
-                        Logout
-                      </Link>
-                    </div>
-                  </div>
-                ) : ( */}
-                <>
-                  <Link to="/catalog">Catalog</Link>
                   {userGlobal.id === 0 ? (
                     <>
-                      <Link to="/register">Register</Link>
-                      <Link to="/login">Login</Link>
-                      <Link to="/admin">Admin</Link>
+                    <Link to="/">About Us</Link>
+                    <Link to="/catalog">Catalog</Link>
+                    <div class="dropdown dropdown-end">
+                      <label tabindex="0" class="btn btn-ghost btn-circle avatar">
+                        <div class="w-10 rounded-full" style={{color:"black"}}>
+                          <img src="/images/user-white.png" />
+                        </div>
+                      </label>
+                      <ul tabindex="0" class="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-100 rounded-box w-52">
+                        <li><Link to="/login"><a class="justify-between">Login</a></Link></li>
+                        <li><Link to="/register"><a>Register</a></Link></li>
+                        <li><Link to="/admin"><a>Admin</a></Link></li>
+                      </ul>
+                    </div>
                     </>
                   ) : (
                     <>
-                      <h1 className="text-gray-100 pr-7">
-                        WELCOME {userGlobal.username}!
-                      </h1>
-                      <button className="text-gray-100" onClick={logout}>
-                        LOGOUT
-                      </button>
+                      <h1 className="text-gray-100 pr-7">Welcome, {userGlobal.username}!</h1>
+                      <Link to="/cart">
+                        <i className="fas fa-shopping-bag"></i>
+                        <span className="badge">0</span>
+                      </Link>
+                      <div class="dropdown dropdown-end">
+                        <label tabindex="0" class="btn btn-ghost btn-circle avatar">
+                          <div class="w-10 rounded-full">
+                            <img src="/images/user-white.png" />
+                          </div>
+                        </label>
+                        <ul tabindex="0" class="mt-3 p-2 shadow menu menu-compact dropdown-content bg-light rounded-box w-52">
+                          <li onClick={logout}><a>LOGOUT</a></li>
+                        </ul>
+                      </div>
                     </>
                   )}
-                </>
-                {/* )} */}
-
-                {/* <Link to="/cart">
-                  <i className="fas fa-shopping-bag"></i>
-                  <span className="badge">9</span>
-                </Link> */}
               </div>
             </div>
           </div>

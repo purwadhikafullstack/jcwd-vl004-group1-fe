@@ -14,6 +14,7 @@ const Header = () => {
     localStorage.removeItem("adminDataEmmerce")
     navigate('/')
   }
+  const userGlobal = useSelector((state) => state.user)
   useEffect(() => {
     $("[data-trigger]").on("click", function (e) {
       e.preventDefault();
@@ -36,63 +37,28 @@ const Header = () => {
   return (
     <header className="main-header navbar">
       <div className="col-search">
-        <form className="searchform">
-          <div className="input-group"></div>
-          <datalist id="search_terms">
-            <option value="Products" />
-            <option value="New orders" />
-            <option value="Apple iphone" />
-            <option value="Ahmed Hassan" />
-          </datalist>
-        </form>
       </div>
       <div className="col-nav">
-        <button
-          className="btn btn-icon btn-mobile me-auto"
-          data-trigger="#offcanvas_aside"
-        >
-          <i className="md-28 fas fa-bars"></i>
-        </button>
-        <ul className="nav">
-          <li className="nav-item">
-            WELCOME {adminGlobal.username}!
-          </li>
-          <li className="nav-item">
-            <Link className={`nav-link btn-icon `} title="Dark mode" to="#">
-              <i className="fas fa-moon"></i>
-            </Link>
-          </li>
-          <li className="nav-item">
-            <Link className="nav-link btn-icon" to="#">
-              <i className="fas fa-bell"></i>
-            </Link>
-          </li>
-          <li className="nav-item">
-            <Link className="nav-link" to="#">
-              English
-            </Link>
-          </li>
-          <li className="dropdown nav-item">
-            <Link className="dropdown-toggle" data-bs-toggle="dropdown" to="#">
-              <img
-                className="img-xs rounded-circle"
-                src="/images/favicon.png"
-                alt="User"
-              />
-            </Link>
-            <div className="dropdown-menu dropdown-menu-end">
-              <Link className="dropdown-item" to="/">
-                My profile
-              </Link>
-              <Link className="dropdown-item" to="#">
-                Settings
-              </Link>
-              <Link onClick={logout} className="dropdown-item text-danger" to="/">
-                Log Out
-              </Link>
+        <div className="mx-4">
+          Welcome, {adminGlobal.username}
+        </div>
+        <div class="dropdown dropdown-end">
+          <label tabindex="0" class="btn btn-ghost btn-circle avatar">
+            <div class="w-10 rounded-full">
+              <img src="/images/user.png" />
             </div>
-          </li>
-        </ul>
+          </label>
+          <ul tabindex="0" class="mt-3 p-2 shadow menu menu-compact dropdown-content bg-white rounded-box w-52">
+            <li>
+              <a class="justify-between">
+                Profile
+                <span class="badge">New</span>
+              </a>
+            </li>
+            <li><a>Settings</a></li>
+            <li onClick={logout}><a>Logout</a></li>
+          </ul>
+        </div>
       </div>
     </header>
   );

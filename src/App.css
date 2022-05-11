@@ -18,8 +18,8 @@ INCLUDE STYLES AND COMPONENTS
 }
 
 .table thead th {
-  color: #adb5bd;
-  font-weight: 400;
+  color: black;
+  font-weight: 600;
 }
 .table-lg td,
 .table-lg th {
@@ -179,6 +179,19 @@ body.offcanvas-active {
   margin-right: auto;
 }
 
+.content-main-custom {
+  padding: 0px 3% 30px 3%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.content-main-full {
+  padding: 30px 3%;
+  margin-left: auto;
+  margin-right: auto;
+  height: 100%;
+}
+
 .navbar-aside {
   max-width: 260px;
   display: block;
@@ -328,7 +341,7 @@ body.aside-mini .menu-aside .menu-item.has-submenu .menu-link:after {
   font-size: 18px;
 }
 .menu-aside .active .icon {
-  color: #4fa607;
+  color: teal;
 }
 .menu-aside .active {
   background-color: #ebf0fd;

@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { currencyFormatter } from '../../helpers/currencyFormatter';
 import { API_URL } from "../../constant/api";
+import { useSelector } from "react-redux";
 import Axios from "axios";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const Products = () => {
+  const userGlobal = useSelector((state) => state.user)
   const [data, setData] = useState([]);
 
   useEffect(() => {
@@ -61,7 +63,7 @@ const Products = () => {
                     <div className="border-product">
                       <Link to={`/detail/${product.id}`}>
                         <div className="shopBack">
-                          <img src={product.product_image} alt={product.name} 
+                          <img src={`${API_URL}/${product.product_image}`} alt={product.name} 
                           />
                           <i className="icon fas fa-search box-icon-catalog"><p>See details</p></i>
                         </div>

@@ -53,7 +53,7 @@ const Detail = () => {
         <div className="row">
           <div className="col-md-6">
             <div className="single-image">
-              <img src={data.product_image} //alt={product.name} 
+              <img src={`${API_URL}/${data.product_image}`} //alt={product.name} 
               />
             </div>
           </div>

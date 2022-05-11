@@ -29,6 +29,16 @@ import Home from "./pages/User/Home";
 import Catalog from "./pages/User/Catalog";
 import Details from "./pages/User/Details";
 
+import Report from "./pages/Admin/Report";
+import User from "./pages/Admin/User";
+import Warehouse from "./pages/Admin/Warehouse";
+import FormWarehouse from "./pages/Admin/FormWarehouse";
+import ShowWarehouse from "./pages/Admin/ShowWarehouse";
+import CostWarehouse from "./pages/Admin/CostWarehouse";
+import ProductWarehouse from "./pages/Admin/ProductWarehouse";
+import ShippingWarehouse from "./pages/Admin/ShippingWarehouse";
+import Dashboard from "./pages/Admin/Dashboard";
+
 import NotFound from "./pages/NotFound";
 import { ToastContainer } from "react-toastify";
 import CheckoutDetails from "./pages/CheckoutDetails";
@@ -126,6 +136,15 @@ function App() {
               <Route path="/addproduct" element={<AddProduct />} />
               <Route path="/products/find/:id" element={<ProductEditScreen />} />
               <Route path="/transaction" element={<Transaction />} />
+              <Route path="/report" element={<Report />} />
+              <Route path="/warehouse" element={<Warehouse />} />
+              <Route path="/warehouse/:id" element={<ShowWarehouse />} />
+              <Route path="/warehouse/:id/inventory" element={<ProductWarehouse />} />
+              <Route path="/warehouse/:id/cost" element={<CostWarehouse />} />
+              <Route path="/warehouse/:id/shipping" element={<ShippingWarehouse />} />
+              <Route path="/addwarehouse" element={<FormWarehouse />} />
+              <Route path="/user" element={<User />} />
+              <Route path="/dashboard" element={<Dashboard />} />
             </>
             :
             <>
@@ -180,6 +199,11 @@ function App() {
           }
 
           {/* HOMEPAGE */}
+          <Route path="/catalog" element={<Catalog />} />
+          <Route path="/detail/:id" element={<Details />} />
+          <Route path="/" element={<Home />} />
+          <Route path="*" element={<NotFound />} />
+
         </Routes>
       </BrowserRouter>
       <ToastContainer />
