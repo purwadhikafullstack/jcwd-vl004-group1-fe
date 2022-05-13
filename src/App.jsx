@@ -11,7 +11,8 @@ import ProductScreen from "./pages/productScreen";
 import CategoriesScreen from "./pages/CategoriesScreen";
 import AddProduct from "./pages/AddProduct";
 import ProductEditScreen from "./pages/ProductEditScreen";
-import Transaction from "./pages/Transactions";
+import Transaction from "./pages/Admin/Transactions";
+import TransactionsSlug from "./pages/Admin/TransactionsSlug";
 
 import AdminAuthentication from "./pages/AdminAuth/AdminAuthentication";
 import AdminForgotPassword from "./pages/AdminAuth/AdminForgotPassword";
@@ -136,6 +137,7 @@ function App() {
               <Route path="/addproduct" element={<AddProduct />} />
               <Route path="/products/find/:id" element={<ProductEditScreen />} />
               <Route path="/transaction" element={<Transaction />} />
+              <Route path="/transaction/:id" element={<TransactionsSlug />} />
               <Route path="/report" element={<Report />} />
               <Route path="/warehouse" element={<Warehouse />} />
               <Route path="/warehouse/:id" element={<ShowWarehouse />} />

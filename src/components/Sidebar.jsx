@@ -77,21 +77,21 @@ const Sidebar = () => {
               <NavLink
                 activeclassname="active"
                 className="menu-link"
-                to="/report"
+                to="/transaction"
               >
-                <i className="icon fas fa-file"></i>
-                <span className="text">Report</span>
-                </NavLink>
+                <i className="icon far fa-abacus"></i>
+                <span className="text">Transaction</span>
+              </NavLink>
             </li>
             <li className="menu-item">
               <NavLink
                 activeclassname="active"
                 className="menu-link"
-                to="/transaction"
+                to="/report"
               >
-                <i className="icon fas fa-list"></i>
-                <span className="text">Transaction</span>
-              </NavLink>
+                <i className="icon fas fa-file"></i>
+                <span className="text">Report</span>
+                </NavLink>
             </li>
           </ul>
           <br />

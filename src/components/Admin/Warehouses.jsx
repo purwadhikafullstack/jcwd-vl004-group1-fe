@@ -61,11 +61,11 @@ const Warehouses = () => {
       <thead>
         <tr className="">
           <th>No. </th>
-          <th>Fullname</th>
-          <th>Username</th>
-          <th>Email</th>
+          <th>Name</th>
+          <th>Address</th>
+          <th>City</th>
+          <th>Province</th>
           <th>Phone</th>
-          <th>Verified</th>
           <th>Action</th>
         </tr>
       </thead>
