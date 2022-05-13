@@ -7,7 +7,13 @@ import OrderSummary from "../components/Checkout/OrderSummary";
 import TableAddress from "../components/Checkout/TableAddress";
 import TablePayment from "../components/Checkout/TablePayment";
 import Axios from "axios";
-import { getAddressCookie, getPaymentCookie } from "../hooks/getCookie";
+import {
+  getAddressCookie,
+  getInvoiceHeaderIdCookie,
+  getPaymentCookie,
+} from "../hooks/getCookie";
+import Header from "../components/HeaderUser";
+import Footer from "../components/Footer";
 import {
   removeAddressCookie,
   removeCartCookie,
@@ -18,9 +24,11 @@ import {
 const CheckoutDetails = () => {
   const [change, setChange] = useState(0);
   const [cartItems, setCartItems] = useState([]);
-  const [isPaymentMode, setIsPaymentMode] = useState(false);
+  const [invoiceHeaderId, setInvoiceHeaderId] = useState(0);
   const userGlobal = useSelector((state) => state.user);
   const summaryGlobal = useSelector((state) => state.summary);
+
+  console.log(invoiceHeaderId);
 
   const addressCookie = getAddressCookie()
     ? JSON.parse(getAddressCookie())
@@ -45,26 +53,23 @@ const CheckoutDetails = () => {
   }, [userGlobal]);
 
   return (
-    <div
-      style={{
-        backgroundImage: `url(https://wallpaperaccess.com/full/1448083.jpg)`,
-        backgroundRepeat: "no-repeat",
-        backgroundSize: 350,
-        backgroundPositionY: 80,
-        backgroundPositionX: -50,
-        opacity: 80,
-      }}
-    >
-      <OrderProgress cartItems={cartItems} isPaymentMode={isPaymentMode} />
+    <>
+      <Header />
       <div
-        className={
-          isPaymentMode
-            ? "flex w-screen space-x-4 pt-5 justify-center pr-48"
-            : "flex w-screen space-x-4 pt-5 justify-end pr-48"
-        }
+        style={{
+          backgroundImage: `url(https://wallpaperaccess.com/full/1448083.jpg)`,
+          backgroundRepeat: "no-repeat",
+          backgroundSize: 350,
+          backgroundPositionY: 80,
+          backgroundPositionX: -50,
+          opacity: 80,
+        }}
       >
-        <Outlet context={[cartItems, setCartItems, change, setChange]} />
-        {isPaymentMode ? null : (
+        {getInvoiceHeaderIdCookie() ? null : (
+          <OrderProgress cartItems={cartItems} />
+        )}
+        <div className="flex w-screen space-x-4 pt-5 justify-end pr-48">
+          <Outlet context={[cartItems, setCartItems, change, setChange]} />
           <div className="w-3/12 space-y-4 flex flex-col">
             {addressCookie && <TableAddress />}
             {paymentCookie && <TablePayment setChange={setChange} />}
@@ -75,9 +80,10 @@ const CheckoutDetails = () => {
               setChange={setChange}
             />
           </div>
-        )}
+        </div>
       </div>
-    </div>
+      <Footer />
+    </>
   );
 };
 

@@ -1,14 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { currencyFormatter } from "../../helpers/currencyFormatter";
-import { setAddressCookie, setCartCookie } from "../../hooks/setCookie";
+import {
+  setAddressCookie,
+  setCartCookie,
+  setInvoiceHeaderIdCookie,
+} from "../../hooks/setCookie";
 import {
   getCartCookie,
   getAddressCookie,
   getPaymentCookie,
   getShipmentCookie,
 } from "../../hooks/getCookie";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import SubmitCartButton from "./SubmitCartButton";
 import SubmitPaymentButton from "./SubmitPaymentButton";
 import SubmitAddressButton from "./SubmitAddressButton";
@@ -22,7 +26,12 @@ import {
   removeShipmentCookie,
 } from "../../hooks/removeCookie";
 
-const OrderSummary = ({ cartItems, setCartItems, setChange }) => {
+const OrderSummary = ({
+  cartItems,
+  setCartItems,
+  setChange,
+  setIsPaymentMode,
+}) => {
   const [subTotal, setSubTotal] = useState(0);
   const [discount, setDiscount] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
@@ -67,7 +76,12 @@ const OrderSummary = ({ cartItems, setCartItems, setChange }) => {
     const renderTotalPrice = () => {
       try {
         let total = 0;
-        total = subTotal - discount;
+        // Sementara Discountnya diilangin dulu jangan lupa
+        if (shipmentCookie) {
+          total = subTotal + shipmentCookie.price;
+        } else {
+          total = subTotal;
+        }
 
         setTotalPrice(total);
       } catch (err) {
@@ -116,20 +130,21 @@ const OrderSummary = ({ cartItems, setCartItems, setChange }) => {
 
   const submitCheckout = async () => {
     try {
-      let total = totalPrice;
-      let userAddressId = addressCookie.id;
-      let paymentOptionId = paymentCookie.id;
-      // setIsLoading(true);
-
-      console.log({
-        total,
-        status: false,
-        userAddressId,
-        warehouseId: 1,
-        paymentConfirmationId: 1,
+      const results = await Axios.post(`${API_URL}/carts/checkout`, {
+        total: totalPrice,
+        status: "pending",
+        userAddressId: addressCookie.id,
+        shipmentMasterId: shipmentCookie.id,
         userId: userGlobal.id,
-        paymentOptionId,
+        paymentOptionId: paymentCookie.id,
       });
+      setInvoiceHeaderIdCookie(JSON.stringify(results.data.id));
+      navigate("/cart/paymentupload");
+      removeCartCookie();
+      removeAddressCookie();
+      removePaymentCookie();
+      removeShipmentCookie();
+      localStorage.removeItem("addressId");
     } catch (err) {
       console.log(err);
     }
@@ -175,7 +190,9 @@ const OrderSummary = ({ cartItems, setCartItems, setChange }) => {
               </div>
               <div className="flex justify-between">
                 <h2 className="text-gray-400">Shipping</h2>
-                <h2 className="font-bold">Free</h2>
+                <h2 className="font-bold">
+                  {shipmentCookie ? shipmentCookie.price : null}
+                </h2>
               </div>
               <span className="flex border-top h-[2px] bg-slate-100 w-full"></span>
               {/* TOTAL PRICE */}
@@ -218,7 +235,7 @@ const OrderSummary = ({ cartItems, setCartItems, setChange }) => {
               </div>
             </div>
           </div>
-          {renderButton()}
+          <div className="mb-8">{renderButton()}</div>
         </div>
       ) : null}
     </>

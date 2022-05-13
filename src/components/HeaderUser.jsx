@@ -3,6 +3,13 @@ import { Link, useHistory, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import "../assets/styles/user.css";
 import "../assets/styles/responsive.css";
+import {
+  removeAddressCookie,
+  removeCartCookie,
+  removeInvoiceHeaderIdCookie,
+  removePaymentCookie,
+  removeShipmentCookie,
+} from "../hooks/removeCookie";
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -13,7 +20,13 @@ const Header = () => {
       type: "USER_LOGOUT",
     });
     localStorage.removeItem("userDataEmmerce");
+    localStorage.removeItem("addressId");
     navigate("/login");
+    removeCartCookie();
+    removeAddressCookie();
+    removePaymentCookie();
+    removeShipmentCookie();
+    removeInvoiceHeaderIdCookie();
   };
   return (
     <div>
@@ -78,36 +91,32 @@ const Header = () => {
                           Profile
                         </Link>
 
-                        <Link
-                          className="dropdown-item"
-                          to="#"
-                          onClick={logout}
-                        >
+                        <Link className="dropdown-item" to="#" onClick={logout}>
                           Logout
                         </Link>
                       </div>
                     </div>
                   ) : (
-                  <div className="btn-group">
-                    <button
-                      type="button"
-                      className="name-button dropdown-toggle"
-                      data-toggle="dropdown"
-                      aria-haspopup="true"
-                      aria-expanded="false"
-                    >
-                      <i class="fas fa-user"></i>
-                    </button>
-                    <div className="dropdown-menu">
-                      <Link className="dropdown-item" to="/login">
-                        Login
-                      </Link>
+                    <div className="btn-group">
+                      <button
+                        type="button"
+                        className="name-button dropdown-toggle"
+                        data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false"
+                      >
+                        <i class="fas fa-user"></i>
+                      </button>
+                      <div className="dropdown-menu">
+                        <Link className="dropdown-item" to="/login">
+                          Login
+                        </Link>
 
-                      <Link className="dropdown-item" to="/register">
-                        Register
-                      </Link>
+                        <Link className="dropdown-item" to="/register">
+                          Register
+                        </Link>
+                      </div>
                     </div>
-                  </div>
                   )}
 
                   <Link to="/cart" className="cart-mobile-icon">
@@ -132,42 +141,73 @@ const Header = () => {
                 </Link>
               </div>
               <div className="col-md-9 d-flex align-items-center justify-content-end Login-Register">
-                  {userGlobal.id === 0 ? (
-                    <>
+                {userGlobal.id === 0 ? (
+                  <>
                     <Link to="/">About Us</Link>
                     <Link to="/catalog">Catalog</Link>
                     <div class="dropdown dropdown-end">
-                      <label tabindex="0" class="btn btn-ghost btn-circle avatar">
-                        <div class="w-10 rounded-full" style={{color:"black"}}>
+                      <label
+                        tabindex="0"
+                        class="btn btn-ghost btn-circle avatar"
+                      >
+                        <div
+                          class="w-10 rounded-full"
+                          style={{ color: "black" }}
+                        >
                           <img src="/images/user-white.png" />
                         </div>
                       </label>
-                      <ul tabindex="0" class="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-100 rounded-box w-52">
-                        <li><Link to="/login"><a class="justify-between">Login</a></Link></li>
-                        <li><Link to="/register"><a>Register</a></Link></li>
-                        <li><Link to="/admin"><a>Admin</a></Link></li>
+                      <ul
+                        tabindex="0"
+                        class="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-100 rounded-box w-52"
+                      >
+                        <li>
+                          <Link to="/login">
+                            <a class="justify-between">Login</a>
+                          </Link>
+                        </li>
+                        <li>
+                          <Link to="/register">
+                            <a>Register</a>
+                          </Link>
+                        </li>
+                        <li>
+                          <Link to="/admin">
+                            <a>Admin</a>
+                          </Link>
+                        </li>
                       </ul>
                     </div>
-                    </>
-                  ) : (
-                    <>
-                      <h1 className="text-gray-100 pr-7">Welcome, {userGlobal.username}!</h1>
-                      <Link to="/cart">
-                        <i className="fas fa-shopping-bag"></i>
-                        <span className="badge">0</span>
-                      </Link>
-                      <div class="dropdown dropdown-end">
-                        <label tabindex="0" class="btn btn-ghost btn-circle avatar">
-                          <div class="w-10 rounded-full">
-                            <img src="/images/user-white.png" />
-                          </div>
-                        </label>
-                        <ul tabindex="0" class="mt-3 p-2 shadow menu menu-compact dropdown-content bg-light rounded-box w-52">
-                          <li onClick={logout}><a>LOGOUT</a></li>
-                        </ul>
-                      </div>
-                    </>
-                  )}
+                  </>
+                ) : (
+                  <>
+                    <h1 className="text-gray-100 pr-7">
+                      Welcome, {userGlobal.username}!
+                    </h1>
+                    <Link to="/cart">
+                      <i className="fas fa-shopping-bag"></i>
+                      <span className="badge">0</span>
+                    </Link>
+                    <div class="dropdown dropdown-end">
+                      <label
+                        tabindex="0"
+                        class="btn btn-ghost btn-circle avatar"
+                      >
+                        <div class="w-10 rounded-full">
+                          <img src="/images/user-white.png" />
+                        </div>
+                      </label>
+                      <ul
+                        tabindex="0"
+                        class="mt-3 p-2 shadow menu menu-compact dropdown-content bg-light rounded-box w-52"
+                      >
+                        <li onClick={logout}>
+                          <a>LOGOUT</a>
+                        </li>
+                      </ul>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           </div>

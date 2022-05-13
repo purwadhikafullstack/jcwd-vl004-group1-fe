@@ -33,7 +33,7 @@ export const setShipmentCookie = (selectedShipmentId) => {
   });
 };
 export const setInvoiceHeaderIdCookie = (selectedInvoiceHeaderId) => {
-  Cookie.set("selectedShipment", selectedInvoiceHeaderId, {
+  Cookie.set("selectedInvoiceHeaderId", selectedInvoiceHeaderId, {
     expires: 1,
     secure: true,
     sameSite: "strict",

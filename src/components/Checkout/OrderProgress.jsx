@@ -32,7 +32,7 @@ const OrderProgress = ({ change, setChange, cartItems, isPaymentMode }) => {
   return (
     <>
       {/* HEADER STARTS */}
-      <div className="mt-28">
+      <div className="">
         {/* Checkout Links */}
         <div className="ml-60 mt-10 mb-4">
           <div>
