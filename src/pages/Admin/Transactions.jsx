@@ -1,7 +1,7 @@
 import React from "react";
-import Sidebar from "../components/Sidebar";
-import Header from "../components/Header";
-import Transaction from "../components/Products/MainProducts";
+import Sidebar from "../../components/Sidebar";
+import Header from "../../components/Header";
+import Transaction from "../../components/Products/Transaction";
 
 const Transactions = () => {
   return (
