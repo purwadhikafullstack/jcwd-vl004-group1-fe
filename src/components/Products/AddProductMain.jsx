@@ -4,6 +4,9 @@ import Axios from "axios";
 import { API_URL } from "../../constant/api";
 
 const AddProductMain = () => {
+  const [previewImage, setPreviewImage] = useState(
+    "https://fakeimg.pl/350x200/"
+  );
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState(0);
@@ -15,6 +18,12 @@ const AddProductMain = () => {
   const [product_image, setProduct_Image] = useState("");
 
   const navigate = useNavigate();
+
+  const handleImage = (e) => {
+    const value = e.target.files[0];
+    setProduct_Image(value);
+    setPreviewImage(URL.createObjectURL(value));
+  };
 
   useEffect(() => {
     const getWarehouses = async () => {
@@ -89,6 +98,21 @@ const AddProductMain = () => {
             <div className="col-xl-8 col-lg-8">
               <div className="card mb-4 shadow-sm">
                 <div className="card-body">
+                  <div className="mb-2">
+                    <img src={previewImage} alt="" />
+                  </div>
+                  <div className="mb-2">
+                    <label className="form-label">Upload Images</label>
+                    <input
+                      className="form-control mt-1"
+                      type="file"
+                      size="lg"
+                      name="product_image"
+                      id="fileName"
+                      onChange={(e) => handleImage(e)}
+                    />
+                  </div>
+
                   <div className="mb-2">
                     <label htmlFor="product_title" className="form-label">
                       Product Name
@@ -177,18 +201,6 @@ const AddProductMain = () => {
                       <option>Choose Warehouse</option>
                       {SelectWarehouse()}
                     </select>
-                  </div>
-
-                  <div className="mb-2">
-                    <label className="form-label">Upload Images</label>
-                    <input
-                      className="form-control mt-1"
-                      type="file"
-                      size="lg"
-                      name="product_image"
-                      id="fileName"
-                      onChange={(e) => setProduct_Image(e.target.files[0])}
-                    />
                   </div>
                   <div>
                     <button

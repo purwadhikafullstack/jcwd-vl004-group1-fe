@@ -22,13 +22,11 @@ import {
 } from "../hooks/removeCookie";
 
 const CheckoutDetails = () => {
-  const [change, setChange] = useState(0);
+  const [change, setChange] = useState(1);
   const [cartItems, setCartItems] = useState([]);
   const [invoiceHeaderId, setInvoiceHeaderId] = useState(0);
   const userGlobal = useSelector((state) => state.user);
   const summaryGlobal = useSelector((state) => state.summary);
-
-  console.log(invoiceHeaderId);
 
   const addressCookie = getAddressCookie()
     ? JSON.parse(getAddressCookie())
@@ -73,12 +71,14 @@ const CheckoutDetails = () => {
           <div className="w-3/12 space-y-4 flex flex-col">
             {addressCookie && <TableAddress />}
             {paymentCookie && <TablePayment setChange={setChange} />}
-            <OrderSummary
-              cartItems={cartItems}
-              setCartItems={setCartItems}
-              change={change}
-              setChange={setChange}
-            />
+            {getInvoiceHeaderIdCookie() ? null : (
+              <OrderSummary
+                cartItems={cartItems}
+                setCartItems={setCartItems}
+                change={change}
+                setChange={setChange}
+              />
+            )}
           </div>
         </div>
       </div>

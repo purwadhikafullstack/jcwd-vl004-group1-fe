@@ -116,7 +116,7 @@ const PaymentSummary = () => {
       <div className="w-1/2 flex flex-col space-y-2">
         {/* PRODUCT SUMMARY */}
         <div className=" w-full rounded-xl shadow-sm ">
-          <div className="p-3 rounded-t-xl">
+          <div className="p-16 rounded-t-xl">
             <div className="flex flex-col">
               <h2 className="font-bold">Here is your Order Details :</h2>
               <div className="flex justify-between items-center">

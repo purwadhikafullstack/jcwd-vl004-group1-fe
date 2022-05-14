@@ -7,28 +7,29 @@ import Axios from "axios";
 import { API_URL } from "../constant/api";
 
 const ProductEditScreen = () => {
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState({});
   const { id } = useParams();
+  console.log(id);
 
+  console.log(products);
   useEffect(() => {
     const getProducts = async () => {
       try {
         const res = await Axios.get(`${API_URL}/products/find/${id}`);
         setProducts(res.data);
-        console.log(res.data);
       } catch (err) {
         console.log(err);
       }
     };
     getProducts();
-  }, []);
+  }, [id]);
 
   return (
     <>
       <Sidebar />
       <main className="main-wrap">
         <Header />
-        <EditProductMain editData={products} />
+        <EditProductMain products={products} />
       </main>
     </>
   );

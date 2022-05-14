@@ -187,7 +187,7 @@ const TablePayment = ({ setCartItems, setChange }) => {
                             </div>
                             <button
                               onClick={closeModal}
-                              className="btn btn-sm bg-accent border-none text-white mt-4"
+                              className="btn bg-accent border-none text-white mt-4"
                             >
                               Choose Shipment
                             </button>

@@ -26,12 +26,8 @@ import {
   removeShipmentCookie,
 } from "../../hooks/removeCookie";
 
-const OrderSummary = ({
-  cartItems,
-  setCartItems,
-  setChange,
-  setIsPaymentMode,
-}) => {
+const OrderSummary = ({ cartItems, change, setChange }) => {
+  // const [change, setChange] = useState("");
   const [subTotal, setSubTotal] = useState(0);
   const [discount, setDiscount] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
@@ -139,12 +135,13 @@ const OrderSummary = ({
         paymentOptionId: paymentCookie.id,
       });
       setInvoiceHeaderIdCookie(JSON.stringify(results.data.id));
-      navigate("/cart/paymentupload");
+      setChange(change + 1);
+      localStorage.removeItem("addressId");
       removeCartCookie();
       removeAddressCookie();
       removePaymentCookie();
       removeShipmentCookie();
-      localStorage.removeItem("addressId");
+      navigate("/cart/paymentupload");
     } catch (err) {
       console.log(err);
     }
