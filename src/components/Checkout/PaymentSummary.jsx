@@ -23,8 +23,12 @@ const PaymentSummary = () => {
     : null;
 
   const getUserCart = async () => {
-    const results = await Axios.get(`${API_URL}/carts/get/${userGlobal.id}`);
-    setCartItems(results.data.carts);
+    try {
+      const results = await Axios.get(`${API_URL}/carts/get/${userGlobal.id}`);
+      setCartItems(results.data.carts);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const closeModal = () => {
@@ -112,7 +116,7 @@ const PaymentSummary = () => {
       <div className="w-1/2 flex flex-col space-y-2">
         {/* PRODUCT SUMMARY */}
         <div className=" w-full rounded-xl shadow-sm ">
-          <div className="p-3 rounded-t-xl">
+          <div className="p-16 rounded-t-xl">
             <div className="flex flex-col">
               <h2 className="font-bold">Here is your Order Details :</h2>
               <div className="flex justify-between items-center">
@@ -175,9 +179,9 @@ const PaymentSummary = () => {
                 </h2>
                 {getCart?.map((val) => {
                   return (
-                    <div className="form-control rounded-xl border-0 ">
+                    <div className="form-control rounded-xl border-0 my-1">
                       <div className="flex justify-between w-full items-center">
-                        <div className="flex space-x-4">
+                        <div className="flex space-x-6">
                           <img
                             src={`${API_URL}/${val.product.product_image}`}
                             alt=""

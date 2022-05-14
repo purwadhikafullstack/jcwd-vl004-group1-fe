@@ -4,32 +4,45 @@ import { API_URL } from "../../constant/api";
 import Axios from "axios";
 import { toast } from "react-toastify";
 import { currencyFormatter } from "../../helpers/currencyFormatter";
+import ReactPaginate from "react-paginate";
 
 const MainProducts = () => {
   const [data, setData] = useState([]);
-  const [sortValue, setSortValue] = useState([]);
+  const [dataCount, setDataCount] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [sortValue, setSortValue] = useState("");
   const [warehouses, setWarehouses] = useState([]);
   const [categories, setCategories] = useState([]);
   const [search, setSearch] = useState("");
+  console.log(sortValue);
+
+  const handlePageClick = (data) => {
+    let currentPage = data.selected + 1;
+    setCurrentPage(currentPage);
+  };
 
   useEffect(() => {
     const getProducts = async () => {
       try {
-        const results = await Axios.get(`${API_URL}/products`);
-        setData(results.data);
+        if (!sortValue) {
+          const results = await Axios.get(
+            `${API_URL}/products?page=${currentPage}`
+          );
+          setData(results.data.rows);
+          setDataCount(results.data.count);
+        }
       } catch (err) {
         console.log(err);
       }
     };
     getProducts();
-  }, []);
+  }, [currentPage]);
 
   useEffect(() => {
     const getCategories = async () => {
       try {
-        await Axios.get(`${API_URL}/products/categories`).then((results) => {
-          setCategories(results.data);
-        });
+        const results = await Axios.get(`${API_URL}/products/categories`);
+        setCategories(results.data);
       } catch (err) {
         console.log(err);
       }
@@ -40,9 +53,8 @@ const MainProducts = () => {
   useEffect(() => {
     const getWarehouses = async () => {
       try {
-        await Axios.get(`${API_URL}/products/warehouses`).then((results) => {
-          setWarehouses(results.data);
-        });
+        const results = await Axios.get(`${API_URL}/products/warehouses`);
+        setWarehouses(results.data);
       } catch (err) {
         console.log(err);
       }
@@ -52,10 +64,9 @@ const MainProducts = () => {
 
   const onDelete = async (id) => {
     try {
-      await Axios.delete(`${API_URL}/products/delete/${id}`).then((results) => {
-        toast("Product Has Been Deleted");
-        Navigate("/products");
-      });
+      await Axios.delete(`${API_URL}/products/delete/${id}`);
+      toast("Product Has Been Deleted");
+      Navigate("/products");
     } catch (err) {
       console.log(err);
     }
@@ -67,33 +78,48 @@ const MainProducts = () => {
       try {
         let results;
         if (sortValue === "az") {
-          results = await Axios.get(`${API_URL}/products/sort/az`);
+          results = await Axios.get(
+            `${API_URL}/products/sort/az?page=${currentPage}`
+          );
         } else if (sortValue === "za") {
-          results = await Axios.get(`${API_URL}/products/sort/za`);
+          results = await Axios.get(
+            `${API_URL}/products/sort/za?page=${currentPage}`
+          );
         } else if (sortValue === "lowprice") {
-          results = await Axios.get(`${API_URL}/products/sort/lowprice`);
+          results = await Axios.get(
+            `${API_URL}/products/sort/lowprice?page=${currentPage}`
+          );
         } else if (sortValue === "highprice") {
-          results = await Axios.get(`${API_URL}/products/sort/highprice`);
+          results = await Axios.get(
+            `${API_URL}/products/sort/highprice?page=${currentPage}`
+          );
         } else if (sortValue === "sort") {
-          results = await Axios.get(`${API_URL}/products`);
+          results = await Axios.get(`${API_URL}/products?page=${currentPage}`);
+        } else {
+          return;
         }
-        setData(results.data);
-        console.log(results.data);
+        setData(results.data.rows);
+        setDataCount(results.data.count);
       } catch (err) {
         console.log(err);
       }
     };
     getBySort();
-  }, [sortValue]);
+  }, [sortValue, currentPage]);
 
   const onSearch = async () => {
-    await Axios.post(`${API_URL}/products/search`, { name: search })
-      .then((results) => {
-        setData(results.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    try {
+      const results = await Axios.post(
+        `${API_URL}/products/search?page=${currentPage}`,
+        {
+          name: search,
+        }
+      );
+      setData(results.data.rows);
+      setDataCount(results.data.count);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const SelectCategories = () => {
@@ -152,7 +178,16 @@ const MainProducts = () => {
           <td>{val.description.slice(0, 12)}...</td>
           <td className="tracking-wide">{currencyFormatter(val.price)}</td>
           <td>{val.product_category.name}</td>
-          <td>{val.warehouse_products[0].stock_ready}</td>
+          {val.warehouse_products[0].stock_ready < 10 ? (
+            <td className="text-sm flex flex-col text-error font-bold mt-2">
+              {val.warehouse_products[0].stock_ready}{" "}
+              <span className="bg-error text-white text-xs font-bold">
+                Low Stocks
+              </span>
+            </td>
+          ) : (
+            <td>{val.warehouse_products[0].stock_ready}</td>
+          )}
           <td>{val.warehouse_products[0].stock_reserved}</td>
           <td>{val.warehouse_products[0].warehouse.name}</td>
           <td>
@@ -198,17 +233,6 @@ const MainProducts = () => {
           <th>Action</th>
         </tr>
       </tfoot>
-    );
-  };
-
-  const Pagination = () => {
-    return (
-      <div className="btn-group flex flex-row m-auto w-1/6 ">
-        <button className="btn btn-outline">1</button>
-        <button className="btn btn-outline btn-active">2</button>
-        <button className="btn btn-outline">3</button>
-        <button className="btn btn-outline">4</button>
-      </div>
     );
   };
 
@@ -304,7 +328,18 @@ const MainProducts = () => {
           <tbody>{TableBody()}</tbody>
           {TableFoot()}
         </table>
-        {Pagination()}
+        <ReactPaginate
+          className="flex justify-center space-x-4 text-accent mt-6"
+          previousLabel={"<<"}
+          nextLabel={">>"}
+          breakLabel={"..."}
+          pageCount={Math.ceil(dataCount / 10)}
+          marginPagesDisplayed={2}
+          onPageChange={handlePageClick}
+          activeClassName={
+            "btn-active btn btn-xs hover:bg-accent bg-accent text-white border-none animate-bounce"
+          }
+        />
       </div>
     </section>
   );

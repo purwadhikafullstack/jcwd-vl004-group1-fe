@@ -32,11 +32,19 @@ export const setShipmentCookie = (selectedShipmentId) => {
     path: "/",
   });
 };
-export const setDiscountCookie = (selectedDiscount) => {
-  Cookie.set("selectedShipment", selectedDiscount, {
+export const setInvoiceHeaderIdCookie = (selectedInvoiceHeaderId) => {
+  Cookie.set("selectedInvoiceHeaderId", selectedInvoiceHeaderId, {
     expires: 1,
     secure: true,
     sameSite: "strict",
     path: "/",
   });
 };
+// export const setDiscountCookie = (selectedDiscount) => {
+//   Cookie.set("selectedShipment", selectedDiscount, {
+//     expires: 1,
+//     secure: true,
+//     sameSite: "strict",
+//     path: "/",
+//   });
+// };

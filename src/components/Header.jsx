@@ -4,17 +4,17 @@ import $ from "jquery";
 import { useDispatch, useSelector } from "react-redux";
 
 const Header = () => {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const adminGlobal = useSelector((state) => state.admin);
   const logout = () => {
     dispatch({
-      type: "ADMIN_LOGOUT"
-    })
-    localStorage.removeItem("adminDataEmmerce")
-    navigate('/')
-  }
-  const userGlobal = useSelector((state) => state.user)
+      type: "ADMIN_LOGOUT",
+    });
+    localStorage.removeItem("adminDataEmmerce");
+    navigate("/");
+  };
+  const userGlobal = useSelector((state) => state.user);
   useEffect(() => {
     $("[data-trigger]").on("click", function (e) {
       e.preventDefault();
@@ -36,27 +36,31 @@ const Header = () => {
 
   return (
     <header className="main-header navbar">
-      <div className="col-search">
-      </div>
+      <div className="col-search"></div>
       <div className="col-nav">
-        <div className="mx-4">
-          Welcome, {adminGlobal.username}
-        </div>
-        <div class="dropdown dropdown-end">
-          <label tabindex="0" class="btn btn-ghost btn-circle avatar">
-            <div class="w-10 rounded-full">
+        <div className="mx-4">Welcome, {adminGlobal.username}</div>
+        <div className="dropdown dropdown-end">
+          <label tabIndex="0" className="btn btn-ghost btn-circle avatar">
+            <div className="w-10 rounded-full">
               <img src="/images/user.png" />
             </div>
           </label>
-          <ul tabindex="0" class="mt-3 p-2 shadow menu menu-compact dropdown-content bg-white rounded-box w-52">
+          <ul
+            tabIndex="0"
+            className="mt-3 p-2 shadow menu menu-compact dropdown-content bg-white rounded-box w-52"
+          >
             <li>
-              <a class="justify-between">
+              <a className="justify-between">
                 Profile
-                <span class="badge">New</span>
+                <span className="badge">New</span>
               </a>
             </li>
-            <li><a>Settings</a></li>
-            <li onClick={logout}><a>Logout</a></li>
+            <li>
+              <a>Settings</a>
+            </li>
+            <li onClick={logout}>
+              <a>Logout</a>
+            </li>
           </ul>
         </div>
       </div>

@@ -12,3 +12,6 @@ export const removePaymentCookie = (selectedPayment) => {
 export const removeShipmentCookie = (selectedShipment) => {
   Cookie.remove("selectedShipment");
 };
+export const removeInvoiceHeaderIdCookie = (selectedInvoiceHeaderId) => {
+  Cookie.remove("selectedInvoiceHeaderId");
+};
