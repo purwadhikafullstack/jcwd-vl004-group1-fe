@@ -1,30 +1,25 @@
 import React, { useEffect, useState } from "react";
 import { API_URL } from "../../../constant/api";
 import Axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 import { toast, ToastContainer } from "react-toastify";
 
 const AddProduct = () => {
-  const [category, setCategory] = useState("");
-  const [stock, setStock] = useState(0);
+  const [total_time, setTotalTime] = useState(0);
+  const [cost, setCost] = useState(0);
+  const [warehouseReqId, setWarehouseReqId] = useState(0);
+  const [warehouseResId, setwarehouseResId] = useState(0);
   const [data, setData] = useState([]);
   const navigate = useNavigate();
-
-  const inputHandler = (e) => {
-    const name = e.target.name;
-    const value = e.target.value;
-    setCategory({
-      ...category,
-      [name]: value,
-    });
-  };
+  const {id, name}= useParams();
 
   useEffect(() => {
-    getProducts();
+    getWarehouse();
+    setWarehouseReqId(parseInt(id))
   }, []);
 
-  const getProducts = async () => {
+  const getWarehouse = async () => {
     try {
       const results = await Axios.get(`${API_URL}/warehouses`);
       setData(results.data);
@@ -33,22 +28,27 @@ const AddProduct = () => {
     }
   };
 
-  const onSubmit = async () => {
+  const onSubmit = async (e) => {
+    e.preventDefault();
     try {
-      await Axios.post(`${API_URL}/products/addcategory`, category).then(
-        (results) => {
-          toast.success("Category Added!");
-          setCategory("");
-        }
-      );
+      const results = await Axios.post(`${API_URL}/warehouses/addopcost`, {
+        cost,
+        total_time,
+        warehouseReqId,
+        warehouseResId
+      })
+      if(results){
+        toast.success("Operational Cost Added!");
+        window.location.reload();
+      }
     } catch (err) {
       console.log(err);
     }
   };
 
-  const SelectProduct = () => {
+  const SelectWarehouse = () => {
     return data.map((val, idx) => {
-      return <option key={val.id}>{val.name}</option>;
+      return <option key={val.id} value={val.id}>{val.name}</option>;
     });
   };
 
@@ -60,12 +60,15 @@ const AddProduct = () => {
             Destination
           </label>
           <select
-            onChange={(e) => {}}
+            onChange={(e) => {
+              setwarehouseResId(+e.target.value);
+              e.preventDefault();
+            }}
             className="form-select"
             name="productCategoryId"
           >
             <option>Choose Warehouse</option>
-            {SelectProduct()}
+            {SelectWarehouse()}
           </select>
         </div>
 
@@ -75,10 +78,8 @@ const AddProduct = () => {
             type="number"
             placeholder="Type here"
             className="form-control"
-            name="price"
-            id="product_price"
             required
-            onChange={(e) => setStock(+e.target.value)}
+            onChange={(e) => setCost(+e.target.value)}
           />
         </div>
 
@@ -88,15 +89,13 @@ const AddProduct = () => {
             type="number"
             placeholder="Type here"
             className="form-control"
-            name="price"
-            id="product_price"
             required
-            onChange={(e) => setStock(+e.target.value)}
+            onChange={(e) => setTotalTime(+e.target.value)}
           />
         </div>
 
         <div className="d-grid">
-          <button className="btn btn-accent py-3" onClick={onSubmit}>
+          <button className="btn btn-accent py-3" onClick={(e)=>onSubmit(e)}>
             Add Cost
           </button>
         </div>

@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import { Link, useHistory, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import "../assets/styles/user.css";
 import "../assets/styles/responsive.css";
@@ -71,7 +70,7 @@ const Header = () => {
                         aria-haspopup="true"
                         aria-expanded="false"
                       >
-                        <i class="fas fa-user"></i>
+                        <i className="fas fa-user"></i>
                       </button>
                       <div className="dropdown-menu">
                         <Link className="dropdown-item" to="/profile">
@@ -96,7 +95,7 @@ const Header = () => {
                       aria-haspopup="true"
                       aria-expanded="false"
                     >
-                      <i class="fas fa-user"></i>
+                      <i className="fas fa-user"></i>
                     </button>
                     <div className="dropdown-menu">
                       <Link className="dropdown-item" to="/login">
@@ -136,14 +135,14 @@ const Header = () => {
                     <>
                     <Link to="/">About Us</Link>
                     <Link to="/catalog">Catalog</Link>
-                    <div class="dropdown dropdown-end">
+                    <div className="dropdown dropdown-end">
                       <label tabindex="0" class="btn btn-ghost btn-circle avatar">
-                        <div class="w-10 rounded-full" style={{color:"black"}}>
-                          <img src="/images/user-white.png" />
+                        <div className="w-10 rounded-full">
+                          <img src="/images/user.png" />
                         </div>
                       </label>
-                      <ul tabindex="0" class="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-100 rounded-box w-52">
-                        <li><Link to="/login"><a class="justify-between">Login</a></Link></li>
+                      <ul tabindex="0" className="mt-3 p-2 shadow menu menu-compact dropdown-content bg-dark rounded-box w-52">
+                        <li><Link to="/login"><a className="justify-between">Login</a></Link></li>
                         <li><Link to="/register"><a>Register</a></Link></li>
                         <li><Link to="/admin"><a>Admin</a></Link></li>
                       </ul>
@@ -156,13 +155,13 @@ const Header = () => {
                         <i className="fas fa-shopping-bag"></i>
                         <span className="badge">0</span>
                       </Link>
-                      <div class="dropdown dropdown-end">
-                        <label tabindex="0" class="btn btn-ghost btn-circle avatar">
-                          <div class="w-10 rounded-full">
-                            <img src="/images/user-white.png" />
+                      <div className="dropdown dropdown-end">
+                        <label tabindex="0" className="btn btn-ghost btn-circle avatar">
+                          <div className="w-10 rounded-full">
+                            <img src="/images/user.png" />
                           </div>
                         </label>
-                        <ul tabindex="0" class="mt-3 p-2 shadow menu menu-compact dropdown-content bg-light rounded-box w-52">
+                        <ul tabindex="0" className="mt-3 p-2 shadow menu menu-compact dropdown-content bg-light rounded-box w-52">
                           <li onClick={logout}><a>LOGOUT</a></li>
                         </ul>
                       </div>

@@ -1,27 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { API_URL } from "../../../constant/api";
 import Axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 import { toast, ToastContainer } from "react-toastify";
 
 const AddProduct = () => {
-  const [category, setCategory] = useState("");
-  const [stock, setStock] = useState(0);
+  const [productId, setProduct] = useState(0);
+  const [warehouseId, setWarehouse] = useState(0);
+  const [stock_ready, setStock] = useState(0);
   const [data, setData] = useState([]);
   const navigate = useNavigate();
-
-  const inputHandler = (e) => {
-    const name = e.target.name;
-    const value = e.target.value;
-    setCategory({
-      ...category,
-      [name]: value,
-    });
-  };
+  const {id, name}= useParams();
 
   useEffect(() => {
     getProducts();
+    setWarehouse(parseInt(id))
   }, []);
 
   const getProducts = async () => {
@@ -33,14 +27,18 @@ const AddProduct = () => {
     }
   };
 
-  const onSubmit = async () => {
+  const onSubmit = async (e) => {
+    e.preventDefault()
     try {
-      await Axios.post(`${API_URL}/products/addcategory`, category).then(
-        (results) => {
-          toast.success("Category Added!");
-          setCategory("");
-        }
-      );
+      const results = await Axios.post(`${API_URL}/warehouses/addproduct`, {
+        stock_ready,
+        productId,
+        warehouseId
+      });
+      if(results){
+        toast.success("Product Added!");
+        window.location.reload();
+      }
     } catch (err) {
       console.log(err);
     }
@@ -48,7 +46,7 @@ const AddProduct = () => {
 
   const SelectProduct = () => {
     return data.map((val, idx) => {
-      return <option key={val.id}>{val.name}</option>;
+      return <option key={val.id} value={val.id}>{val.name}</option>;
     });
   };
 
@@ -60,9 +58,12 @@ const AddProduct = () => {
             Product Name
           </label>
           <select
-            onChange={(e) => {}}
+            onChange={(e) => {
+              setProduct(+e.target.value);
+              e.preventDefault();
+            }}
             className="form-select"
-            name="productCategoryId"
+            name="productId"
           >
             <option>Choose Product</option>
             {SelectProduct()}
@@ -75,15 +76,15 @@ const AddProduct = () => {
             type="number"
             placeholder="Type here"
             className="form-control"
-            name="price"
-            id="product_price"
+            name="stock_ready"
+            id="stock"
             required
             onChange={(e) => setStock(+e.target.value)}
           />
         </div>
 
         <div className="d-grid">
-          <button className="btn btn-accent py-3" onClick={onSubmit}>
+          <button className="btn btn-accent py-3" onClick={(e)=>onSubmit(e)}>
             Add Product
           </button>
         </div>

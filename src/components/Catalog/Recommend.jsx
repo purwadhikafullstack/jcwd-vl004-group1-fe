@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { API_URL } from "../../constant/api";
 import Axios from "axios";
 import { currencyFormatter } from '../../helpers/currencyFormatter';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
+import { useSelector } from "react-redux";
 import 'react-toastify/dist/ReactToastify.css';
 
 const Recommend = () => {
   const [data, setData] = useState([]);
   const [upTo, setUpTo] = useState(false);
+  const userGlobal = useSelector((state) => state.user);
+  const navigate = useNavigate();
 
   useEffect(() => {
     getProducts();
@@ -38,10 +41,13 @@ const Recommend = () => {
   };
 
   const addToCart = async (id) => {
-    await Axios.post(`${API_URL}/carts/add`, 
+    if(userGlobal.id !== 1){
+      navigate('/login')
+    } else {
+      await Axios.post(`${API_URL}/carts/add`, 
       { quantity: 1,
         productId: id,
-        userId: 1})
+        userId: userGlobal.id})
       .then((results) => {
         toast.success("Product has been added to cart !", {
           position: toast.POSITION.TOP_CENTER,
@@ -51,6 +57,7 @@ const Recommend = () => {
       .catch((err) => {
         console.log(err);
       });
+    }
   };
 
   return (

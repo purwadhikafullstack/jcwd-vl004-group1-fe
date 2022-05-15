@@ -61,11 +61,11 @@ const Warehouses = () => {
       <thead>
         <tr className="">
           <th>No. </th>
-          <th>Fullname</th>
-          <th>Username</th>
-          <th>Email</th>
+          <th>Warehouse Name</th>
+          <th>Address</th>
+          <th>City</th>
+          <th>Province</th>
           <th>Phone</th>
-          <th>Verified</th>
           <th>Action</th>
         </tr>
       </thead>
@@ -88,7 +88,7 @@ const Warehouses = () => {
                 to={`/warehouse/${val.id}`}
                 className="btn btn-sm btn-outline btn-accent"
               >
-                <i class="fa fa-eye"></i>
+                <i className="fa fa-eye"></i>
               </Link>
               <Link
                 to={`/addWarehouse`} state={val}
@@ -120,37 +120,6 @@ const Warehouses = () => {
                 </Link>
               </div>
             </div>
-            <div className="col-lg-6 col-md-6 me-auto flex flex-row">
-              <div className="input-group justify-content-end">
-                <input
-                  type="text"
-                  onChange={(e) => setSearch(e.target.value)}
-                  placeholder="Search Warehouse…"
-                  className="input input-bordered w-60"
-                  style={{backgroundColor:"white",borderColor:"teal"}}
-                  value={search}
-                />
-                <button
-                  onClick={onSearch}
-                  className="btn btn-square btn-accent"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                    />
-                  </svg>
-                </button>
-              </div>
-            </div>
           </div>
         </header>
       </div>
@@ -161,7 +130,7 @@ const Warehouses = () => {
           <tbody>{TableBody()}</tbody>
         </table>
         <nav aria-label="Page navigation example">
-          <ul class="pagination justify-content-center">
+          <ul className="pagination justify-content-center">
             {/* <li class="page-item disabled">
               <a class="page-link" href="#" tabindex="-1">Previous</a>
             </li> */}

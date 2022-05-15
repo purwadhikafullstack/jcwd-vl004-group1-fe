@@ -194,6 +194,7 @@ textarea:focus {
   display: flex;
   justify-content: center;
   align-items: center;
+  font-size: 16px;
 }
 .shoptext {
   padding: 10px;
@@ -212,9 +213,11 @@ textarea:focus {
 .shopoutofstock {
   color: coral;
   margin-top: 5px;
+  font-size: 14px;
 }
 .shopoutstock {
   margin-top: 5px;
+  font-size: 14px;
 }
 .shopbutton {
   background-color: teal;
@@ -899,5 +902,19 @@ textarea:focus {
   overflow: hidden;
   background-color: white;
   border-radius:  0px var(--rounded-box, 1rem) var(--rounded-box, 1rem) var(--rounded-box, 1rem);
+}
+
+.swal-title {
+  font-size: 16px;
+  margin-bottom: 28px;
+}
+
+.swal-button--confirm {
+  background-color: teal;
+  border: 1px solid teal;
+}
+
+.swal-button--confirm:hover {
+  border: 1px solid lightblue;
 }
 

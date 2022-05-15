@@ -1,6 +1,6 @@
 import React from "react";
-import AddProduct from "./AddProduct";
-import ProductsTable from "./ProductsTable";
+import AddCost from "./AddCost";
+import CostTable from "./CostTable";
 import { Link } from "react-router-dom";
 import { useParams } from "react-router-dom";
 
@@ -34,8 +34,8 @@ const MainSupply = () => {
               <div className="card-custom mb-4 shadow-sm">
                 <div className="card-body">
                   <div className="row">
-                    {AddProduct()}
-                    {ProductsTable()}
+                    {AddCost()}
+                    {CostTable()}
                   </div>
                 </div>
               </div>

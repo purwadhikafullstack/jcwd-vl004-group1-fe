@@ -1,7 +1,7 @@
 import React from "react";
 import Sidebar from "../../components/Sidebar";
 import Header from "../../components/Header";
-import Show from "../../components/Admin/SupplyChain/MainSupply";
+import Show from "../../components/Admin/SupplyCost/MainCost";
 
 const CostWarehouse = () => {
   return (

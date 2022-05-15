@@ -190,6 +190,7 @@ function App() {
               <Route path="/login" element={<Login />} />
 
               <Route path="/catalog" element={<Catalog />} />
+              <Route path="/detail/:id" element={<Details />} />
               <Route path="/" element={<Home />} />
             </>
             :
@@ -197,12 +198,6 @@ function App() {
               <Route path="*" element={<NotFound />} />
             </>
           }
-
-          {/* HOMEPAGE */}
-          <Route path="/catalog" element={<Catalog />} />
-          <Route path="/detail/:id" element={<Details />} />
-          <Route path="/" element={<Home />} />
-          <Route path="*" element={<NotFound />} />
 
         </Routes>
       </BrowserRouter>
