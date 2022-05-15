@@ -161,19 +161,13 @@ const Header = () => {
                         class="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-100 rounded-box w-52"
                       >
                         <li>
-                          <Link to="/login">
-                            <a class="justify-between">Login</a>
-                          </Link>
+                            <a onClick={()=>navigate('/login')}>Login</a>
                         </li>
                         <li>
-                          <Link to="/register">
-                            <a>Register</a>
-                          </Link>
+                            <a onClick={()=>navigate('/register')}>Register</a>
                         </li>
                         <li>
-                          <Link to="/admin">
-                            <a>Admin</a>
-                          </Link>
+                            <a onClick={()=>navigate('/admin')}>Admin</a>
                         </li>
                       </ul>
                     </div>
