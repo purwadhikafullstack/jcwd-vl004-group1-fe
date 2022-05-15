@@ -20,7 +20,7 @@ const AddProduct = () => {
 
   const getProducts = async () => {
     try {
-      const results = await Axios.get(`${API_URL}/products`);
+      const results = await Axios.get(`${API_URL}/catalog`);
       setData(results.data);
     } catch (err) {
       console.log(err);

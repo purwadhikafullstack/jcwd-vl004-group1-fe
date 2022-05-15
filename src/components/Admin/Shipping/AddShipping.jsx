@@ -32,7 +32,7 @@ const AddShipping = () => {
 
   const getProducts = async () => {
     try {
-      const results = await Axios.get(`${API_URL}/products`);
+      const results = await Axios.get(`${API_URL}/catalog`);
       setProducts(results.data);
     } catch (err) {
       console.log(err);
