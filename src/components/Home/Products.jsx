@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { currencyFormatter } from '../../helpers/currencyFormatter';
 import { API_URL } from "../../constant/api";
 import { useSelector } from "react-redux";
@@ -10,6 +10,7 @@ import 'react-toastify/dist/ReactToastify.css';
 const Products = () => {
   const userGlobal = useSelector((state) => state.user)
   const [data, setData] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     getProducts();
@@ -34,10 +35,13 @@ const Products = () => {
   };
 
   const addToCart = async (id) => {
-    await Axios.post(`${API_URL}/carts/add`, 
+    if(userGlobal.id !== 1){
+      navigate('/login')
+    } else {
+      await Axios.post(`${API_URL}/carts/add`, 
       { quantity: 1,
         productId: id,
-        userId: 1})
+        userId: userGlobal.id})
       .then((results) => {
         toast.success("Product has been added to cart !", {
           position: toast.POSITION.TOP_CENTER,
@@ -47,6 +51,7 @@ const Products = () => {
       .catch((err) => {
         console.log(err);
       });
+    }
   };
 
   return (

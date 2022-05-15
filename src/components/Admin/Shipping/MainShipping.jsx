@@ -1,6 +1,6 @@
 import React from "react";
-import AddProduct from "./AddProduct";
-import ProductsTable from "./ProductsTable";
+import AddShipping from "./AddShipping";
+import ShippingTable from "./ShippingTable";
 import { Link } from "react-router-dom";
 import { useParams } from "react-router-dom";
 
@@ -21,7 +21,7 @@ const MainShipping = () => {
           </div>
         </form>
       </section>
-      <div class="tabs">
+      <div className="tabs">
         <Link to={`/warehouse/${id}`} state={id}><a class="tab tab-lg tab-lifted">General Info</a></Link>
         <Link to={`/warehouse/${id}/inventory`} state={{id:id,name:name}}><a class="tab tab-lg tab-lifted">Inventories</a></Link>
         <Link to={`/warehouse/${id}/shipping`} state={{id:id,name:name}}><a class="tab tab-lg tab-lifted tab-active">Shipping</a></Link>
@@ -34,8 +34,8 @@ const MainShipping = () => {
               <div className="card-custom mb-4 shadow-sm">
                 <div className="card-body">
                   <div className="row">
-                    {AddProduct()}
-                    {ProductsTable()}
+                    {AddShipping()}
+                    {ShippingTable()}
                   </div>
                 </div>
               </div>

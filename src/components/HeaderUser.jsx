@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import { Link, useHistory, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import "../assets/styles/user.css";
 import "../assets/styles/responsive.css";
@@ -84,7 +83,7 @@ const Header = () => {
                         aria-haspopup="true"
                         aria-expanded="false"
                       >
-                        <i class="fas fa-user"></i>
+                        <i className="fas fa-user"></i>
                       </button>
                       <div className="dropdown-menu">
                         <Link className="dropdown-item" to="/profile">
@@ -97,20 +96,20 @@ const Header = () => {
                       </div>
                     </div>
                   ) : (
-                    <div className="btn-group">
-                      <button
-                        type="button"
-                        className="name-button dropdown-toggle"
-                        data-toggle="dropdown"
-                        aria-haspopup="true"
-                        aria-expanded="false"
-                      >
-                        <i class="fas fa-user"></i>
-                      </button>
-                      <div className="dropdown-menu">
-                        <Link className="dropdown-item" to="/login">
-                          Login
-                        </Link>
+                  <div className="btn-group">
+                    <button
+                      type="button"
+                      className="name-button dropdown-toggle"
+                      data-toggle="dropdown"
+                      aria-haspopup="true"
+                      aria-expanded="false"
+                    >
+                      <i className="fas fa-user"></i>
+                    </button>
+                    <div className="dropdown-menu">
+                      <Link className="dropdown-item" to="/login">
+                        Login
+                      </Link>
 
                         <Link className="dropdown-item" to="/register">
                           Register
@@ -162,19 +161,13 @@ const Header = () => {
                         class="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-100 rounded-box w-52"
                       >
                         <li>
-                          <Link to="/login">
-                            <a class="justify-between">Login</a>
-                          </Link>
+                            <a onClick={()=>navigate('/login')}>Login</a>
                         </li>
                         <li>
-                          <Link to="/register">
-                            <a>Register</a>
-                          </Link>
+                            <a onClick={()=>navigate('/register')}>Register</a>
                         </li>
                         <li>
-                          <Link to="/admin">
-                            <a>Admin</a>
-                          </Link>
+                            <a onClick={()=>navigate('/admin')}>Admin</a>
                         </li>
                       </ul>
                     </div>

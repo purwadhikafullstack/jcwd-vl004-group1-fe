@@ -5,6 +5,7 @@ import { currencyFormatter } from '../../helpers/currencyFormatter';
 import { topProduct, ReportData } from "../../data/AdminMaster";
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
+import { VictoryChart, VictoryBar, VictoryLine, VictoryAxis}from 'victory';
 
 const Warehouses = () => {
   const [data, setData] = useState([]);
@@ -23,6 +24,14 @@ const Warehouses = () => {
   const [pagination, setPagination] = useState([]);
   const [pageStart, setPageStart] = useState(0);
   const [pageEnd, setPageEnd] = useState(12);
+
+  const profitData=[
+    { x: '19 Mei 2022', y: 2 },
+    { x: '20 Mei 2022', y: 3 },
+    { x: '21 Mei 2022', y: 5 },
+    { x: '22 Mei 2022', y: 4 },
+    { x: '23 Mei 2022', y: 6 }
+  ]
 
   useEffect(() => {
     getWarehouses();
@@ -184,7 +193,7 @@ const Warehouses = () => {
     <section className="content-main-full">
 
       {/* Search and Filter Section */}
-      <div className="card mb-4 shadow-sm">
+      <div className="card mb-3 shadow-sm">
         <header className="card-header bg-white ">
           <div className="row gx-3 py-3 space-x-2">
             <div className="col-lg-5 col-md-6 me-auto flex flex-row">
@@ -194,14 +203,14 @@ const Warehouses = () => {
             </div>
 
             <div className="col-lg-2 col-6 col-md-3">
-              <select 
+              <input
+                type="text"
                 style={{backgroundColor:"white",borderColor:"teal"}}
                 className="select w-full max-w-xs input-bordered text-gray-500 bg-light"
-                onClick={()=>setOpenCalendar(!openCalendar)}>
-                <option>
-                  {date.toString().slice(4,15)}
-                </option>
-              </select>
+                value={date.toString().slice(4,15)}
+                onClick={()=>setOpenCalendar(!openCalendar)}
+                contentEditable={false}
+              />
               {openCalendar && (
                 <div className='calendar-container'>
                   <Calendar onChange={setDate} value={date} />
@@ -251,18 +260,20 @@ const Warehouses = () => {
 
       <div className="row col-lg-12">
           <div className="col-lg-4">
-              <div className="card card-body mb-6 shadow-sm">
+              <div className="card card-body mb-3 shadow-sm">
               <article className="icontext">
-                  <span className="icon icon-sm rounded-circle alert-primary">
-                  <i className="text-primary fas fa-usd-circle"></i>
+                  <span className="icon icon-sm rounded-circle alert-success">
+                  <i className="text-success fas fa-money-bill"></i>
                   </span>
                   <div className="text">
-                  <h6 className="mb-1">Revenue</h6>{" "}
-                  <span>{currencyFormatter(revenue)}</span>
+                  <h6 className="mb-1">Profit</h6>
+                  <span>{currencyFormatter(profit)}</span>
                   </div>
               </article>
               </div>
-              <div className="card card-body mb-6 shadow-sm">
+          </div>
+          <div className="col-lg-4">
+              <div className="card card-body mb-3 shadow-sm">
               <article className="icontext">
                   <span className="icon icon-sm rounded-circle alert-warning">
                   <i className="fas fa-bags-shopping"></i>
@@ -275,40 +286,89 @@ const Warehouses = () => {
               </div>
           </div>
           <div className="col-lg-4">
-              <div className="card card-body mb-6 shadow-sm">
+              <div className="card card-body mb-3 shadow-sm">
               <article className="icontext">
-                  <span className="icon icon-sm rounded-circle alert-success">
-                  <i className="text-success fas fa-money-bill"></i>
+                  <span className="icon icon-sm rounded-circle alert-primary">
+                  <i className="text-primary fas fa-usd-circle"></i>
                   </span>
                   <div className="text">
-                  <h6 className="mb-1">Profit</h6>
-                  <span>{currencyFormatter(profit)}</span>
-                  </div>
-              </article>
-              </div>
-              <div className="card card-body mb-6 shadow-sm">
-              <article className="icontext">
-                  <span className="icon icon-sm rounded-circle alert-error">
-                  <i className="fas fa-file-invoice"></i>
-                  </span>
-                  <div className="text">
-                  <h6 className="mb-1">Total Cost</h6>
-                  <span>{currencyFormatter(cost)}</span>
+                  <h6 className="mb-1">Revenue</h6>{" "}
+                  <span>{currencyFormatter(revenue)}</span>
                   </div>
               </article>
               </div>
           </div>
+          <div className="col-lg-8">
+              <div className="card mb-6 shadow-sm">
+              <div style={{padding:20}}>
+              <h5 className="card-title">Summary</h5>
+              </div>
+              <VictoryChart 
+                domain={{ x: [0, 7] }} 
+                height={190}
+                padding={{ top: 10, bottom: 40, left: 50, right: 50 }}>
+                  <VictoryAxis
+                    style={{
+                      tickLabels: {
+                        fontSize: 8
+                      }
+                    }}
+                  />
+                  <VictoryAxis
+                    dependentAxis
+                    orientation="left"
+                    style={{ tickLabels: { fontSize: 10 } }}
+                  />
+                <VictoryBar
+                  name="Revenue"
+                  style={{ data: { fill: "blue" } }}
+                  data={[
+                    { x: '19 Mei 2022', y: 2 }, { x: '20 Mei 2022', y: 4 }, { x: '21 Mei 2022', y: 6 }, { x: '22 Mei 2022', y: 9 }, { x: '23 Mei 2022', y: 9 }
+                  ]}
+                />
+                <VictoryBar
+                  name="Cost"
+                  style={{ data: { fill: "red" } }}
+                  data={[
+                    { x: '19 Mei 2022', y: 1 }, { x: '20 Mei 2022', y: 2 }, { x: '21 Mei 2022', y: 1 }, { x: '22 Mei 2022', y: 6 }, { x: '23 Mei 2022', y: 11 }
+                  ]}
+                />
+                <VictoryLine
+                  name="Profit"
+                  style={{ data: { stroke: "green", strokeWidth: 1 } }}
+                  data={[
+                    { x: 0, y: 0 },
+                    { x: '19 Mei 2022', y: 2 },
+                    { x: '20 Mei 2022', y: 3 },
+                    { x: '21 Mei 2022', y: 5 },
+                    { x: '22 Mei 2022', y: 4 },
+                    { x: '23 Mei 2022', y: 7 }
+                  ]}
+                />
+              </VictoryChart>
+              </div>
+          </div>
           <div className="col-lg-4">
-              <div className="card mb-4 shadow-sm">
-                  <article className="card-body">
-                  <p className="card-title">Top 3 Products</p>
-                  <table className="table">
-                      {TableHead2()}
-                      {TableBodyProduct()}
+              <div className="card card-body mb-3 shadow-sm">
+                <article className="icontext">
+                    <span className="icon icon-sm rounded-circle alert-error">
+                    <i className="fas fa-file-invoice"></i>
+                    </span>
+                    <div className="text">
+                    <h6 className="mb-1">Total Cost</h6>
+                    <span>{currencyFormatter(cost)}</span>
+                    </div>
+                </article>
+              </div>
+              <div className="card mb-6 shadow-sm">
+                <article className="card-body">
+                  <h5 className="card-title">Top 3 Most Sold</h5>
+                  <table className="table table-compact w-full text-center">
+                    {TableHead2()}
+                    <tbody>{TableBodyProduct()}</tbody>
                   </table>
                   </article>
               </div>
-              
           </div>
       </div>
 

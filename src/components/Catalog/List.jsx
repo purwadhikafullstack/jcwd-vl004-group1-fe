@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { mobile } from "../../assets/styles/responsive";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { currencyFormatter } from "../../helpers/currencyFormatter";
 import { API_URL } from "../../constant/api";
 import Axios from "axios";
@@ -18,6 +19,8 @@ const List = () => {
   const [pageStart, setPageStart] = useState(0);
   const [pageEnd, setPageEnd] = useState(12);
   const location = useLocation();
+  const navigate = useNavigate();
+  const userGlobal = useSelector((state) => state.user);
 
   useEffect(() => {
     if (location.state != null) {
@@ -145,20 +148,23 @@ const List = () => {
   };
 
   const addToCart = async (id) => {
-    await Axios.post(`${API_URL}/carts/add`, {
-      quantity: 1,
-      productId: id,
-      userId: 1,
-    })
+    if(userGlobal.id !== 1){
+      navigate('/login')
+    } else {
+      await Axios.post(`${API_URL}/carts/add`, 
+      { quantity: 1,
+        productId: id,
+        userId: userGlobal.id})
       .then((results) => {
         toast.success("Product has been added to cart !", {
           position: toast.POSITION.TOP_CENTER,
-          className: "alert-addtocart",
+          className: 'alert-addtocart'
         });
       })
       .catch((err) => {
         console.log(err);
       });
+    }
   };
 
   const searchItems = (searchValue) => {
@@ -177,6 +183,7 @@ const List = () => {
     for (let i = 1; i <= total; i++) {
       page.push(i);
     }
+    console.log(data.length)
     setPagination(page);
   };
 
@@ -292,7 +299,7 @@ const List = () => {
                   </div>
                 ))}
                 <nav aria-label="Page navigation example">
-                  <ul class="pagination justify-content-center">
+                  <ul className="pagination justify-content-center">
                     {/* <li class="page-item disabled">
                         <a class="page-link" href="#" tabindex="-1">Previous</a>
                       </li> */}

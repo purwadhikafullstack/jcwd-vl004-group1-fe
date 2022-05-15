@@ -2,15 +2,19 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { API_URL } from "../../constant/api";
 import Axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { currencyFormatter } from '../../helpers/currencyFormatter';
 import { ToastContainer, toast } from 'react-toastify';
+import { useSelector } from "react-redux";
+
 import 'react-toastify/dist/ReactToastify.css';
 
 const Detail = () => {
   const [qty, setQty] = useState(1);
   const {id}= useParams();
   const [data, setData] = useState([]);
+  const userGlobal = useSelector((state) => state.user);
+  const navigate = useNavigate();
 
   const getProducts = async () => {
     await Axios.get(`${API_URL}/catalog/${id}`)
@@ -28,10 +32,13 @@ const Detail = () => {
   };
 
   const addToCart = async () => {
-    await Axios.post(`${API_URL}/carts/add`, 
-      { quantity: qty,
+    if(userGlobal.id !== 1){
+      navigate('/login')
+    } else {
+      await Axios.post(`${API_URL}/carts/add`, 
+      { quantity: 1,
         productId: id,
-        userId: 1})
+        userId: userGlobal.id})
       .then((results) => {
         toast.success("Product has been added to cart !", {
           position: toast.POSITION.TOP_CENTER,
@@ -41,6 +48,7 @@ const Detail = () => {
       .catch((err) => {
         console.log(err);
       });
+    }
   };
 
   useEffect(() => {

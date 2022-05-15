@@ -10,30 +10,83 @@ const AddWarehouse = () => {
   const [city, setCity] = useState("");
   const [province, setProvince] = useState("");
   const [postalcode, setPostalCode] = useState(0);
-  const [phone, setPhone] = useState(0);
-  const [warehouses, setWarehouses] = useState([]);
+  const [phone, setPhone] = useState("");
+  const [provinceData, setProvinceData] = useState([]);
+  const [cityData, setCityData] = useState([]);
   const navigate = useNavigate();
   const location = useLocation();
 
+  useEffect(()=>{
+    getCities()
+    getProvince()
+  },[])
+
   useEffect(() => {
+    if(location.state!==null){
+      setName(location.state.name)
+      setAddress(location.state.address)
+      setCity(location.state.city)
+      setProvince(location.state.province)
+      setPostalCode(location.state.postal_code)
+      setPhone(location.state.phone)
+    }
     console.log(location.state)
-  }, []);
+  }, [location]);
 
-  const onSubmit = async () => {
+  const getProvince = async () => {
     try {
-      const formData = new FormData();
-      formData.append("name", name);
-      formData.append("address", address);
-      formData.append("city", city);
-      formData.append("province", province);
-      formData.append("postal_code", postalcode);
-      formData.append("phone", phone);
-      console.log(formData);
+      const results = await Axios.get(`${API_URL}/users/provinces`)
+      if(results){
+        setProvinceData(results.data);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
-      await Axios.post(`${API_URL}/warehouses/add`, formData).then((results) => {
-        console.log(results.data);
-        navigate("/warehouse");
+  const getCities = async () => {
+    try {
+      const results = await Axios.get(`${API_URL}/cities/`)
+      if(results){
+        setCityData(results.data);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const onSubmit = async (e) => {
+    e.preventDefault()
+    try {
+      const results = await Axios.post(`${API_URL}/warehouses/add`, {
+        name,
+        address,
+        city,
+        province,
+        postalcode,
+        phone
       });
+      if(results){
+        navigate('/warehouse')
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const onSubmitEdit = async (id) => {
+    try {
+      const results = await Axios.patch(`${API_URL}/warehouses/update/${location.state.id}`, {
+        name,
+        address,
+        city,
+        province,
+        postalcode,
+        phone
+      });
+      if(results){
+        navigate('/warehouse')
+      }
     } catch (err) {
       console.log(err);
     }
@@ -41,19 +94,13 @@ const AddWarehouse = () => {
 
   const SelectCities = () => {
     return cities.map((val) => {
-      return <option value={val.id}>{val.name}</option>;
+      return <option key={val.id} value={val.name}>{val.name}</option>;
     });
   };
 
   const SelectProvince = () => {
     return provinces.map((val) => {
-      return <option value={val.id}>{val.name}</option>;
-    });
-  };
-
-  const SelectPostalCode = () => {
-    return postal_code.map((val) => {
-      return <option value={val.id}>{val.name}</option>;
+      return <option key={val.id} value={val.name}>{val.name}</option>;
     });
   };
 
@@ -74,7 +121,7 @@ const AddWarehouse = () => {
                   <div className="row">
                     <div className="col-xl-6 col-lg-6">
                       <div className="mb-2">
-                        <label htmlFor="product_title" className="form-label">
+                        <label htmlFor="warehouse_name" className="form-label">
                           Warehouse Name
                         </label>
                         <input
@@ -82,105 +129,121 @@ const AddWarehouse = () => {
                           placeholder="Type here"
                           className="form-control"
                           name="name"
-                          id="product_title"
-                          value={location.state!==null?location.state.name:null}
+                          id="warehouse_name"
+                          value={name}
                           required
                           onChange={(e) => setName(e.target.value)}
                         />
                       </div>
                       <div className="mb-2">
-                        <label htmlFor="product_price" className="form-label">
+                        <label htmlFor="contact_number" className="form-label">
                           Contact Number
                         </label>
                         <input
                           type="number"
                           placeholder="Type here"
                           className="form-control"
-                          name="price"
-                          id="product_price"
-                          value={location.state!==null?"0"+location.state.phone:null}
+                          name="phone"
+                          id="contact_number"
+                          value={phone}
                           required
                           onChange={(e) => setPhone(+e.target.value)}
                         />
                       </div>
                       <div className="mb-2">
-                        <label htmlFor="product_price" className="form-label">
+                        <label htmlFor="address" className="form-label">
                           Address
                         </label>
                         <input
                           type="text"
                           placeholder="Type here"
                           className="form-control"
-                          name="stock"
-                          id="product_stock"
-                          value={location.state!==null?location.state.address:null}
+                          name="address"
+                          id="address"
+                          value={address}
                           required
-                          onChange={(e) => setAddress(+e.target.value)}
+                          onChange={(e) => setAddress(e.target.value)}
                         />
                       </div>
                     </div>
                     <div className="col-xl-6 col-lg-6">
                       <div className="mb-2">
-                        <label htmlFor="product_price" className="form-label">
-                          City
-                        </label>
-                        <select
-                          onChange={(e) => {
-                            setCity(+e.target.value);
-                            e.preventDefault();
-                          }}
-                          className="form-select"
-                          name="productCategoryId"
-                          value={location.state!==null?location.state.city:city}
-                        >
-                          <option>Choose City</option>
-                          {SelectCities()}
-                        </select>
-                      </div>
-                      <div className="mb-2">
-                        <label htmlFor="product_price" className="form-label">
+                        <label htmlFor="province" className="form-label">
                           Province
                         </label>
                         <select
                           onChange={(e) => {
                             e.preventDefault();
-                            setProvince(+e.target.value);
+                            setProvince(e.target.value);
                           }}
                           className="form-select"
-                          name="warehouseId"
-                          value={location.state!==null?location.state.province:province}
+                          name="province"
+                          value={province}
                         >
                           <option>Choose Province</option>
                           {SelectProvince()}
                         </select>
                       </div>
                       <div className="mb-2">
-                        <label className="form-label">Postal Code</label>
+                        <label htmlFor="city" className="form-label">
+                          City
+                        </label>
                         <select
                           onChange={(e) => {
+                            setCity(e.target.value);
                             e.preventDefault();
-                            setPostalCode(+e.target.value);
                           }}
                           className="form-select"
-                          name="warehouseId"
-                          value={location.state!==null?location.state.postal_code:postalcode}
+                          name="city"
+                          value={city}
                         >
-                          <option>Choose Postal Code</option>
-                          {SelectPostalCode()}
+                          <option>Choose City</option>
+                          {SelectCities()}
                         </select>
+                      </div>
+                      <div className="mb-2">
+                        <label htmlFor="postal_code" className="form-label">
+                          Postal Code
+                        </label>
+                        <input
+                          type="number"
+                          placeholder="Type here"
+                          className="form-control"
+                          name="postal_code"
+                          id="postal_code"
+                          value={postalcode}
+                          required
+                          onChange={(e) => setPostalCode(+e.target.value)}
+                        />
                       </div>
                     </div>
                   </div>
-                  <div className="row">
-                    <button
-                      type="submit"
-                      className="btn btn-accent inline-block"
-                      onClick={(e) => onSubmit(e)}
-                      encType="multipart/form-data"
-                    >
-                      Publish now
-                    </button>
-                  </div>
+                  {location.state!==null?(
+                    <div className="row">
+                      <button
+                        type="submit"
+                        className="btn btn-accent inline-block"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          onSubmitEdit(location.state.id)
+                        }}
+                        encType="multipart/form-data"
+                      >
+                        Update
+                      </button>
+                    </div>
+                  ):(
+                    <div className="row">
+                      <button
+                        type="submit"
+                        className="btn btn-accent inline-block"
+                        onClick={(e) => onSubmit(e)}
+                        encType="multipart/form-data"
+                      >
+                        Submit
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
