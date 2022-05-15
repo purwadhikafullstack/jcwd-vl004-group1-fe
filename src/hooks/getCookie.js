@@ -12,6 +12,9 @@ export const getPaymentCookie = (x) => {
 export const getShipmentCookie = (x) => {
   return Cookie.get("selectedShipment");
 };
+export const getInvoiceHeaderIdCookie = (x) => {
+  return Cookie.get("selectedInvoiceHeaderId");
+};
 export const getDiscountCookie = (x) => {
   return Cookie.get("selectedDiscount");
 };

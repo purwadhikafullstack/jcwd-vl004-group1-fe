@@ -1,6 +1,7 @@
 import React from "react";
 import { Link, useOutletContext } from "react-router-dom";
 import CartItems from "./CartItems";
+import { removeCartCookie } from "../../hooks/removeCookie";
 
 const Cart = () => {
   const [cartItems, setCartItems] = useOutletContext([]);
@@ -69,7 +70,7 @@ const Cart = () => {
         )}
         <div>
           <Link to="/">
-            <div className="text-gray-600 hover:text-gray-500 text-sm space-x-2 my-6 flex group">
+            <div className="text-gray-600 hover:text-gray-500 text-sm space-x-2 my-6 flex group w-40">
               <i className="fas fa-arrow-left transition-all group-hover:mr-1"></i>
               <h2 className="font-bold">Continue Shopping</h2>
             </div>

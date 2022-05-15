@@ -81,8 +81,12 @@ const TablePayment = ({ setCartItems, setChange }) => {
   };
 
   const getUserCart = async () => {
-    const results = await Axios.get(`${API_URL}/carts/get/${userGlobal.id}`);
-    setCartItems(results.data.carts);
+    try {
+      const results = await Axios.get(`${API_URL}/carts/get/${userGlobal.id}`);
+      setCartItems(results.data.carts);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const closeModal = () => {
@@ -183,7 +187,7 @@ const TablePayment = ({ setCartItems, setChange }) => {
                             </div>
                             <button
                               onClick={closeModal}
-                              className="btn btn-sm bg-accent border-none text-white mt-4"
+                              className="btn bg-accent border-none text-white mt-4"
                             >
                               Choose Shipment
                             </button>
