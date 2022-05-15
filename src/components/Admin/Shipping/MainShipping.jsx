@@ -5,10 +5,10 @@ import { Link } from "react-router-dom";
 import { useParams } from "react-router-dom";
 
 const MainShipping = () => {
-  const {id, name}= useParams();
+  const { id, name } = useParams();
 
   return (
-  <>
+    <>
       <section className="content-main" style={{ maxWidth: "1600px" }}>
         <form>
           <div className="row">
@@ -22,30 +22,34 @@ const MainShipping = () => {
         </form>
       </section>
       <div className="tabs">
-        <Link to={`/warehouse/${id}`} state={id}><a class="tab tab-lg tab-lifted">General Info</a></Link>
-        <Link to={`/warehouse/${id}/inventory`} state={{id:id,name:name}}><a class="tab tab-lg tab-lifted">Inventories</a></Link>
-        <Link to={`/warehouse/${id}/shipping`} state={{id:id,name:name}}><a class="tab tab-lg tab-lifted tab-active">Shipping</a></Link>
-        <Link to={`/warehouse/${id}/cost`} state={{id:id,name:name}}><a class="tab tab-lg tab-lifted">Operational Cost</a></Link>
+        <Link to={`/warehouse/${id}`} state={id}>
+          <a class="tab tab-lg tab-lifted">General Info</a>
+        </Link>
+        <Link to={`/warehouse/${id}/inventory`} state={{ id: id, name: name }}>
+          <a class="tab tab-lg tab-lifted">Inventories</a>
+        </Link>
+        <Link to={`/warehouse/${id}/shipping`} state={{ id: id, name: name }}>
+          <a class="tab tab-lg tab-lifted tab-active">Shipping</a>
+        </Link>
+        <Link to={`/warehouse/${id}/cost`} state={{ id: id, name: name }}>
+          <a class="tab tab-lg tab-lifted">Operational Cost</a>
+        </Link>
       </div>
-      <section className="content-main-custom" style={{ maxWidth: "1600px" }}>
-      <form>
-          <div className="row mb-4">
-            <div className="col-xl-12 col-lg-12">
-              <div className="card-custom mb-4 shadow-sm">
-                <div className="card-body">
-                  <div className="row">
-                    {AddShipping()}
-                    {ShippingTable()}
-                  </div>
-                </div>
+      <section className="content-main-custom">
+        {/* <form> */}
+        <div className="row mb-4">
+          <div className="col-xl-12 col-lg-12">
+            <div className="card-custom mb-4 shadow-sm">
+              <div className="card-body">
+                <div className="row">{ShippingTable()}</div>
               </div>
             </div>
           </div>
-        </form>
-    </section>
-  </>
-  )
-  
+        </div>
+        {/* </form> */}
+      </section>
+    </>
+  );
 };
 
 export default MainShipping;

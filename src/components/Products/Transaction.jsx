@@ -61,6 +61,18 @@ const Transaction = () => {
     }
   };
 
+  const deliver = async (idTransaction) => {
+    try {
+      await Axios.post(`${API_URL}/transactions/${idTransaction}/deliver`).then(
+        (res) => {
+          getTransactions();
+        }
+      );
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   const TableBody = () => {
     return dataTransactions.map((val, i) => {
       return (
@@ -76,7 +88,7 @@ const Transaction = () => {
           <td>{val.invoice_header.user_address.province}</td>
           <td>{val.status}</td>
           <td>
-            {val.status === "pending" ? (
+            {val.status === "delivered" || "canceled" ? (
               <div className="my-2 space-x-1">
                 <button
                   class="bg-transparent hover:bg-teal-500 text-teal-700 font-semibold hover:text-white py-2 px-4 border border-teal-500 hover:border-transparent rounded"
@@ -88,16 +100,26 @@ const Transaction = () => {
                   Check Stock
                 </button>
               </div>
-            ) : (
-              <div className="my-2 space-x-1">
-                <button class="bg-transparent hover:bg-teal-500 text-teal-700 font-semibold hover:text-white py-2 px-4 border border-teal-500 hover:border-transparent rounded">
-                  Approve
-                </button>
-                <button class="bg-transparent hover:bg-red-500 text-red-700 font-semibold hover:text-white py-2 px-4 border border-red-500 hover:border-transparent rounded">
-                  Reject
-                </button>
-              </div>
-            )}
+            ) : null}
+            {}
+            <div className="my-2 space-x-1">
+              {val.status === "ready to process" ? (
+                <>
+                  <button
+                    onClick={(event) => {
+                      deliver(val.id);
+                      event.stopPropagation();
+                    }}
+                    className="bg-transparent hover:bg-teal-500 text-teal-700 font-semibold hover:text-white py-2 px-4 border border-teal-500 hover:border-transparent rounded"
+                  >
+                    Deliver
+                  </button>
+                  <button class="bg-transparent hover:bg-red-500 text-red-700 font-semibold hover:text-white py-2 px-4 border border-red-500 hover:border-transparent rounded">
+                    Reject
+                  </button>
+                </>
+              ) : null}
+            </div>
           </td>
         </tr>
       );
