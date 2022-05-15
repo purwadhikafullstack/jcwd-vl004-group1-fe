@@ -27,6 +27,7 @@ const Header = () => {
     removeShipmentCookie();
     removeInvoiceHeaderIdCookie();
   };
+
   return (
     <div>
       {/* Top Header */}
@@ -86,17 +87,18 @@ const Header = () => {
                         <i className="fas fa-user"></i>
                       </button>
                       <div className="dropdown-menu">
-                        <Link className="dropdown-item" to="/profile">
-                          Profile
-                        </Link>
-
                         <Link className="dropdown-item" to="#" onClick={logout}>
                           Logout
                         </Link>
                       </div>
                     </div>
                   ) : (
-                  <div className="btn-group">
+                    <>
+                    <Link to="/cart" className="cart-mobile-icon">
+                      <i className="fas fa-shopping-bag"></i>
+                      <span className="badge">{userGlobal.carts.length}</span>
+                    </Link>
+                    <div className="btn-group">
                     <button
                       type="button"
                       className="name-button dropdown-toggle"
@@ -115,13 +117,9 @@ const Header = () => {
                           Register
                         </Link>
                       </div>
-                    </div>
+                  </div>
+                    </>
                   )}
-
-                  <Link to="/cart" className="cart-mobile-icon">
-                    <i className="fas fa-shopping-bag"></i>
-                    <span className="badge">9</span>
-                  </Link>
                 </div>
               </div>
             </div>
@@ -179,7 +177,7 @@ const Header = () => {
                     </h1>
                     <Link to="/cart">
                       <i className="fas fa-shopping-bag"></i>
-                      <span className="badge">0</span>
+                      <span className="badge">{userGlobal.carts.length}</span>
                     </Link>
                     <div class="dropdown dropdown-end">
                       <label
@@ -194,6 +192,9 @@ const Header = () => {
                         tabindex="0"
                         class="mt-3 p-2 shadow menu menu-compact dropdown-content bg-light rounded-box w-52"
                       >
+                        <li onClick={()=>navigate('/catalog')}>
+                          <a>CATALOG</a>
+                        </li>
                         <li onClick={logout}>
                           <a>LOGOUT</a>
                         </li>

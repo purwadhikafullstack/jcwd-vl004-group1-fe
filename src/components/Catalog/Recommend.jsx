@@ -29,7 +29,7 @@ const Recommend = () => {
         results.data.map((item)=>{
           let sum = 0;
           item.warehouse_products.forEach(element => {
-            sum += element.stock_ready-element.stock_reserved
+            sum += element.stock_ready
           });
           item["stock"] = sum;
         })
@@ -41,7 +41,7 @@ const Recommend = () => {
   };
 
   const addToCart = async (id) => {
-    if(userGlobal.id !== 1){
+    if(userGlobal.id === 0){
       navigate('/login')
     } else {
       await Axios.post(`${API_URL}/carts/add`, 
