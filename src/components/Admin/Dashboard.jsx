@@ -2,30 +2,100 @@ import React, { useState, useEffect } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { API_URL } from "../../constant/api";
 import Axios from "axios";
-import { toast } from "react-toastify";
 import { topCategory, topProduct, topPayment } from "../../data/AdminMaster";
 import { currencyFormatter } from '../../helpers/currencyFormatter';
 import { VictoryChart, VictoryTheme, VictoryBar, VictoryPie}from 'victory';
 
 const Dashboard = () => {
 
-const [date,setDate] = useState(new Date())
+const [product,setProduct] = useState([])
+const [payment,setPayment] = useState([])
+const [orders,setOrders] = useState(0)
+const [sales,setSales] = useState(0)
+const [users,setUsers] = useState(0)
 
-const payment = [
-    { x: 1, y: 2, label: 'Sepatu Sonya'},
-    { x: 2, y: 3, label: 'Sepatu Sonya'},
-    { x: 3, y: 5, label: 'Sepatu Sonya'},
-    { x: 4, y: 4, label: 'Sepatu Sonya'},
-    { x: 5, y: 6, label: 'Sepatu Sonya'}
-];
+useEffect(()=> {
+  getProducts();
+  getPayments();
+  getOrders();
+  getUsers();
+},[])
 
-const products = [
-  { x: 1, y: 2, label: 'Sepatu Sonya'},
-  { x: 2, y: 3, label: 'Sepatu Osha'},
-  { x: 3, y: 5, label: 'Sepatu Adip'},
-  { x: 4, y: 4, label: 'Sepatu Nissa'},
-  { x: 5, y: 6, label: 'Sepatu Rhandy'}
-];
+const getProducts = async () => {
+  try {
+    const results = await Axios.get(`${API_URL}/reports/products`, {
+      
+    })
+    if(results){
+      results.data.map((val,i)=> {
+        let x = i;
+        let y = val.total;
+        let label = val.name;
+        if(y === null) {
+          delete results.data[i]
+        }
+        val['x'] = x;
+        val['y'] = y;
+        val['label'] = label;
+      })
+      setProduct(results.data)
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const getPayments = async () => {
+  try {
+    const results = await Axios.get(`${API_URL}/reports/paymentmethods`, {
+      
+    })
+    if(results){
+      results.data.map((val,i)=> {
+        let x = val.id;
+        let y = val.total;
+        let label = val.name;
+        if(y === 0) {
+          delete results.data[i]
+        }
+        val['x'] = label;
+        val['y'] = y;
+        val['label'] = `${y} transactions`;
+      })
+      setPayment(results.data)
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const getOrders = async () => {
+  try {
+    const results = await Axios.get(`${API_URL}/reports/order`)
+    if(results){
+      setOrders(results.data.count)
+      let grandtotal = 0;
+      results.data.rows.forEach(element => {
+        grandtotal += parseInt(element.total);
+      });
+      results.data['grandtotal'] = grandtotal
+      setSales(results.data.grandtotal)
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const getUsers = async () => {
+  try {
+    const results = await Axios.get(`${API_URL}/reports/register`)
+    if(results){
+      setUsers(results.data.count)
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};
 
 const TableHead = () => {
     return (
@@ -78,7 +148,7 @@ const TableHead = () => {
                     </span>
                     <div className="text">
                     <h6 className="mb-1">Total Sales</h6>{" "}
-                    <span>{currencyFormatter(50000000)}</span>
+                    <span>{currencyFormatter(sales)}</span>
                     </div>
                 </article>
                 </div>
@@ -91,7 +161,7 @@ const TableHead = () => {
                     </span>
                     <div className="text">
                     <h6 className="mb-1">Total Orders</h6>
-                    <span>200 orders</span>
+                    <span>{orders} orders</span>
                     </div>
                 </article>
                 </div>
@@ -104,7 +174,7 @@ const TableHead = () => {
                     </span>
                     <div className="text">
                     <h6 className="mb-1">Total New Register</h6>
-                    <span>50 users</span>
+                    <span>{users} users</span>
                     </div>
                 </article>
                 </div>
@@ -117,12 +187,12 @@ const TableHead = () => {
                     <h5 className="card-title">Products</h5>
                     <VictoryPie
                       colorScale="cool"
-                      data={products}
+                      data={product}
                       height={230}
                       labelPosition="centroid"
                       style={{
                         labels: {
-                          fontSize: 12,
+                          fontSize: 10,
                           // fill: ({ datum }) => datum.x === 3 ? "#000000" : "#c43a31"
                         }
                       }}
@@ -135,16 +205,15 @@ const TableHead = () => {
                     <article className="card-body">
                     <h5 className="card-title">Payment Method</h5>
                     <VictoryChart
-                      theme={VictoryTheme.material}
-                      domainPadding={{ x: 10 }}
-                      height={200}
+                      domain={{x: [0, 5], y: [0, 10]}}
+                      padding={{ top: 50, bottom: 50, left: 90, right: 50 }}
+                      height={260}
                     >
                       <VictoryBar horizontal
                         style={{
                           data: { fill: "#c43a31" },
                           labels: {
                             fontSize: 12,
-                            // fill: ({ datum }) => datum.x === 3 ? "#000000" : "#c43a31"
                           },
                         }}
                         data={payment}
