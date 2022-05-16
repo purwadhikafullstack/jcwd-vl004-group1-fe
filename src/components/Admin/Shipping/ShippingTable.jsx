@@ -1,39 +1,63 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Axios from "axios";
-import { currencyFormatter } from '../../../helpers/currencyFormatter';
+import { currencyFormatter } from "../../../helpers/currencyFormatter";
 import { useParams } from "react-router-dom";
 import { API_URL } from "../../../constant/api";
 import { toast } from "react-toastify";
-import Swal from 'sweetalert2'
+import Swal from "sweetalert2";
 
 const ShippingTable = () => {
   const [products, setProducts] = useState([]);
+  const [requests, setRequests] = useState([]);
+  const [warehouses, setWarehouses] = useState([]);
   const navigate = useNavigate();
   const [pagination, setPagination] = useState([]);
   const [pageStart, setPageStart] = useState(0);
   const [pageEnd, setPageEnd] = useState(5);
 
-  const {id}= useParams();
+  const { id } = useParams();
 
   useEffect(() => {
-    getProducts();
+    getRequest();
+    getWarehouses();
   }, []);
 
   useEffect(() => {
     getIndex(5);
   }, [products]);
 
-  const getProducts = async () => {
+  const getRequest = async () => {
     try {
-      await Axios.get(`${API_URL}/warehouses/shipping/${id}`).then((results) => {
-        setProducts(results.data);
-        console.log(results.data)
+      await Axios.get(`${API_URL}/request/getRequest/${id}`).then((results) => {
+        setRequests(results.data);
+        console.log(results.data);
       });
     } catch (err) {
       console.log(err);
     }
   };
+
+  const getWarehouses = async () => {
+    try {
+      await Axios.get(`${API_URL}/warehouses`).then((results) => {
+        setWarehouses(results.data);
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  // const getProducts = async () => {
+  //   try {
+  //     await Axios.get(`${API_URL}/warehouses/shipping/${id}`).then((results) => {
+  //       setProducts(results.data);
+  //       console.log(results.data)
+  //     });
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // };
 
   const onDelete = async (id) => {
     try {
@@ -41,7 +65,7 @@ const ShippingTable = () => {
         () => {
           toast("A Category Has Been Deleted");
           navigate("/category");
-          getProducts();
+          // getProducts();
         }
       );
     } catch (err) {
@@ -50,50 +74,50 @@ const ShippingTable = () => {
   };
 
   const showModal = async (id, total, product, warehouse, status) => {
-    console.log(status)
-    if(status==1){
+    console.log(status);
+    if (status == 1) {
       const { value: total_product } = await Swal.fire({
         title: `Shipping Product to ${warehouse}`,
-        input: 'number',
+        input: "number",
         showCancelButton: true,
         confirmButtonText: `Send`,
-        confirmButtonColor: '#008080',
+        confirmButtonColor: "#008080",
         inputLabel: `Stock : ${total} pcs`,
-        inputPlaceholder: 'Input your total product'
-      })
+        inputPlaceholder: "Input your total product",
+      });
 
       if (total_product) {
         Swal.fire({
           title: `Are you sure to send ${warehouse} ${total_product} pcs ${product}  ?`,
           icon: "question",
           confirmButtonText: `Confirm`,
-          confirmButtonColor: '#008080',
+          confirmButtonColor: "#008080",
           showCancelButton: true,
-        }).then((result)=> {
-          if(result.isConfirmed){
-            changestatus("sent",id,total_product)
+        }).then((result) => {
+          if (result.isConfirmed) {
+            changestatus("sent", id, total_product);
           }
-        })
+        });
       }
     } else {
       Swal.fire({
         title: `Are you sure ${warehouse} already accept ${total} pcs ${product}  ?`,
         icon: "question",
         confirmButtonText: `Confirm`,
-        confirmButtonColor: '#008080',
+        confirmButtonColor: "#008080",
         showCancelButton: true,
-      }).then((result)=> {
-        if(result.isConfirmed){
-          changestatus("arrived",id,total)
+      }).then((result) => {
+        if (result.isConfirmed) {
+          changestatus("arrived", id, total);
         }
-      })
+      });
     }
-  }
-  const changestatus = (status,id,total_product) => {
-      Axios.patch(`${API_URL}/warehouses/updateshipping/${id}`, {
-        status,
-        total_product
-      })
+  };
+  const changestatus = (status, id, total_product) => {
+    Axios.patch(`${API_URL}/warehouses/updateshipping/${id}`, {
+      status,
+      total_product,
+    })
       .then((results) => {
         toast.success("Shipping Status Changed!");
         window.location.reload();
@@ -101,7 +125,7 @@ const ShippingTable = () => {
       .catch((err) => {
         console.log(err);
       });
-  }
+  };
 
   const getIndex = (number) => {
     let total = Math.ceil(products.length / number);
@@ -120,103 +144,157 @@ const ShippingTable = () => {
     setPageEnd(end);
   };
 
+  const getWarehouseName = (id) => {
+    let selectedWarehouse;
+    warehouses.map((val) => {
+      if (val.id == id) {
+        selectedWarehouse = val.name;
+      }
+    });
+    return selectedWarehouse;
+  };
+
+  const acceptedRequest = async (idRequest) => {
+    try {
+      await Axios.post(`${API_URL}/request/${idRequest}/acceptRequest`).then(
+        (res) => {
+          getRequest();
+        }
+      );
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   const TableHead = () => {
     return (
       <thead>
         <tr>
           <th>No. </th>
           <th className="text-center">Request From</th>
+          <th className="text-center">Request To</th>
           <th className="text-center">Product</th>
           <th className="text-center">Total Product</th>
+          <th className="text-center">Status</th>
           <th className="text-center">Action</th>
         </tr>
       </thead>
     );
   };
 
-  const TableBody = () => {
-    return products.slice(pageStart, pageEnd).map((val,i) => {
+  const TableRequestBody = () => {
+    return requests.map((val) => {
       return (
-        <tr key={val.id}>
-          <td>{i+1}</td>
+        <tr>
+          <td>{val.id}</td>
           <td className="text-center">
-            <b>{val.warehouseReq.name}</b>
+            {getWarehouseName(val.warehouseRequestingId)}
+          </td>
+          <td className="text-center">
+            {getWarehouseName(val.warehouseRequestedId)}
           </td>
           <td className="text-center">{val.product.name}</td>
-          <td className="text-center">{val.total_product} pcs</td>
-          <td>
-            <div className="my-2 space-x-1 d-flex justify-content-center">
-              {val.status==="requested"&& (
-                <>
-                <div
-                className="btn btn-sm btn-outline btn-accent"
-                onClick={()=>showModal(val.id,val.total_product, val.product.name, val.warehouseRes.name,1)}
-                >
-                  <i className="fas fa-share-square"></i>
-                </div>
-                <div
-                  className="btn btn-sm btn-outline"
-                >
-                  <i class="fa fa-truck"></i>
-                </div>
-                <div
-                  className="btn btn-sm btn-outline"
-                >
-                  <i class="fa fa-check-square"></i>
-                </div>
-                </>
-              )}
-              {val.status==="sent"&&(
-                <>
-                <div
-                className="btn btn-sm btn-outline"
-                >
-                  <i className="fas fa-share-square"></i>
-                </div>
-                <div
-                  className="btn btn-sm btn-outline btn-warning"
-                  onClick={()=>showModal(val.id,val.total_product, val.product.name, val.warehouseRes.name,2)}
-                >
-                  <i class="fa fa-truck"></i>
-                </div>
-                <div
-                  className="btn btn-sm btn-outline"
-                >
-                  <i class="fa fa-check-square"></i>
-                </div>
-              </>
-              )}
-              {val.status==="arrived"&&(
-                <>
-                <div
-                className="btn btn-sm btn-outline"
-                >
-                  <i className="fas fa-share-square"></i>
-                </div>
-                <div
-                  className="btn btn-sm btn-outline"
-                >
-                  <i class="fa fa-truck"></i>
-                </div>
-                <div
-                  className="btn btn-sm btn-outline btn-success"
-                >
-                  <i class="fa fa-check-square"></i>
-                </div>
-                </>
-              )}
-            </div>
+          <td className="text-center">{val.quantity}</td>
+          <td className="text-center">{val.status}</td>
+          <td className="text-center">
+            <button
+              onClick={() => {
+                acceptedRequest(val.id);
+              }}
+              class="bg-transparent hover:bg-teal-500 text-teal-700 font-semibold hover:text-white py-2 px-4 border border-teal-500 hover:border-transparent rounded"
+            >
+              Approve
+            </button>
           </td>
         </tr>
       );
     });
   };
 
+  // const TableBody = () => {
+  //   return products.slice(pageStart, pageEnd).map((val,i) => {
+  //     return (
+  //       <tr key={val.id}>
+  //         <td>{i+1}</td>
+  //         <td className="text-center">
+  //           <b>{val.warehouseReq.name}</b>
+  //         </td>
+  //         <td className="text-center">{val.product.name}</td>
+  //         <td className="text-center">{val.total_product} pcs</td>
+  //         <td>
+  //           <div className="my-2 space-x-1 d-flex justify-content-center">
+  //             {val.status==="requested"&& (
+  //               <>
+  //               <div
+  //               className="btn btn-sm btn-outline btn-accent"
+  //               onClick={()=>showModal(val.id,val.total_product, val.product.name, val.warehouseRes.name,1)}
+  //               >
+  //                 <i className="fas fa-share-square"></i>
+  //               </div>
+  //               <div
+  //                 className="btn btn-sm btn-outline"
+  //               >
+  //                 <i class="fa fa-truck"></i>
+  //               </div>
+  //               <div
+  //                 className="btn btn-sm btn-outline"
+  //               >
+  //                 <i class="fa fa-check-square"></i>
+  //               </div>
+  //               </>
+  //             )}
+  //             {val.status==="sent"&&(
+  //               <>
+  //               <div
+  //               className="btn btn-sm btn-outline"
+  //               >
+  //                 <i className="fas fa-share-square"></i>
+  //               </div>
+  //               <div
+  //                 className="btn btn-sm btn-outline btn-warning"
+  //                 onClick={()=>showModal(val.id,val.total_product, val.product.name, val.warehouseRes.name,2)}
+  //               >
+  //                 <i class="fa fa-truck"></i>
+  //               </div>
+  //               <div
+  //                 className="btn btn-sm btn-outline"
+  //               >
+  //                 <i class="fa fa-check-square"></i>
+  //               </div>
+  //             </>
+  //             )}
+  //             {val.status==="arrived"&&(
+  //               <>
+  //               <div
+  //               className="btn btn-sm btn-outline"
+  //               >
+  //                 <i className="fas fa-share-square"></i>
+  //               </div>
+  //               <div
+  //                 className="btn btn-sm btn-outline"
+  //               >
+  //                 <i class="fa fa-truck"></i>
+  //               </div>
+  //               <div
+  //                 className="btn btn-sm btn-outline btn-success"
+  //               >
+  //                 <i class="fa fa-check-square"></i>
+  //               </div>
+  //               </>
+  //             )}
+  //           </div>
+  //         </td>
+  //       </tr>
+  //     );
+  //   });
+  // };
+
   return (
     <div className="col-md-12 col-lg-7">
       <table className="table">
         {TableHead()}
-        <tbody>{TableBody()}</tbody>
+        {/* <tbody>{TableBody()}</tbody> */}
+        <tbody>{TableRequestBody()}</tbody>
       </table>
       <nav aria-label="Page navigation example">
         <ul class="pagination justify-content-center">
