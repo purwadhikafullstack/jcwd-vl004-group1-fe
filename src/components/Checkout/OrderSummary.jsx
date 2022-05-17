@@ -35,19 +35,21 @@ const OrderSummary = ({ cartItems, change, setChange }) => {
   const [isConflicted, setIsConflicted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const cartCookie = getCartCookie() ? JSON.parse(getCartCookie()) : null;
+  const cartCookie = getCartCookie()
+    ? JSON.parse(getCartCookie("selectedCart"))
+    : null;
   const userGlobal = useSelector((state) => state.user);
 
   const addressCookie = getAddressCookie()
-    ? JSON.parse(getAddressCookie())
+    ? JSON.parse(getAddressCookie("selectedAddress"))
     : null;
 
   const paymentCookie = getPaymentCookie()
-    ? JSON.parse(getPaymentCookie())
+    ? JSON.parse(getPaymentCookie("selectedPayment"))
     : null;
 
   const shipmentCookie = getShipmentCookie()
-    ? JSON.parse(getShipmentCookie())
+    ? JSON.parse(getShipmentCookie("selectedShipment"))
     : null;
 
   const navigate = useNavigate();
@@ -110,11 +112,26 @@ const OrderSummary = ({ cartItems, change, setChange }) => {
   const submitAddress = async () => {
     try {
       const id = JSON.parse(localStorage.getItem("addressId"));
+
+      if (!userGlobal.user_addresses.length) {
+        toast.success("Please add your first address before continue", {
+          position: "top-center",
+          autoClose: 1500,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      }
+
       if (id) {
         const results = await Axios.get(`${API_URL}/users/getaddress/${id}`);
         setAddressCookie(JSON.stringify(results.data));
       } else {
-        const results = await Axios.get(`${API_URL}/users/getdefaultaddress`);
+        const results = await Axios.post(`${API_URL}/users/getdefaultaddress`, {
+          userId: userGlobal.id,
+        });
         setAddressCookie(JSON.stringify(results.data));
       }
       setChange(Math.random() + 1);
@@ -128,7 +145,7 @@ const OrderSummary = ({ cartItems, change, setChange }) => {
     try {
       const results = await Axios.post(`${API_URL}/carts/checkout`, {
         total: totalPrice,
-        status: "pending",
+        status: "unpaid",
         userAddressId: addressCookie.id,
         shipmentMasterId: shipmentCookie.id,
         userId: userGlobal.id,
