@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { API_URL } from "../../constant/api";
 import Axios from "axios";
 import { currencyFormatter } from '../../helpers/currencyFormatter';
-import { topProduct, ReportData } from "../../data/AdminMaster";
+import { ReportData } from "../../data/AdminMaster";
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import { VictoryChart, VictoryBar, VictoryLine, VictoryAxis}from 'victory';
@@ -12,9 +12,12 @@ const Warehouses = () => {
   const [sortValue, setSortValue] = useState([]);
   const [warehouses, setWarehouses] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [topProduct, setTopProduct] = useState([]);
 
   const [date, setDate] = useState(new Date());
+  const [enddate, setEndDate] = useState(new Date());
   const [openCalendar, setOpenCalendar] = useState(false);
+  const [openEndCalendar, setOpenEndCalendar] = useState(false);
 
   const [revenue, setRevenue] = useState(0);
   const [profit, setProfit] = useState(0);
@@ -37,17 +40,23 @@ const Warehouses = () => {
     getWarehouses();
     getCategories();
     getValues();
+    getTopProduct();
   }, []);
 
   useEffect(() => {
     setOpenCalendar(false)
   }, [date]);
 
+  useEffect(() => {
+    setOpenEndCalendar(false)
+  }, [enddate]);
+
   const getWarehouses = async () => {
     try {
-      await Axios.get(`${API_URL}/warehouses`).then((results) => {
+      const results = await Axios.get(`${API_URL}/warehouses`)
+      if(results){
         setWarehouses(results.data);
-      });
+      }
     } catch (err) {
       console.log(err);
     }
@@ -55,26 +64,98 @@ const Warehouses = () => {
 
   const getCategories = async () => {
     try {
-      await Axios.get(`${API_URL}/products/categories`).then((results) => {
+      const results = await Axios.get(`${API_URL}/products/categories`)
+      if(results){
         setCategories(results.data);
-      });
+      }
     } catch (err) {
       console.log(err);
     }
   };
 
-  const getValues = () => {
-    var rev = 0;
-    var cos = 0;
-    ReportData.map((val)=> {
-      rev = rev + parseInt(val.revenue)
-      cos = cos + parseInt(val.fixed_cost) + parseInt(val.operational_cost)
-    })
-    setRevenue(rev)
-    setCost(cos)
-    setProfit(rev-cos)
-    setTransactions(ReportData.length)
-    setData(ReportData)
+  const getTopProduct = async () => {
+    try {
+      const results = await Axios.post(`${API_URL}/reports/topproducts`, {
+        date,
+        enddate
+      })
+      if(results){
+        setTopProduct(results.data);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const getValues = async () => {
+    let date = "2022-05-15"
+    try {
+      const results = await Axios.post(`${API_URL}/reports/transactions`, {
+        date,
+        enddate
+      })
+      if(results){
+        let rev = 0;
+        let cos = 0;
+        let pro = 0;
+        results.data.map((val)=> {
+          //for table
+          val['fixed_cost'] = 200000
+          val['operational_cost'] = 25000
+          val['total_cost'] = val['fixed_cost'] + val['operational_cost']
+          val['revenue']= val.invoice_header.total
+          val['profit']= val.invoice_header.total - val['total_cost']
+          //for summary
+          rev += parseInt(val['revenue'])
+          cos += val['total_cost']
+          pro += val['profit']
+        })
+        setRevenue(rev)
+        setCost(cos)
+        setProfit(pro)
+        setTransactions(results.data.length)
+        setData(results.data);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  const getSummary = async () => {
+    let date = "2022-05-15"
+    try {
+      const results = await Axios.post(`${API_URL}/reports/transactions`, {
+        date,
+        enddate
+      })
+      if(results){
+        let rev = 0;
+        let cos = 0;
+        let pro = 0;
+        let date = "";
+        results.data.map((val)=> {
+          //for table
+          val['fixed_cost'] = 200000
+          val['operational_cost'] = 25000
+          val['total_cost'] = val['fixed_cost'] + val['operational_cost']
+          val['revenue']= val.invoice_header.total
+          val['profit']= val.invoice_header.total - val['total_cost']
+          //for summary
+          rev += parseInt(val['revenue'])
+          cos += val['total_cost']
+          pro += val['profit']
+          date = val.createdAt.slice(0.10)
+
+        })
+        setRevenue(rev)
+        setCost(cos)
+        setProfit(pro)
+        setTransactions(results.data.length)
+        setData(results.data);
+      }
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   // SORTING PRODUCTS
@@ -83,18 +164,36 @@ const Warehouses = () => {
       try {
         let results;
         if (sortValue === "newenddate") {
-          results = await Axios.get(`${API_URL}/report/sort/newenddate`);
+          results = await Axios.get(`${API_URL}/reports/sort/newestendtime`);
         } else if (sortValue === "neworderdate") {
-          results = await Axios.get(`${API_URL}/report/sort/neworderdate`);
-        } else if (sortValue === "lowpofit") {
-          results = await Axios.get(`${API_URL}/report/sort/lowpofit`);
-        } else if (sortValue === "highprofit") {
-          results = await Axios.get(`${API_URL}/report/sort/highprofit`);
+          results = await Axios.get(`${API_URL}/reports/sort/newestordertime`);
+        // } else if (sortValue === "lowpofit") {
+        //   results = await Axios.get(`${API_URL}/report/sort/lowpofit`);
+        // } else if (sortValue === "highprofit") {
+        //   results = await Axios.get(`${API_URL}/report/sort/highprofit`);
         } else if (sortValue === "sort") {
           results = await Axios.get(`${API_URL}/report`);
         }
+        let rev = 0;
+        let cos = 0;
+        let pro = 0;
+        results.data.map((val)=> {
+          //for table
+          val['fixed_cost'] = 200000
+          val['operational_cost'] = 25000
+          val['total_cost'] = val['fixed_cost'] + val['operational_cost']
+          val['revenue']= val.invoice_header.total
+          val['profit']= val.invoice_header.total - val['total_cost']
+          //for summary
+          rev += parseInt(val['revenue'])
+          cos += val['total_cost']
+          pro += val['profit']
+        })
+        setRevenue(rev)
+        setCost(cos)
+        setProfit(pro)
+        setTransactions(results.data.length)
         setData(results.data);
-        console.log(results.data);
       } catch (err) {
         console.log(err);
       }
@@ -135,7 +234,7 @@ const Warehouses = () => {
         <tr className="">
           <th>No. </th>
           <th>Username</th>
-          <th>Warehouse</th>
+          {/* <th>Warehouse</th> */}
           <th>Actual Order Time</th>
           <th>Actual End Time</th>
           <th>Fixed Cost</th>
@@ -149,19 +248,19 @@ const Warehouses = () => {
   };
 
   const TableBody = () => {
-    return ReportData.map((val, idx) => {
+    return data.map((val, idx) => {
       return (
         <tr key={idx}>
           <td>{idx+1}</td>
-          <td>{val.username}</td>
-          <td>{val.warehouse}</td>
-          <td>{val.actual_order_time}</td>
-          <td>{val.actual_end_time}</td>
+          <td>{val.invoice_header.user.username}</td>
+          {/* <td>harcode warehouse</td> */}
+          <td>{val.createdAt}</td>
+          <td>{val.updatedAt}</td>
           <td>{currencyFormatter(val.fixed_cost)}</td>
           <td>{currencyFormatter(val.operational_cost)}</td>
-          <td>{currencyFormatter((parseInt(val.fixed_cost)+parseInt(val.operational_cost)))}</td>
+          <td>{currencyFormatter(val.total_cost)}</td>
           <td>{currencyFormatter(val.revenue)}</td>
-          <td>{currencyFormatter((parseInt(val.revenue)-(parseInt(val.fixed_cost)+parseInt(val.operational_cost))))}</td>
+          <td>{currencyFormatter(val.profit)}</td>
         </tr>
       );
     });
@@ -217,7 +316,7 @@ const Warehouses = () => {
                 </div>
               )}
             </div>
-            <div className="col-lg-2 col-6 col-md-3">
+            {/* <div className="col-lg-2 col-6 col-md-3">
               <select
                 style={{backgroundColor:"white",borderColor:"teal"}}
                 className="select w-full max-w-xs input-bordered text-gray-500 bg-light"
@@ -229,6 +328,21 @@ const Warehouses = () => {
                 </option>
                 {SelectWarehouse()}
               </select>
+            </div> */}
+            <div className="col-lg-2 col-6 col-md-3">
+              <input
+                type="text"
+                style={{backgroundColor:"white",borderColor:"teal"}}
+                className="select w-full max-w-xs input-bordered text-gray-500 bg-light"
+                value={enddate.toString().slice(4,15)}
+                onClick={()=>setOpenEndCalendar(!openEndCalendar)}
+                contentEditable={false}
+              />
+              {openEndCalendar && (
+                <div className='calendar-container'>
+                  <Calendar onChange={setEndDate} value={enddate} />
+                </div>
+              )}
             </div>
             <div className="col-lg-2 col-6 col-md-3">
               <select
@@ -240,17 +354,17 @@ const Warehouses = () => {
                 <option name="sort" value="sort">
                   Filter By
                 </option>
-                <option name="lowprice" value="lowprice">
+                {/* <option name="lowprice" value="lowprice">
                   Lowest Profit
                 </option>
                 <option name="highprice" value="highprice">
                   Highest Profit
-                </option>
+                </option> */}
                 <option name="neworderdate" value="neworderdate">
                   Newest Order Time
                 </option>
                 <option name="newenddate" value="newenddate">
-                  Newest Endt Time
+                  Newest End Time
                 </option>
               </select>
             </div>
@@ -323,14 +437,16 @@ const Warehouses = () => {
                   name="Revenue"
                   style={{ data: { fill: "blue" } }}
                   data={[
-                    { x: '19 Mei 2022', y: 2 }, { x: '20 Mei 2022', y: 4 }, { x: '21 Mei 2022', y: 6 }, { x: '22 Mei 2022', y: 9 }, { x: '23 Mei 2022', y: 9 }
+                    { x: '19 Mei 2022', y: 2 }, { x: '20 Mei 2022', y: 4 }, { x: '21 Mei 2022', y: 6 }, { x: '22 Mei 2022', y: 9 },
+                    { x: '23 Mei 2022', y: 4 }, { x: '24 Mei 2022', y: 12 }, { x: '25 Mei 2022', y: 16 }
                   ]}
                 />
                 <VictoryBar
                   name="Cost"
                   style={{ data: { fill: "red" } }}
                   data={[
-                    { x: '19 Mei 2022', y: 1 }, { x: '20 Mei 2022', y: 2 }, { x: '21 Mei 2022', y: 1 }, { x: '22 Mei 2022', y: 6 }, { x: '23 Mei 2022', y: 11 }
+                    { x: '19 Mei 2022', y: 1 }, { x: '20 Mei 2022', y: 2 }, { x: '21 Mei 2022', y: 1 }, { x: '22 Mei 2022', y: 6 },
+                    { x: '23 Mei 2022', y: 11 }, { x: '24 Mei 2022', y: 8 }, { x: '25 Mei 2022', y: 6 }
                   ]}
                 />
                 <VictoryLine
@@ -342,7 +458,9 @@ const Warehouses = () => {
                     { x: '20 Mei 2022', y: 3 },
                     { x: '21 Mei 2022', y: 5 },
                     { x: '22 Mei 2022', y: 4 },
-                    { x: '23 Mei 2022', y: 7 }
+                    { x: '23 Mei 2022', y: 1 },
+                    { x: '24 Mei 2022', y: 8 },
+                    { x: '25 Mei 2022', y: 10 },
                   ]}
                 />
               </VictoryChart>

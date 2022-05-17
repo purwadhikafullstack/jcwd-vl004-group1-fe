@@ -21,7 +21,7 @@ const Detail = () => {
       .then((results) => {
         let sum = 0;
         results.data.warehouse_products.forEach(element => {
-          sum += element.stock_ready-element.stock_reserved
+          sum += element.stock_ready
         });
         results.data["stock"] = sum;
         setData(results.data);
@@ -32,7 +32,7 @@ const Detail = () => {
   };
 
   const addToCart = async () => {
-    if(userGlobal.id !== 1){
+    if(userGlobal.id === 0){
       navigate('/login')
     } else {
       await Axios.post(`${API_URL}/carts/add`, 
