@@ -10,7 +10,7 @@ const Payment = () => {
   const [dataPayment, setDataPayment] = useState([]);
   const navigate = useNavigate();
 
-  const [sortValue, setSortValue] = useState([]);
+  const [sortValue, setSortValue] = useState("nonsort");
 
   const [date, setDate] = useState(new Date());
   const [enddate, setEndDate] = useState(new Date());
@@ -23,9 +23,17 @@ const Payment = () => {
 
   const getPayment = async () => {
     try {
-      const results = await Axios.get(`${API_URL}/paymentsConfirmation`);
+      let results;
+      if (sortValue === "ASC") {
+        results = await Axios.get(`${API_URL}/paymentsConfirmation/asc`);
+        setDataPayment(results.data);
+      } else if (sortValue === "DESC") {
+        results = await Axios.get(`${API_URL}/paymentsConfirmation/desc`);
+        setDataPayment(results.data);
+      } else if (sortValue === "nonsort") {
+        results = await Axios.get(`${API_URL}/paymentsConfirmation`);
+      }
       setDataPayment(results.data);
-      console.log(results.data);
     } catch (err) {
       console.log(err);
     }
@@ -81,7 +89,8 @@ const Payment = () => {
   };
 
   const TableBody = () => {
-    return dataPayment.map((val, i) => {
+    let sortedPayment = [...dataPayment];
+    return sortedPayment.map((val, i) => {
       return (
         <tr
           onClick={() => {
@@ -89,7 +98,7 @@ const Payment = () => {
           }}
         >
           <td>{val.id}</td>
-          <td>{val.createdAt}</td>
+          <td>{val.updatedAt}</td>
           <td>{val.invoice_header.user.full_name}</td>
           <td>{val.payment_proof}</td>
           <td>{currencyFormatter(val.invoice_header.total)}</td>
@@ -203,10 +212,13 @@ const Payment = () => {
               <select
                 style={{ backgroundColor: "white", borderColor: "teal" }}
                 className="select w-full max-w-xs input-bordered text-gray-500 bg-light"
-                onChange={(e) => setSortValue(e.target.value)}
+                onChange={(e) => {
+                  setSortValue(e.target.value);
+                  getPayment();
+                }}
                 name="sort"
               >
-                <option name="sort" value="sort">
+                <option name="sort" value="nonsort">
                   Filter By
                 </option>
                 {/* <option name="lowprice" value="lowprice">
@@ -215,11 +227,11 @@ const Payment = () => {
                 <option name="highprice" value="highprice">
                   Highest Profit
                 </option> */}
-                <option name="neworderdate" value="neworderdate">
-                  Newest Order Time
+                <option name="neworderdate" value="ASC">
+                  Newest
                 </option>
-                <option name="newenddate" value="newenddate">
-                  Newest End Time
+                <option name="newenddate" value="DESC">
+                  Oldest
                 </option>
               </select>
             </div>
