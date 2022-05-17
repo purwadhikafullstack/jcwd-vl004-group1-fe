@@ -13,6 +13,8 @@ import AddProduct from "./pages/AddProduct";
 import ProductEditScreen from "./pages/ProductEditScreen";
 import Transaction from "./pages/Admin/Transactions";
 import TransactionsSlug from "./pages/Admin/TransactionsSlug";
+import Payments from "./pages/Admin/Payments";
+import PaymentsSlug from "./pages/Admin/PaymentsSlug";
 
 import AdminAuthentication from "./pages/AdminAuth/AdminAuthentication";
 import AdminForgotPassword from "./pages/AdminAuth/AdminForgotPassword";
@@ -109,15 +111,12 @@ function App() {
 
   useEffect(() => {
     if (adminGlobal.id) {
-      console.log("aku admin");
       setCurrentUser(2);
     }
     if (userGlobal.id) {
-      console.log("aku user");
       setCurrentUser(1);
     }
     if (!userGlobal.id && !adminGlobal.id) {
-      console.log("aku belom daftar");
       setCurrentUser(0);
     }
   }, [userGlobal, adminGlobal]);
@@ -136,14 +135,22 @@ function App() {
                 path="/products/find/:id"
                 element={<ProductEditScreen />}
               />
+              <Route path="/payment" element={<Payments />} />
+              <Route path="/payment/:id" element={<PaymentsSlug />} />
               <Route path="/transaction" element={<Transaction />} />
               <Route path="/transaction/:id" element={<TransactionsSlug />} />
               <Route path="/report" element={<Report />} />
               <Route path="/warehouse" element={<Warehouse />} />
               <Route path="/warehouse/:id" element={<ShowWarehouse />} />
-              <Route path="/warehouse/:id/inventory" element={<ProductWarehouse />} />
+              <Route
+                path="/warehouse/:id/inventory"
+                element={<ProductWarehouse />}
+              />
               <Route path="/warehouse/:id/cost" element={<CostWarehouse />} />
-              <Route path="/warehouse/:id/shipping" element={<ShippingWarehouse />} />
+              <Route
+                path="/warehouse/:id/shipping"
+                element={<ShippingWarehouse />}
+              />
               <Route path="/addwarehouse" element={<FormWarehouse />} />
               <Route path="/user" element={<User />} />
               <Route path="/dashboard" element={<Dashboard />} />
@@ -216,7 +223,6 @@ function App() {
               <Route path="*" element={<NotFound />} />
             </>
           )}
-
         </Routes>
       </BrowserRouter>
       <ToastContainer />

@@ -1,21 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
+import { currencyFormatter } from "../../helpers/currencyFormatter";
 import { API_URL } from "../../constant/api";
 import Axios from "axios";
 import { toast } from "react-toastify";
 import { data } from "autoprefixer";
 
-const Transaction = () => {
+const PaymentSlug = () => {
   const [dataInvoiceDetail, setDataInvoiceDetail] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedProductData, setSelectedProductData] = useState([]);
   const [selectedProductDetail, setSelectedProductDetail] = useState({});
   const [dataToRequestTable, setDataToRequestTable] = useState([]);
   const [dataInvoiceHeader, setDataInvoiceHeader] = useState({});
-  const [transactionId, setTransactionId] = useState(0);
+  const [paymentId, setPaymentId] = useState(0);
   const [requestedAmount, setRequestedAmount] = useState(0);
   const [totalRequestedAmount, setTotalRequestedAmount] = useState(0);
-  const [modalErrMessage, setmodalErrMessage] = useState("");
 
   const { id } = useParams();
 
@@ -27,8 +27,8 @@ const Transaction = () => {
 
   const getTransactionsById = async () => {
     try {
-      const results = await Axios.get(`${API_URL}/transactions/${id}`);
-      setTransactionId(results.data.id);
+      const results = await Axios.get(`${API_URL}/paymentsConfirmation/${id}`);
+      setPaymentId(results.data.id);
       setDataInvoiceHeader(results.data.invoice_header);
       setDataInvoiceDetail(results.data.invoice_header.invoice_details);
     } catch (err) {
@@ -60,15 +60,12 @@ const Transaction = () => {
     return (
       <thead>
         <tr className="">
-          <th>ID</th>
-          <th>Number</th>
+          <th>Id</th>
           <th>Products</th>
           <th>Warehouse</th>
-          <th>Stock Available</th>
           <th>Quantity</th>
-          <th>Request Needed</th>
-          <th>Status</th>
-          <th>Action</th>
+          <th>Price</th>
+          <th>Subtotal</th>
         </tr>
       </thead>
     );
@@ -78,95 +75,20 @@ const Transaction = () => {
     return dataInvoiceDetail.map((val, i) => {
       return (
         <tr>
-          <td>1</td>
-          <td>123456</td>
+          <td>{val.product.id}</td>
           <td>{val.product.name}</td>
           <td>{val.warehouse.name}</td>
-          <td>{val.warehouseStock}</td>
           <td>{val.quantity}</td>
-          <td>{val.requestStock}</td>
-          <td className="font-semibold">{val.status}</td>
-          <td>
-            {val.status == "Stock Insufficient" ? (
-              <button
-                className="bg-yellow-500 hover:bg-yellow-700 text-white font-semibold py-2 px-4 border border-yellow-500 hover:border-transparent rounded"
-                type="button"
-                onClick={() => {
-                  getProductDetail(val.productId);
-                  getProductWarehouse(val.productId);
-                  setShowModal(true);
-                }}
-              >
-                Request Stock
-              </button>
-            ) : (
-              <p className="text-teal-500 font-semibold">No Action Needed</p>
-            )}
-          </td>
+          <td>{currencyFormatter(val.price)}</td>
+          <td>{currencyFormatter(val.subtotal)}</td>
         </tr>
       );
     });
   };
 
-  const TableHeadModal = () => {
-    return (
-      <thead>
-        <tr className="">
-          <th>Warehouse</th>
-          <th>Stock Available</th>
-          <th>Request Amount</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-    );
-  };
-
-  const TableBodyModal = () => {
-    return selectedProductData.map((val, i) => {
-      if (val.warehouse.id != dataInvoiceHeader.warehouseId) {
-        return (
-          <tr>
-            <td>{val.warehouse.name}</td>
-            <td>{val.stock_reserved} pcs</td>
-            <td>
-              {val.stock_reserved > 0 ? (
-                <input
-                  type="number"
-                  onChange={(e) => {
-                    setRequestedAmount(e.target.value);
-                  }}
-                  placeholder="Input Qty"
-                  className="input input-bordered w-3/4"
-                  style={{ backgroundColor: "white", borderColor: "teal" }}
-                />
-              ) : null}
-            </td>
-            <td>
-              {val.stock_reserved > 0 ? (
-                <button
-                  className="bg-teal-500 hover:bg-teal-700 text-white font-semibold py-2 px-4 border border-teal-500 hover:border-transparent rounded"
-                  type="button"
-                  onClick={() => {
-                    submitRequestStock(val.warehouseId, val.stock_reserved);
-                  }}
-                >
-                  Save Changes
-                </button>
-              ) : (
-                <p className="text-red-500 font-semibold">
-                  Can't Request from this Warehouse
-                </p>
-              )}
-            </td>
-          </tr>
-        );
-      }
-    });
-  };
-
   const submitRequestStock = (warehouseId, readyStock) => {
     if (readyStock < requestedAmount) {
-      setmodalErrMessage("Error: Request Insufficient!");
+      alert("Request Insufficient");
     } else {
       let temp = dataToRequestTable;
 
@@ -210,12 +132,12 @@ const Transaction = () => {
     if (requestedAmount == requestedNeeded) {
       sendRequest(dataToRequestTable);
 
-      await Axios.patch(`${API_URL}/transactions/${transactionId}`);
+      await Axios.patch(`${API_URL}/paymentsConfirmation/${paymentId}`);
 
       setShowModal(false);
-      navigate("/transaction");
+      navigate("/payment");
     } else {
-      setmodalErrMessage("Error: Requested Amount Does not Match!");
+      alert("Requested Ammount Doesnt Match!");
     }
   };
 
@@ -244,13 +166,10 @@ const Transaction = () => {
               <div className="space-y-2 flex flex-row items-center space-x-3">
                 <div className="row">
                   <div className="flex flex-row space-x-4 items-center">
-                    <Link
-                      to="/transaction"
-                      className="btn btn-accent text-white"
-                    >
+                    <Link to="/payment" className="btn btn-accent text-white">
                       <i className="fa fa-arrow-left" aria-hidden="true"></i>
                     </Link>
-                    <h2 className="content-title text-2xl">Transaction {id}</h2>
+                    <h2 className="content-title text-2xl">Payment {id}</h2>
                   </div>
                 </div>
               </div>
@@ -349,15 +268,9 @@ const Transaction = () => {
                   </div>
                   {/*body*/}
                   <div className="relative p-6 flex-auto">
-                    <table className="table table-compact w-full text-center">
-                      {TableHeadModal()}
-                      <tbody>{TableBodyModal()}</tbody>
-                    </table>
+                    <table className="table table-compact w-full text-center"></table>
                   </div>
                   {/*footer*/}
-                  <p className="flex items-center justify-center text-red-500">
-                    {modalErrMessage}
-                  </p>
                   <div className="flex items-center justify-end p-6 border-t border-solid border-slate-200 rounded-b">
                     <button
                       className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
@@ -367,7 +280,7 @@ const Transaction = () => {
                       Close
                     </button>
                     <button
-                      className="bg-teal-500 text-white active:bg-teal-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                      className="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                       type="button"
                       onClick={() => {
                         // setShowModal(false)
@@ -388,4 +301,4 @@ const Transaction = () => {
   );
 };
 
-export default Transaction;
+export default PaymentSlug;
