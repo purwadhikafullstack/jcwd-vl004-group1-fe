@@ -249,9 +249,7 @@ const Transaction = () => {
                     >
                       <i className="fa fa-arrow-left" aria-hidden="true"></i>
                     </Link>
-                    <h2 className="content-title text-2xl">
-                      Transaction {id} {dataInvoiceHeader.status}
-                    </h2>
+                    <h2 className="content-title text-2xl">Transaction {id}</h2>
                   </div>
                 </div>
               </div>

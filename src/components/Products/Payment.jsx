@@ -48,11 +48,11 @@ const Payment = () => {
 
   const acceptPayment = async (idPayment) => {
     try {
-      await Axios.post(`${API_URL}/transactions/${idPayment}/accept`).then(
-        (res) => {
-          getPayment();
-        }
-      );
+      await Axios.post(
+        `${API_URL}/paymentsConfirmation/${idPayment}/accept`
+      ).then((res) => {
+        getPayment();
+      });
     } catch (err) {
       console.log(err);
     }
@@ -60,11 +60,11 @@ const Payment = () => {
 
   const rejectPayment = async (idPayment) => {
     try {
-      await Axios.post(`${API_URL}/transactions/${idPayment}/reject`).then(
-        (res) => {
-          getPayment();
-        }
-      );
+      await Axios.post(
+        `${API_URL}/paymentsConfirmation/${idPayment}/reject`
+      ).then((res) => {
+        getPayment();
+      });
     } catch (err) {
       console.log(err);
     }
