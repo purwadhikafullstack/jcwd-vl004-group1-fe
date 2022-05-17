@@ -11,7 +11,7 @@ const Transaction = () => {
   const [checkStockMessage, setcheckStockMessage] = useState("");
   const navigate = useNavigate();
 
-  const [sortValue, setSortValue] = useState([]);
+  const [sortValue, setSortValue] = useState("nonsort");
 
   const [date, setDate] = useState(new Date());
   const [enddate, setEndDate] = useState(new Date());
@@ -22,11 +22,21 @@ const Transaction = () => {
     getTransactions();
   }, []);
 
+  useEffect(() => {});
   const getTransactions = async () => {
     try {
-      const results = await Axios.get(`${API_URL}/transactions`);
+      let results;
+      if (sortValue === "ASC") {
+        results = await Axios.get(`${API_URL}/transactions/asc`);
+        console.log("asc");
+      } else if (sortValue === "DESC") {
+        results = await Axios.get(`${API_URL}/transactions/desc`);
+        console.log("desc");
+      } else if (sortValue === "nonsort") {
+        results = await Axios.get(`${API_URL}/transactions`);
+        console.log("non");
+      }
       setDataTransactions(results.data);
-      console.log(results.data);
     } catch (err) {
       console.log(err);
     }
@@ -50,7 +60,7 @@ const Transaction = () => {
   };
 
   const gotoSlug = (idTransaction, statusTransaction) => {
-    if (statusTransaction == "pending") {
+    if (statusTransaction === "pending") {
       setcheckStockMessage("Check Status first!");
     } else {
       let path = `/transaction/${idTransaction}`;
@@ -105,7 +115,7 @@ const Transaction = () => {
         >
           <td>{val.id}</td>
           <td>{val.number}</td>
-          <td>{val.createdAt}</td>
+          <td>{val.updatedAt}</td>
           <td>{val.invoice_header.user.full_name}</td>
           <td>{val.invoice_header.warehouse.name}</td>
           <td>{val.invoice_header.user_address.province}</td>
@@ -141,6 +151,7 @@ const Transaction = () => {
                   className="bg-yellow-500 hover:bg-yellow-700 font-semibold text-white py-2 px-4 border border-yellow-500 hover:border-transparent rounded"
                   onClick={(event) => {
                     checkStock(val.id);
+                    // console.log(sortValue);
                     event.stopPropagation();
                   }}
                 >
@@ -240,10 +251,13 @@ const Transaction = () => {
               <select
                 style={{ backgroundColor: "white", borderColor: "teal" }}
                 className="select w-full max-w-xs input-bordered text-gray-500 bg-light"
-                onChange={(e) => setSortValue(e.target.value)}
+                onChange={(e) => {
+                  setSortValue(e.target.value);
+                  getTransactions();
+                }}
                 name="sort"
               >
-                <option name="sort" value="sort">
+                <option name="sort" value="nonsort">
                   Filter By
                 </option>
                 {/* <option name="lowprice" value="lowprice">
@@ -252,11 +266,11 @@ const Transaction = () => {
                 <option name="highprice" value="highprice">
                   Highest Profit
                 </option> */}
-                <option name="neworderdate" value="neworderdate">
-                  Newest Order Time
+                <option name="neworderdate" value="ASC">
+                  Newest
                 </option>
-                <option name="newenddate" value="newenddate">
-                  Newest End Time
+                <option name="newenddate" value="DESC">
+                  Oldest
                 </option>
               </select>
             </div>
