@@ -94,15 +94,22 @@ const Payment = () => {
           <td>{val.payment_proof}</td>
           <td>{currencyFormatter(val.invoice_header.total)}</td>
           <td className="font-semibold capitalize">
-            <p
-              className={
-                val.invoice_header.status === "approved"
-                  ? "bg-teal-500 text-white py-1 rounded-xl"
-                  : "bg-red-500 text-white py-1 rounded-xl"
-              }
-            >
-              {val.invoice_header.status}
-            </p>
+            {val.invoice_header.status === "approved" ? (
+              <p className="bg-teal-500 text-white py-1 rounded-xl">
+                {val.invoice_header.status}
+              </p>
+            ) : null}
+            {val.invoice_header.status === "rejected" ? (
+              <p className="bg-red-500 text-white py-1 rounded-xl">
+                {val.invoice_header.status}
+              </p>
+            ) : null}
+            {val.invoice_header.status === "pending" ||
+            val.invoice_header.status === "unpaid" ? (
+              <p className="bg-yellow-500 text-white py-1 rounded-xl">
+                {val.invoice_header.status}
+              </p>
+            ) : null}
           </td>
           <td>
             <div className="my-2 space-x-1">

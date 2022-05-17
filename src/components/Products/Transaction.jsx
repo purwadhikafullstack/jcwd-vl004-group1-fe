@@ -110,15 +110,24 @@ const Transaction = () => {
           <td>{val.invoice_header.warehouse.name}</td>
           <td>{val.invoice_header.user_address.province}</td>
           <td className="font-semibold capitalize">
-            <p
-              className={
-                val.status === "Delivered" || val.status === "Ready to process"
-                  ? "bg-teal-500 text-white py-1 rounded-xl"
-                  : "bg-red-500 text-white py-1 rounded-xl"
-              }
-            >
-              {val.status}
-            </p>
+            {val.status === "Delivered" || val.status === "approved request" ? (
+              <p className="bg-teal-500 text-white py-1 rounded-xl">
+                {val.status}
+              </p>
+            ) : null}
+            {val.status === "pending" ||
+            val.status === "request needed" ||
+            val.status === "Ready to process" ||
+            val.status === "waiting request" ? (
+              <p className="bg-yellow-500 text-white py-1 rounded-xl">
+                {val.status}
+              </p>
+            ) : null}
+            {val.status === "rejected request" || val.status === "Rejected" ? (
+              <p className="bg-red-500 text-white py-1 rounded-xl">
+                {val.status}
+              </p>
+            ) : null}
           </td>
           <td>
             {val.status === "pending" ||
