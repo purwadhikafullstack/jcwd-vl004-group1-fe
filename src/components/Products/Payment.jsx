@@ -1,21 +1,21 @@
 import React, { useState, useEffect } from "react";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { API_URL } from "../../constant/api";
 import Axios from "axios";
-import { toast } from "react-toastify";
+import { currencyFormatter } from "../../helpers/currencyFormatter";
 
-const Transaction = () => {
-  const [dataTransactions, setDataTransactions] = useState([]);
+const Payment = () => {
+  const [dataPayment, setDataPayment] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
-    getTransactions();
+    getPayment();
   }, []);
 
-  const getTransactions = async () => {
+  const getPayment = async () => {
     try {
-      const results = await Axios.get(`${API_URL}/transactions`);
-      setDataTransactions(results.data);
+      const results = await Axios.get(`${API_URL}/paymentsConfirmation`);
+      setDataPayment(results.data);
       console.log(results.data);
     } catch (err) {
       console.log(err);
@@ -27,10 +27,9 @@ const Transaction = () => {
       <thead>
         <tr className="">
           <th>ID</th>
-          <th>Number</th>
           <th>Name</th>
-          <th>Warehouse</th>
-          <th>User Address</th>
+          <th>Payment Proof</th>
+          <th>Total</th>
           <th>Status</th>
           <th>Action</th>
         </tr>
@@ -38,33 +37,20 @@ const Transaction = () => {
     );
   };
 
-  const gotoSlug = (idTransaction, statusTransaction) => {
-    if (statusTransaction == "pending") {
+  const gotoSlug = (idPayment, statusTransaction) => {
+    if (statusTransaction === "pending") {
       alert("Check Stock first");
     } else {
-      let path = `/transaction/${idTransaction}`;
+      let path = `/payment/${idPayment}`;
       navigate(path);
     }
   };
 
-  //   Check Status Stock in selected warehouse
-  const checkStock = async (warehouseId) => {
+  const acceptPayment = async (idPayment) => {
     try {
-      const results = await Axios.post(
-        `${API_URL}/transactions/${warehouseId}`
-      );
-      console.log(results);
-      getTransactions();
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const deliver = async (idTransaction) => {
-    try {
-      await Axios.post(`${API_URL}/transactions/${idTransaction}/deliver`).then(
+      await Axios.post(`${API_URL}/transactions/${idPayment}/accept`).then(
         (res) => {
-          getTransactions();
+          getPayment();
         }
       );
     } catch (err) {
@@ -72,11 +58,11 @@ const Transaction = () => {
     }
   };
 
-  const rejectTransaction = async (idTransaction) => {
+  const rejectPayment = async (idPayment) => {
     try {
-      await Axios.post(`${API_URL}/transactions/${idTransaction}/reject`).then(
+      await Axios.post(`${API_URL}/transactions/${idPayment}/reject`).then(
         (res) => {
-          getTransactions();
+          getPayment();
         }
       );
     } catch (err) {
@@ -85,7 +71,7 @@ const Transaction = () => {
   };
 
   const TableBody = () => {
-    return dataTransactions.map((val, i) => {
+    return dataPayment.map((val, i) => {
       return (
         <tr
           onClick={() => {
@@ -93,58 +79,36 @@ const Transaction = () => {
           }}
         >
           <td>{val.id}</td>
-          <td>{val.number}</td>
           <td>{val.invoice_header.user.full_name}</td>
-          <td>{val.invoice_header.warehouse.name}</td>
-          <td>{val.invoice_header.user_address.province}</td>
+          <td>{val.payment_proof}</td>
+          <td>{currencyFormatter(val.invoice_header.total)}</td>
           <td className="font-semibold capitalize">
             <p
               className={
-                val.status === "Delivered" || val.status === "Ready to process"
+                val.invoice_header.status === "approved"
                   ? "bg-teal-500 text-white py-1 rounded-xl"
                   : "bg-red-500 text-white py-1 rounded-xl"
               }
             >
-              {val.status}
+              {val.invoice_header.status}
             </p>
           </td>
           <td>
-            {val.status === "pending" ||
-            val.status === "request needed" ||
-            val.status === "Ready to process" ||
-            val.status === "waiting request" ||
-            val.status === "approved request" ||
-            val.status === "rejected request" ? (
-              <div className="my-2 space-x-1">
-                <button
-                  className="bg-yellow-500 hover:bg-yellow-700 font-semibold text-white py-2 px-4 border border-yellow-500 hover:border-transparent rounded"
-                  onClick={(event) => {
-                    checkStock(val.id);
-                    event.stopPropagation();
-                  }}
-                >
-                  Check Status
-                </button>
-              </div>
-            ) : (
-              <p className="text-teal-500 font-semibold">No Action Needed</p>
-            )}
-            {}
             <div className="my-2 space-x-1">
-              {val.status === "Ready to process" ? (
+              {val.invoice_header.status === "pending" ? (
                 <>
                   <button
                     onClick={(event) => {
-                      deliver(val.id);
+                      acceptPayment(val.id);
                       event.stopPropagation();
                     }}
                     className="bg-teal-500 hover:bg-teal-700 font-semibold text-white py-2 px-4 border border-teal-500 hover:border-transparent rounded"
                   >
-                    Deliver
+                    Approve
                   </button>
                   <button
                     onClick={(event) => {
-                      rejectTransaction(val.id);
+                      rejectPayment(val.id);
                       event.stopPropagation();
                     }}
                     class="bg-red-500 hover:bg-red-700 font-semibold text-white py-2 px-4 border border-red-500 hover:border-transparent rounded"
@@ -152,7 +116,9 @@ const Transaction = () => {
                     Reject
                   </button>
                 </>
-              ) : null}
+              ) : (
+                <p className="text-teal-500 font-semibold">No Action Needed</p>
+              )}
             </div>
           </td>
         </tr>
@@ -168,7 +134,7 @@ const Transaction = () => {
           <div className="row gx-3 py-3">
             <div className="col-lg-6 col-md-6 me-auto flex flex-row">
               <div className="space-y-2 flex flex-row items-center space-x-3">
-                <h2 className="text-2xl">Transaction</h2>
+                <h2 className="text-2xl">Payment Confirmation</h2>
                 {/* <p>{dataTransactions}</p> */}
               </div>
             </div>
@@ -236,4 +202,4 @@ const Transaction = () => {
   );
 };
 
-export default Transaction;
+export default Payment;

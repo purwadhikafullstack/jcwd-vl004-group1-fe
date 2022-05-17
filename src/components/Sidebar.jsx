@@ -77,6 +77,16 @@ const Sidebar = () => {
               <NavLink
                 activeclassname="active"
                 className="menu-link"
+                to="/payment"
+              >
+                <i className="icon far fa-sack-dollar"></i>
+                <span className="text">Payment</span>
+              </NavLink>
+            </li>
+            <li className="menu-item">
+              <NavLink
+                activeclassname="active"
+                className="menu-link"
                 to="/transaction"
               >
                 <i className="icon far fa-abacus"></i>
@@ -91,7 +101,7 @@ const Sidebar = () => {
               >
                 <i className="icon fas fa-file"></i>
                 <span className="text">Report</span>
-                </NavLink>
+              </NavLink>
             </li>
           </ul>
           <br />

@@ -195,16 +195,20 @@ const ShippingTable = () => {
           </td>
           <td className="text-center">{val.product.name}</td>
           <td className="text-center">{val.quantity}</td>
-          <td className="text-center">{val.status}</td>
+          <td className="text-center font-semibold capitalize">{val.status}</td>
           <td className="text-center">
-            <button
-              onClick={() => {
-                acceptedRequest(val.id);
-              }}
-              class="bg-transparent hover:bg-teal-500 text-teal-700 font-semibold hover:text-white py-2 px-4 border border-teal-500 hover:border-transparent rounded"
-            >
-              Approve
-            </button>
+            {val.status == "request needed" ? (
+              <button
+                onClick={() => {
+                  acceptedRequest(val.id);
+                }}
+                class="bg-teal-500 hover:bg-teal-700 text-white font-semibold py-2 px-4 border border-teal-500 hover:border-transparent rounded"
+              >
+                Approve
+              </button>
+            ) : (
+              <p className="text-teal-500 font-semibold">No Action Needed</p>
+            )}
           </td>
         </tr>
       );

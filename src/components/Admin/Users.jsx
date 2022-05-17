@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { API_URL } from "../../constant/api";
 import Axios from "axios";
-import Swal from 'sweetalert2'
+import Swal from "sweetalert2";
 
 const Users = () => {
   const [data, setData] = useState([]);
@@ -35,37 +35,35 @@ const Users = () => {
       });
   };
 
-  const changestatus = (status,id) => {
+  const changestatus = (status, id) => {
     let bool = false;
-    if(status==="activated"){
+    if (status === "activated") {
       bool = true;
     }
     Axios.patch(`${API_URL}/users/update/${id}`, { is_active: bool })
       .then((results) => {
         // setData(results.data);
-        getUsers()
+        getUsers();
       })
       .catch((err) => {
         console.log(err);
       });
-  }
+  };
 
   const showModal = (id, fullname, status) => {
-
     Swal.fire({
       title: `Are you sure you want to ${status} ${fullname}'s account?`,
       icon: "question",
       showCancelButton: true,
       confirmButtonText: `Yes, ${status} account`,
-      confirmButtonColor: '#008080',
-      cancelButtonColor: '#808080',
-    }).then((result)=> {
-      if(result){
-        changestatus(status,id)
+      confirmButtonColor: "#008080",
+      cancelButtonColor: "#808080",
+    }).then((result) => {
+      if (result) {
+        changestatus(status, id);
       }
-    })
-    
-  }
+    });
+  };
 
   const TableHead = () => {
     return (
@@ -88,31 +86,52 @@ const Users = () => {
     return data.map((val, i) => {
       return (
         <tr key={i}>
-          <td>{i+1}</td>
+          <td>{i + 1}</td>
           <td>{val.full_name}</td>
           <td>{val.username}</td>
           <td>{val.email}</td>
           <td>{val.phone}</td>
-          <td>{val.is_verified ? (
-            <div><i className="fas fa-check-square"></i></div>
-          ):(
-            <div className="fa fa-times"></div>
-          )}</td>
-          <td>{val.is_active ? (
-            <button className="btn btn-success btn-sm btn-outline">Active</button>
-          ):(
-            <button className="btn btn-error btn-sm btn-outline">Inactive</button>
-          )}</td>
+          <td>
+            {val.is_verified ? (
+              <div>
+                <i className="fas fa-check-square"></i>
+              </div>
+            ) : (
+              <div className="fa fa-times"></div>
+            )}
+          </td>
+          <td>
+            {val.is_active ? (
+              <button className="btn btn-success btn-sm btn-outline">
+                Active
+              </button>
+            ) : (
+              <button className="btn btn-error btn-sm btn-outline">
+                Inactive
+              </button>
+            )}
+          </td>
           <td>
             {val.is_active ? (
               <>
-               <div className="btn btn-error btn-sm btn-outline" onClick={()=>showModal(val.id,val.full_name,'deactivated')}><i class="fa fa fa-power-off" aria-hidden="true"></i></div>
+                <div
+                  className="btn btn-error btn-sm btn-outline"
+                  onClick={() =>
+                    showModal(val.id, val.full_name, "deactivated")
+                  }
+                >
+                  <i class="fa fa fa-power-off" aria-hidden="true"></i>
+                </div>
               </>
-            ):(
+            ) : (
               <>
-              <div className="btn btn-success btn-sm btn-outline" onClick={()=>showModal(val.id,val.full_name,'activated')}><i class="fa fa fa-check" aria-hidden="true"></i></div>
-              
-              </>              
+                <div
+                  className="btn btn-success btn-sm btn-outline"
+                  onClick={() => showModal(val.id, val.full_name, "activated")}
+                >
+                  <i class="fa fa fa-check" aria-hidden="true"></i>
+                </div>
+              </>
             )}
           </td>
         </tr>
@@ -125,21 +144,21 @@ const Users = () => {
   }, [data]);
 
   const getIndex = (number) => {
-    let total = Math.ceil(data.length/number)
-    let page = []
+    let total = Math.ceil(data.length / number);
+    let page = [];
     for (let i = 1; i <= total; i++) {
       page.push(i);
     }
-    setPagination(page)
-  }
+    setPagination(page);
+  };
 
   const selectpage = (id) => {
-    let num = id
-    let start = (num-1)*12
-    let end = num*12
-    setPageStart(start)
-    setPageEnd(end)
-  }
+    let num = id;
+    let start = (num - 1) * 12;
+    let end = num * 12;
+    setPageStart(start);
+    setPageEnd(end);
+  };
 
   return (
     <section className="content-main-full">
@@ -197,10 +216,16 @@ const Users = () => {
             {/* <li class="page-item disabled">
               <a class="page-link" href="#" tabindex="-1">Previous</a>
             </li> */}
-            {pagination.map((item)=> {
+            {pagination.map((item) => {
               return (
-                <li className="page-item" key={item} onClick={()=>selectpage(item)}><button className="page-link">{item}</button></li>
-              )
+                <li
+                  className="page-item"
+                  key={item}
+                  onClick={() => selectpage(item)}
+                >
+                  <button className="page-link">{item}</button>
+                </li>
+              );
             })}
             {/* <li class="page-item">
               <a class="page-link" href="#">Next</a>
