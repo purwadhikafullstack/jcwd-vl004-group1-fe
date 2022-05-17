@@ -3,11 +3,20 @@ import { Link, Navigate, useNavigate } from "react-router-dom";
 import { API_URL } from "../../constant/api";
 import Axios from "axios";
 import { toast } from "react-toastify";
+import Calendar from "react-calendar";
+import "react-calendar/dist/Calendar.css";
 
 const Transaction = () => {
   const [dataTransactions, setDataTransactions] = useState([]);
   const [checkStockMessage, setcheckStockMessage] = useState("");
   const navigate = useNavigate();
+
+  const [sortValue, setSortValue] = useState([]);
+
+  const [date, setDate] = useState(new Date());
+  const [enddate, setEndDate] = useState(new Date());
+  const [openCalendar, setOpenCalendar] = useState(false);
+  const [openEndCalendar, setOpenEndCalendar] = useState(false);
 
   useEffect(() => {
     getTransactions();
@@ -168,43 +177,79 @@ const Transaction = () => {
       {/* Search and Filter Section */}
       <div className="card mb-4 shadow-sm">
         <header className="card-header bg-white ">
-          <div className="row gx-3 py-3">
-            <div className="col-lg-6 col-md-6 me-auto flex flex-row">
+          <div className="row gx-3 py-3 space-x-2">
+            <div className="col-lg-5 col-md-6 me-auto flex flex-row">
               <div className="space-y-2 flex flex-row items-center space-x-3">
                 <h2 className="text-2xl">Transaction</h2>
                 {/* <p>{dataTransactions}</p> */}
               </div>
             </div>
-            <div className="col-lg-6 col-md-6 me-auto flex flex-row">
-              <div className="input-group justify-content-end">
-                <input
-                  type="text"
-                  //   onChange={(e) => setSearch(e.target.value)}
-                  placeholder="Search..."
-                  className="input input-bordered w-60"
-                  style={{ backgroundColor: "white", borderColor: "teal" }}
-                  //   value={search}
-                />
-                <button
-                  //   onClick={onSearch}
-                  className="btn btn-square btn-accent"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                    />
-                  </svg>
-                </button>
-              </div>
+            <div className="col-lg-2 col-6 col-md-3">
+              <input
+                type="text"
+                style={{ backgroundColor: "white", borderColor: "teal" }}
+                className="select w-full max-w-xs input-bordered text-gray-500 bg-light"
+                value={date.toString().slice(4, 15)}
+                onClick={() => setOpenCalendar(!openCalendar)}
+                contentEditable={false}
+              />
+              {openCalendar && (
+                <div className="calendar-container">
+                  <Calendar onChange={setDate} value={date} />
+                </div>
+              )}
+            </div>
+            {/* <div className="col-lg-2 col-6 col-md-3">
+              <select
+                style={{backgroundColor:"white",borderColor:"teal"}}
+                className="select w-full max-w-xs input-bordered text-gray-500 bg-light"
+                onChange={(e) => setSortValue(e.target.value)}
+                name="sort"
+              >
+                <option name="sort" value="sort">
+                  Filter Warehouse
+                </option>
+                {SelectWarehouse()}
+              </select>
+            </div> */}
+            <div className="col-lg-2 col-6 col-md-3">
+              <input
+                type="text"
+                style={{ backgroundColor: "white", borderColor: "teal" }}
+                className="select w-full max-w-xs input-bordered text-gray-500 bg-light"
+                value={enddate.toString().slice(4, 15)}
+                onClick={() => setOpenEndCalendar(!openEndCalendar)}
+                contentEditable={false}
+              />
+              {openEndCalendar && (
+                <div className="calendar-container">
+                  <Calendar onChange={setEndDate} value={enddate} />
+                </div>
+              )}
+            </div>
+            <div className="col-lg-2 col-6 col-md-3">
+              <select
+                style={{ backgroundColor: "white", borderColor: "teal" }}
+                className="select w-full max-w-xs input-bordered text-gray-500 bg-light"
+                onChange={(e) => setSortValue(e.target.value)}
+                name="sort"
+              >
+                <option name="sort" value="sort">
+                  Filter By
+                </option>
+                {/* <option name="lowprice" value="lowprice">
+                  Lowest Profit
+                </option>
+                <option name="highprice" value="highprice">
+                  Highest Profit
+                </option> */}
+                <option name="neworderdate" value="neworderdate">
+                  Newest Order Time
+                </option>
+                <option name="newenddate" value="newenddate">
+                  Newest End Time
+                </option>
+              </select>
             </div>
           </div>
         </header>
