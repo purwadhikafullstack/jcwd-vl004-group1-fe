@@ -15,6 +15,7 @@ const Transaction = () => {
   const [transactionId, setTransactionId] = useState(0);
   const [requestedAmount, setRequestedAmount] = useState(0);
   const [totalRequestedAmount, setTotalRequestedAmount] = useState(0);
+  const [modalErrMessage, setmodalErrMessage] = useState("");
 
   const { id } = useParams();
 
@@ -165,7 +166,7 @@ const Transaction = () => {
 
   const submitRequestStock = (warehouseId, readyStock) => {
     if (readyStock < requestedAmount) {
-      alert("Request Insufficient");
+      setmodalErrMessage("Error: Request Insufficient!");
     } else {
       let temp = dataToRequestTable;
 
@@ -214,7 +215,7 @@ const Transaction = () => {
       setShowModal(false);
       navigate("/transaction");
     } else {
-      alert("Requested Ammount Doesnt Match!");
+      setmodalErrMessage("Error: Requested Amount Does not Match!");
     }
   };
 
@@ -354,6 +355,9 @@ const Transaction = () => {
                     </table>
                   </div>
                   {/*footer*/}
+                  <p className="flex items-center justify-center text-red-500">
+                    {modalErrMessage}
+                  </p>
                   <div className="flex items-center justify-end p-6 border-t border-solid border-slate-200 rounded-b">
                     <button
                       className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
@@ -363,7 +367,7 @@ const Transaction = () => {
                       Close
                     </button>
                     <button
-                      className="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                      className="bg-teal-500 text-white active:bg-teal-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                       type="button"
                       onClick={() => {
                         // setShowModal(false)

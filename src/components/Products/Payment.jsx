@@ -27,6 +27,7 @@ const Payment = () => {
       <thead>
         <tr className="">
           <th>ID</th>
+          <th>Date</th>
           <th>Name</th>
           <th>Payment Proof</th>
           <th>Total</th>
@@ -79,6 +80,7 @@ const Payment = () => {
           }}
         >
           <td>{val.id}</td>
+          <td>{val.createdAt}</td>
           <td>{val.invoice_header.user.full_name}</td>
           <td>{val.payment_proof}</td>
           <td>{currencyFormatter(val.invoice_header.total)}</td>

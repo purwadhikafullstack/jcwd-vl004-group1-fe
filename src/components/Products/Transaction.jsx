@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 
 const Transaction = () => {
   const [dataTransactions, setDataTransactions] = useState([]);
+  const [checkStockMessage, setcheckStockMessage] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -28,6 +29,7 @@ const Transaction = () => {
         <tr className="">
           <th>ID</th>
           <th>Number</th>
+          <th>Date</th>
           <th>Name</th>
           <th>Warehouse</th>
           <th>User Address</th>
@@ -40,7 +42,7 @@ const Transaction = () => {
 
   const gotoSlug = (idTransaction, statusTransaction) => {
     if (statusTransaction == "pending") {
-      alert("Check Stock first");
+      setcheckStockMessage("Check Status first!");
     } else {
       let path = `/transaction/${idTransaction}`;
       navigate(path);
@@ -94,6 +96,7 @@ const Transaction = () => {
         >
           <td>{val.id}</td>
           <td>{val.number}</td>
+          <td>{val.createdAt}</td>
           <td>{val.invoice_header.user.full_name}</td>
           <td>{val.invoice_header.warehouse.name}</td>
           <td>{val.invoice_header.user_address.province}</td>
@@ -212,6 +215,9 @@ const Transaction = () => {
           {TableHead()}
           <tbody>{TableBody()}</tbody>
         </table>
+        <p class="pagination justify-content-center text-pink-500 font-semibold">
+          {checkStockMessage}
+        </p>
         <nav aria-label="Page navigation example">
           <ul class="pagination justify-content-center">
             <li class="page-item disabled">
