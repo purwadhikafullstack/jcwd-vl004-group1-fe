@@ -133,6 +133,15 @@ const OrderSummary = ({ cartItems, change, setChange }) => {
           userId: userGlobal.id,
         });
         setAddressCookie(JSON.stringify(results.data));
+        toast.success("Default Address Picked", {
+          position: "top-center",
+          autoClose: 1500,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
       }
       setChange(Math.random() + 1);
       navigate("/cart/payment");

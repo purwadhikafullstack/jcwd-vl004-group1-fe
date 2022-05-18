@@ -88,8 +88,10 @@ const BillingAddress = () => {
   };
 
   const getUserCart = async () => {
-    const results = await Axios.get(`${API_URL}/carts/get/${userGlobal.id}`);
-    setCartItems(results.data);
+    const results = await Axios.post(`${API_URL}/carts/get/${userGlobal.id}`, {
+      userId: userGlobal.id,
+    });
+    setCartItems(results.data.carts);
   };
 
   useEffect(() => {
@@ -568,6 +570,7 @@ const BillingAddress = () => {
                               className="hover:cursor-pointer fas fa-trash-alt align-middle mr-2"
                             ></i>
                           </td>
+                          {/* Choosing the Selected Address */}
                           <button
                             onClick={() => {
                               removeAddressCookie();
