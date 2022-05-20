@@ -61,13 +61,16 @@ const PaymentUploader = () => {
         const results = await Axios.get(
           `${API_URL}/carts/getpaymentproof/${invoiceHeaderId}`
         );
-        setPaymentProofPreview(results.data.payment_proof);
+
+        if (results.data.payment_proof) {
+          setPaymentProofPreview(results.data.payment_proof);
+        }
       };
       getPaymentProof();
     } catch (err) {
       console.log(err);
     }
-  }, []);
+  }, [data, userGlobal]);
 
   useEffect(() => {
     const renderSubTotal = async () => {
@@ -279,17 +282,37 @@ const PaymentUploader = () => {
             <img className="w-[300px] h-[200px]" src={previewImage} alt="" />
           </div>
           <div className="mb-2 text-center items-center input-group-sm space-x-2">
-            <label className="form-label text-sm">
-              Upload Your Payment Proof
-            </label>
-            <input
-              className="form-control mt-1"
-              type="file"
-              size="lg"
-              name="payment_proof"
-              id="fileName"
-              onChange={(e) => handleImage(e)}
-            />
+            {paymentProofPreview ? (
+              <label className="form-label text-sm animate-bounce">
+                Thank you!, our Admin is processing your purchase
+              </label>
+            ) : (
+              <label className="form-label text-sm">
+                Upload Your Payment Proof
+              </label>
+            )}
+
+            {paymentProofPreview ? (
+              <input
+                className="form-control mt-1"
+                disabled
+                type="file"
+                size="lg"
+                name="payment_proof"
+                id="fileName"
+                onChange={(e) => handleImage(e)}
+              />
+            ) : (
+              <input
+                className="form-control mt-1"
+                type="file"
+                size="lg"
+                name="payment_proof"
+                id="fileName"
+                onChange={(e) => handleImage(e)}
+              />
+            )}
+
             <div className="flex items-center mt-4 space-x-2">
               <button
                 onClick={onSubmitProof}
@@ -303,12 +326,22 @@ const PaymentUploader = () => {
                 Submit Proof
               </button>
               <div>
-                <label
-                  htmlFor="my-modal-3"
-                  className="btn modal-button bg-error hover:bg-red-300 text-white border-none rounded-none"
-                >
-                  Cancel Transaction
-                </label>
+                {paymentProofPreview ? (
+                  <label
+                    htmlFor="my-modal-3"
+                    className="btn modal-button bg-error hover:bg-red-300 text-white border-none rounded-none"
+                    disabled
+                  >
+                    Cancel Transaction
+                  </label>
+                ) : (
+                  <label
+                    htmlFor="my-modal-3"
+                    className="btn modal-button bg-error hover:bg-red-300 text-white border-none rounded-none"
+                  >
+                    Cancel Transaction
+                  </label>
+                )}
 
                 <input
                   type="checkbox"
@@ -329,7 +362,7 @@ const PaymentUploader = () => {
                           <div className="flex flex-col mt-4 space-y-4">
                             <h2>
                               <span className="font-bold">NOTES</span>: All of
-                              your Cart Progress will be lost
+                              your progress will be lost
                             </h2>
                             <h2>And you will be redirected to our Homepage</h2>
                             <h2>Are you sure you want to do this?</h2>

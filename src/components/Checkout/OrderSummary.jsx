@@ -253,6 +253,7 @@ const OrderSummary = ({ cartItems, change, setChange }) => {
                       setIsClicked(true);
                     }}
                     className="btn btn-ghost text-accent btn-sm"
+                    disabled
                   >
                     Apply
                   </button>
