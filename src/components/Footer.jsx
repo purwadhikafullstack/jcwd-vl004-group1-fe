@@ -1,5 +1,7 @@
 import styled from "styled-components";
 import { mobile } from "../assets/styles/responsive.js";
+import { Link} from "react-router-dom";
+
 
 const Container = styled.div`
   display: flex;
@@ -18,7 +20,9 @@ const Left = styled.div`
   color: white;
 `;
 
-const Logo = styled.h1``;
+const Logo = styled.h1`
+  font-weight: bold;
+`;
 
 const Desc = styled.p`
   margin: 20px 0px;
@@ -86,7 +90,7 @@ const Footer = () => {
   return (
     <Container>
       <Left>
-        <Logo>LAMA.</Logo>
+        <Logo>SHOESSHOP</Logo>
         <Desc>
           There are many variations of passages of Lorem Ipsum available, but
           the majority have suffered alteration in some form, by injected
@@ -94,16 +98,24 @@ const Footer = () => {
         </Desc>
         <SocialContainer>
           <SocialIcon color="3B5999">
-            {/* <Facebook /> */}
+            <Link to="">
+              <i className="fab fa-facebook-f"></i>
+            </Link>
           </SocialIcon>
           <SocialIcon color="E4405F">
-            {/* <Instagram /> */}
+            <Link to="">
+              <i className="fab fa-instagram"></i>
+            </Link>
           </SocialIcon>
           <SocialIcon color="55ACEE">
-            {/* <Twitter /> */}
+            <Link to="">
+              <i className="fab fa-youtube"></i>
+            </Link>
           </SocialIcon>
           <SocialIcon color="E60023">
-            {/* <Pinterest /> */}
+            <Link to="">
+              <i className="fab fa-pinterest-p"></i>
+            </Link>
           </SocialIcon>
         </SocialContainer>
       </Left>
@@ -111,30 +123,27 @@ const Footer = () => {
         <Title>Useful Links</Title>
         <List>
           <ListItem>Home</ListItem>
+          <ListItem>Jordan Shoes</ListItem>
           <ListItem>Cart</ListItem>
-          <ListItem>Man Fashion</ListItem>
-          <ListItem>Woman Fashion</ListItem>
-          <ListItem>Accessories</ListItem>
-          <ListItem>My Account</ListItem>
+          <ListItem>Golf Shoes</ListItem>
           <ListItem>Order Tracking</ListItem>
-          <ListItem>Wishlist</ListItem>
-          <ListItem>Wishlist</ListItem>
-          <ListItem>Terms</ListItem>
+          <ListItem>Running SHoes</ListItem>
+          <ListItem>Catalog</ListItem>
+          <ListItem>Basketball Shoes</ListItem>
+          <ListItem>About Us</ListItem>
+          <ListItem>Lifestyle Shoes</ListItem>
         </List>
       </Center>
       <Right>
         <Title>Contact</Title>
         <ContactItem>
-          {/* <Room style={{marginRight:"10px"}}/> 622 Dixie Path , South Tobinchester 98336 */}
           622 Dixie Path , South Tobinchester 98336
         </ContactItem>
         <ContactItem>
-          {/* <Phone style={{marginRight:"10px"}}/> +1 234 56 78 */}
-          +1 234 56 78
+          +62 818 356 890
         </ContactItem>
         <ContactItem>
-          {/* <MailOutline style={{marginRight:"10px"}} /> contact@lama.dev */}
-          contact@lama.dev
+        customerservice@shoesshop.com
         </ContactItem>
         <Payment src="https://i.ibb.co/Qfvn4z6/payment.png" />
       </Right>

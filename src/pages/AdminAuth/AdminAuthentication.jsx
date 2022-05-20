@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from "react-router-dom";
 import Axios from "axios"
+import Header from "../../components/HeaderUser"
 
 const AdminAuthentication = () => {
     const { token } = useParams();
@@ -16,7 +17,7 @@ const AdminAuthentication = () => {
             .then((res) => {
                 if (res.data.success === true) {
                     setMessage(res.data.message)
-                    navigate('/')
+                    // navigate('/')
                 }
                 console.log(res)
             })
@@ -29,7 +30,10 @@ const AdminAuthentication = () => {
         sendVerification()
     }, [])
     return (
-        <div>Authentication: {message}</div>
+        <>
+            <Header />
+            <div className='text-gray-600'>Admin Authentication: {message}</div>
+        </>
     )
 }
 

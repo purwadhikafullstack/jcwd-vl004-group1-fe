@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Axios from "axios"
 import * as Yup from "yup"
 import { useFormik } from 'formik'
@@ -6,6 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from 'react-redux'
 
 const ForgotPassword = () => {
+    const [successMessage, setSuccessMessage] = useState("");
     const dispatch = useDispatch()
     const navigate = useNavigate();
     const formik = useFormik({
@@ -22,6 +23,7 @@ const ForgotPassword = () => {
             })
                 .then(res => {
                     console.log(res)
+                    setSuccessMessage("We have sent you a password recovery email.")
                 })
                 .catch(err => console.log(err))
         }
@@ -58,6 +60,12 @@ const ForgotPassword = () => {
                             />
                             {formik.touched.email && formik.errors.email ? <p class="text-red-600 text-xs font-light">{formik.errors.email}</p> : null}
                         </div>
+                        {
+                            successMessage ?
+                                <h1 className='text-green-600'>{successMessage}</h1>
+                                :
+                                null
+                        }
                         <div class="py-2">
                             <button type="submit" class="border-2 border-gray-100 focus:outline-none bg-teal-600 text-white font-bold tracking-wider block w-full p-2 rounded-lg focus:border-gray-700 hover:bg-teal-700">
                                 Retrieve Password

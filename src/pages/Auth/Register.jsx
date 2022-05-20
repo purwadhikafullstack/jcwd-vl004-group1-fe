@@ -1,10 +1,13 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Axios from "axios"
 import * as Yup from "yup"
 import { useFormik } from 'formik'
 import { Link } from "react-router-dom";
 
 const Register = () => {
+    const [successMessage, setSuccessMessage] = useState("");
+    const [errMessage, setErrMessage] = useState("");
+    const [passwordShown, setPasswordShown] = useState(false);
     const formik = useFormik({
         initialValues: {
             full_name: "",
@@ -31,10 +34,21 @@ const Register = () => {
                 phone: values.phone,
                 password: values.password
             })
-                .then(res => console.log(res.data))
-                .catch(err => console.log(err))
+                .then(res => {
+                    console.log(res.data)
+                    setSuccessMessage("Registration Success, Check your Email to verify your Account!")
+                    setErrMessage("")
+                })
+                .catch(err => {
+                    console.log(err)
+                    setErrMessage(err.response.data)
+                    setSuccessMessage("")
+                })
         }
     })
+    const togglePassword = () => {
+        setPasswordShown(!passwordShown);
+    };
 
     return (
         <section class="min-h-screen flex flex-col">
@@ -53,6 +67,12 @@ const Register = () => {
                         <h1 class="font-bold tracking-wider text-3xl mb-8 w-full text-gray-600">
                             Register
                         </h1>
+                        {
+                            errMessage ?
+                                <h1 className='text-red-600'>{errMessage}</h1>
+                                :
+                                null
+                        }
                         <div className='input-container py-2 text-left'>
                             <input
                                 className={formik.touched.full_name && formik.errors.full_name ? "border-2 border-gray-100 focus:outline-none bg-red-100 hover:bg-red-200 block w-full py-2 px-4 rounded-lg focus:border-red-700 focus:bg-red-100" : "border-2 border-gray-100 focus:outline-none bg-gray-100 hover:bg-gray-200 block w-full py-2 px-4 rounded-lg focus:border-gray-700"}
@@ -117,6 +137,7 @@ const Register = () => {
                                 value={formik.values.password}
                             />
                             {formik.touched.password && formik.errors.password ? <p class="text-red-600 text-xs font-light">{formik.errors.password}</p> : null}
+                            <button onClick={togglePassword}>Show Password</button>
                         </div>
                         <div className='input-container py-2 text-left'>
                             <input
@@ -131,6 +152,12 @@ const Register = () => {
                             />
                             {formik.touched.confirmPassword && formik.errors.confirmPassword ? <p class="text-red-600 text-xs font-light">{formik.errors.confirmPassword}</p> : null}
                         </div>
+                        {
+                            successMessage ?
+                                <h1 className='text-green-600'>{successMessage}</h1>
+                                :
+                                null
+                        }
                         <div class="py-2">
                             <button type="submit" class="border-2 border-gray-100 focus:outline-none bg-teal-600 text-white font-bold tracking-wider block w-full p-2 rounded-lg focus:border-gray-700 hover:bg-teal-700">
                                 Register

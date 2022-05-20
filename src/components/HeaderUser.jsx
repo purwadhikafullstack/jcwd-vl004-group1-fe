@@ -1,20 +1,33 @@
-import React, { useState } from "react";
-import { Link, useHistory, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import "../assets/styles/user.css";
 import "../assets/styles/responsive.css";
+import {
+  removeAddressCookie,
+  removeCartCookie,
+  removeInvoiceHeaderIdCookie,
+  removePaymentCookie,
+  removeShipmentCookie,
+} from "../hooks/removeCookie";
 
 const Header = () => {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const userGlobal = useSelector((state) => state.user)
+  const userGlobal = useSelector((state) => state.user);
   const logout = () => {
     dispatch({
-      type: "USER_LOGOUT"
-    })
-    localStorage.removeItem("userDataEmmerce")
-    navigate('/')
-  }
+      type: "USER_LOGOUT",
+    });
+    localStorage.removeItem("userDataEmmerce");
+    localStorage.removeItem("addressId");
+    navigate("/login");
+    removeCartCookie();
+    removeAddressCookie();
+    removePaymentCookie();
+    removeShipmentCookie();
+    removeInvoiceHeaderIdCookie();
+  };
+
   return (
     <div>
       {/* Top Header */}
@@ -22,8 +35,8 @@ const Header = () => {
         <div className="container">
           <div className="row">
             <div className="col-md-6 d-flex align-items-center display-none">
-              <p>+255 768 356 890</p>
-              <p>info@zpunet.com</p>
+              <p>+62 818 356 890</p>
+              <p>customerservice@shoesshop.com</p>
             </div>
             <div className=" col-12 col-lg-6 justify-content-center justify-content-lg-end d-flex align-items-center">
               <Link to="">
@@ -62,7 +75,7 @@ const Header = () => {
                   </Link>
                 </div>
                 <div className="col-6 d-flex align-items-center justify-content-end Login-Register">
-                  {/* {userInfo ? (
+                  {userGlobal.id === 0 ? (
                     <div className="btn-group">
                       <button
                         type="button"
@@ -71,24 +84,21 @@ const Header = () => {
                         aria-haspopup="true"
                         aria-expanded="false"
                       >
-                        <i class="fas fa-user"></i>
+                        <i className="fas fa-user"></i>
                       </button>
                       <div className="dropdown-menu">
-                        <Link className="dropdown-item" to="/profile">
-                          Profile
-                        </Link>
-
-                        <Link
-                          className="dropdown-item"
-                          to="#"
-                          onClick={logoutHandler}
-                        >
+                        <Link className="dropdown-item" to="#" onClick={logout}>
                           Logout
                         </Link>
                       </div>
                     </div>
-                  ) : ( */}
-                  <div className="btn-group">
+                  ) : (
+                    <>
+                    <Link to="/cart" className="cart-mobile-icon">
+                      <i className="fas fa-shopping-bag"></i>
+                      <span className="badge">{userGlobal.carts.length}</span>
+                    </Link>
+                    <div className="btn-group">
                     <button
                       type="button"
                       className="name-button dropdown-toggle"
@@ -96,37 +106,21 @@ const Header = () => {
                       aria-haspopup="true"
                       aria-expanded="false"
                     >
-                      <i class="fas fa-user"></i>
+                      <i className="fas fa-user"></i>
                     </button>
                     <div className="dropdown-menu">
                       <Link className="dropdown-item" to="/login">
                         Login
                       </Link>
 
-                      <Link className="dropdown-item" to="/register">
-                        Register
-                      </Link>
-                    </div>
+                        <Link className="dropdown-item" to="/register">
+                          Register
+                        </Link>
+                      </div>
                   </div>
-                  {/* )} */}
-
-                  <Link to="/cart" className="cart-mobile-icon">
-                    <i className="fas fa-shopping-bag"></i>
-                    <span className="badge">9</span>
-                  </Link>
+                    </>
+                  )}
                 </div>
-                {/* <div className="col-12 d-flex align-items-center">
-                  <form className="input-group">
-                    <input
-                      type="search"
-                      className="form-control rounded search"
-                      placeholder="Search"
-                    />
-                    <button type="submit" className="search-button">
-                      search
-                    </button>
-                  </form>
-                </div> */}
               </div>
             </div>
           </div>
@@ -143,66 +137,71 @@ const Header = () => {
                   />
                 </Link>
               </div>
-              {/* <div className="col-md-6 col-8 d-flex align-items-center">
-                <form className="input-group">
-                  <input
-                    type="search"
-                    className="form-control rounded search"
-                    placeholder="Search"
-                  />
-                  <button type="submit" className="search-button">
-                    search
-                  </button>
-                </form>
-              </div> */}
               <div className="col-md-9 d-flex align-items-center justify-content-end Login-Register">
-                {/* {userInfo ? (
-                  <div className="btn-group">
-                    <button
-                      type="button"
-                      className="name-button dropdown-toggle"
-                      data-toggle="dropdown"
-                      aria-haspopup="true"
-                      aria-expanded="false"
-                    >
-                      Hi, {userInfo.name}
-                    </button>
-                    <div className="dropdown-menu">
-                      <Link className="dropdown-item" to="/profile">
-                        Profile
-                      </Link>
-
-                      <Link
-                        className="dropdown-item"
-                        to="#"
-                        onClick={logoutHandler}
+                {userGlobal.id === 0 ? (
+                  <>
+                    <Link to="/">About Us</Link>
+                    <Link to="/catalog">Catalog</Link>
+                    <div class="dropdown dropdown-end">
+                      <label
+                        tabindex="0"
+                        class="btn btn-ghost btn-circle avatar"
                       >
-                        Logout
-                      </Link>
+                        <div
+                          class="w-10 rounded-full"
+                          style={{ color: "black" }}
+                        >
+                          <img src="/images/user-white.png" />
+                        </div>
+                      </label>
+                      <ul
+                        tabindex="0"
+                        class="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-100 rounded-box w-52"
+                      >
+                        <li>
+                            <a onClick={()=>navigate('/login')}>Login</a>
+                        </li>
+                        <li>
+                            <a onClick={()=>navigate('/register')}>Register</a>
+                        </li>
+                        <li>
+                            <a onClick={()=>navigate('/admin')}>Admin</a>
+                        </li>
+                      </ul>
                     </div>
-                  </div>
-                ) : ( */}
-                <>
-                  <Link to="/catalog">Catalog</Link>
-                  {userGlobal.id === 0 ?
-                    <>
-                      <Link to="/register">Register</Link>
-                      <Link to="/login">Login</Link>
-                      <Link to="/admin">Admin</Link>
-                    </>
-                    :
-                    <>
-                      <h1 className="text-gray-100 pr-7">WELCOME {userGlobal.username}!</h1>
-                      <button className="text-gray-100" onClick={logout}>LOGOUT</button>
-                    </>
-                  }
-                </>
-                {/* )} */}
-
-                {/* <Link to="/cart">
-                  <i className="fas fa-shopping-bag"></i>
-                  <span className="badge">9</span>
-                </Link> */}
+                  </>
+                ) : (
+                  <>
+                    <h1 className="text-gray-100 pr-7">
+                      Welcome, {userGlobal.username}!
+                    </h1>
+                    <Link to="/cart">
+                      <i className="fas fa-shopping-bag"></i>
+                      <span className="badge">{userGlobal.carts.length}</span>
+                    </Link>
+                    <div class="dropdown dropdown-end">
+                      <label
+                        tabindex="0"
+                        class="btn btn-ghost btn-circle avatar"
+                      >
+                        <div class="w-10 rounded-full">
+                          <img src="/images/user-white.png" />
+                        </div>
+                      </label>
+                      <ul
+                        tabindex="0"
+                        class="mt-3 p-2 shadow menu menu-compact dropdown-content bg-light rounded-box w-52"
+                      >
+                        <li onClick={()=>navigate('/catalog')}>
+                          <a>CATALOG</a>
+                        </li>
+                        <li onClick={logout}>
+                          <a>LOGOUT</a>
+                        </li>
+                      </ul>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           </div>
