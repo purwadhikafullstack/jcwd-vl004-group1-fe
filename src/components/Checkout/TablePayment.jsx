@@ -82,7 +82,7 @@ const TablePayment = ({ setCartItems, setChange }) => {
 
   const getUserCart = async () => {
     try {
-      const results = await Axios.get(`${API_URL}/carts/get/${userGlobal.id}`);
+      const results = await Axios.post(`${API_URL}/carts/get/${userGlobal.id}`);
       setCartItems(results.data.carts);
     } catch (err) {
       console.log(err);
