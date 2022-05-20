@@ -167,7 +167,9 @@ const OrderSummary = ({ cartItems, change, setChange }) => {
       removeAddressCookie();
       removePaymentCookie();
       removeShipmentCookie();
-      navigate("/cart/paymentupload");
+      navigate("/cart/paymentupload", {
+        replace: true,
+      });
     } catch (err) {
       console.log(err);
     }

@@ -185,7 +185,18 @@ const PaymentUploader = () => {
               {data.user_address?.district}, {data.user_address?.postal_code}
             </p>
           </div>
+          <div>
+            <h1 className="text-sm font-bold mb-2">
+              The package will be sent from:
+            </h1>
+            <p className="text-sm">Warehouse:</p>
+            <span>---------</span>
+            <p className="text-sm">{data.warehouse?.name},</p>
+            <p className="text-sm">{data.warehouse?.address},</p>
+            <p className="text-sm">{data.warehouse?.city}</p>
+          </div>
         </div>
+
         {/* INVOICE PRODUCT LIST */}
         <div className="flex flex-col">
           <div className="border-y-1 bg-accent border-black flex justify-between">
