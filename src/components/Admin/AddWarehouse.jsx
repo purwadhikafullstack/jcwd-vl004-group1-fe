@@ -12,7 +12,10 @@ const AddWarehouse = () => {
   const [postalcode, setPostalCode] = useState(0);
   const [phone, setPhone] = useState("");
   const [provinceData, setProvinceData] = useState([]);
+  const [provinceId, setProvinceId] = useState(0);
   const [cityData, setCityData] = useState([]);
+  const [latitude, setLatitude] = useState(0);
+  const [longitude, setLongitude] = useState(0);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -29,6 +32,8 @@ const AddWarehouse = () => {
       setProvince(location.state.province)
       setPostalCode(location.state.postal_code)
       setPhone(location.state.phone)
+      setLatitude(location.state.latitude)
+      setLongitude(location.state.longitude)
     }
     console.log(location.state)
   }, [location]);
@@ -64,7 +69,9 @@ const AddWarehouse = () => {
         city,
         province,
         postalcode,
-        phone
+        phone,
+        latitude,
+        longitude
       });
       if(results){
         navigate('/warehouse')
@@ -82,7 +89,9 @@ const AddWarehouse = () => {
         city,
         province,
         postalcode,
-        phone
+        phone,
+        latitude,
+        longitude
       });
       if(results){
         navigate('/warehouse')
@@ -99,7 +108,7 @@ const AddWarehouse = () => {
   };
 
   const SelectProvince = () => {
-    return provinces.map((val) => {
+    return provinceData.map((val) => {
       return <option key={val.id} value={val.name}>{val.name}</option>;
     });
   };
@@ -165,6 +174,22 @@ const AddWarehouse = () => {
                           onChange={(e) => setAddress(e.target.value)}
                         />
                       </div>
+                      <div className="mb-2">
+                        <label htmlFor="longitude" className="form-label">
+                          Longitude
+                        </label>
+                        <input
+                          type="number"
+                          placeholder="Type here"
+                          className="form-control"
+                          name="longitude"
+                          id="longitude"
+                          value={longitude}
+                          step="any"
+                          required
+                          onChange={(e) => setLongitude(+e.target.value)}
+                        />
+                      </div>
                     </div>
                     <div className="col-xl-6 col-lg-6">
                       <div className="mb-2">
@@ -195,7 +220,7 @@ const AddWarehouse = () => {
                           }}
                           className="form-select"
                           name="city"
-                          value={city}
+                          value={cityData}
                         >
                           <option>Choose City</option>
                           {SelectCities()}
@@ -214,6 +239,22 @@ const AddWarehouse = () => {
                           value={postalcode}
                           required
                           onChange={(e) => setPostalCode(+e.target.value)}
+                        />
+                      </div>
+                      <div className="mb-2">
+                        <label htmlFor="latitude" className="form-label">
+                          Latitude
+                        </label>
+                        <input
+                          type="number"
+                          placeholder="Type here"
+                          className="form-control"
+                          name="latitude"
+                          id="latitude"
+                          step="any"
+                          value={latitude}
+                          required
+                          onChange={(e) => setLatitude(+e.target.value)}
                         />
                       </div>
                     </div>
