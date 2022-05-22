@@ -68,7 +68,7 @@ const CheckoutDetails = () => {
             }),
             5000
           );
-          toast.success("Please complete or cancel your previous transaction", {
+          toast.success("Please complete your previous transaction first", {
             position: "top-center",
             autoClose: 1500,
             hideProgressBar: true,

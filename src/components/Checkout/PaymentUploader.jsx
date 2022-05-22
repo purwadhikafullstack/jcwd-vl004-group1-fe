@@ -125,7 +125,7 @@ const PaymentUploader = () => {
         formData
       );
       toast.success(
-        "Upload Image Successful, Redirect Automatically to Homepage",
+        "Upload Image Successful, our Admin is processing your purchase",
         {
           position: "top-center",
           autoClose: 1500,
@@ -145,7 +145,9 @@ const PaymentUploader = () => {
 
   const onCancelTransaction = async () => {
     try {
-      const results = await Axios.update(`${API_URL}/carts/canceltransaction`);
+      const results = await Axios.post(`${API_URL}/carts/canceltransaction`, {
+        invoiceHeaderId,
+      });
       removeInvoiceHeaderIdCookie();
       navigate("/");
       toast.success("Transaction has been canceled, returning to Homepage", {
