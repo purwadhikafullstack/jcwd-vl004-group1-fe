@@ -218,9 +218,23 @@ const BillingAddress = () => {
   const newAddressHandler = async () => {
     try {
       if (!userGlobal.user_addresses.length) {
-        isDefault = true;
-      }
-      if (userGlobal.user_addresses.length < 6) {
+        const res = await Axios.post(`${API_URL}/users/newaddress`, {
+          address_line,
+          address_type,
+          province,
+          city,
+          district,
+          postal_code,
+          phone,
+          mobile,
+          userId: userGlobal.id,
+          isDefault: true,
+          latitude,
+          longitude,
+        });
+        setData(res.data.getAddresses);
+        window.location.reload();
+      } else if (userGlobal.user_addresses.length < 6) {
         const res = await Axios.post(`${API_URL}/users/newaddress`, {
           address_line,
           address_type,
@@ -241,7 +255,7 @@ const BillingAddress = () => {
       navigate("/cart/billing");
       toast.success("New Address Added!", {
         position: "top-center",
-        autoClose: 1500,
+        autoClose: 2000,
         hideProgressBar: true,
         closeOnClick: true,
         pauseOnHover: true,
@@ -263,7 +277,7 @@ const BillingAddress = () => {
       removeAddressCookie();
       toast.success("Delete Successful!", {
         position: "top-center",
-        autoClose: 1500,
+        autoClose: 2000,
         hideProgressBar: true,
         closeOnClick: true,
         pauseOnHover: true,
@@ -298,7 +312,7 @@ const BillingAddress = () => {
       <>
         <div className="container">
           <div className="row justify-content-center align-items-center">
-            <h4 className="text-center text-accent">
+            <h4 className="text-center font-bold">
               Oops, We can't find any registered Address for{" "}
               {userGlobal.full_name}
             </h4>

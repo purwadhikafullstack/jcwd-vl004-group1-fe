@@ -112,9 +112,8 @@ const OrderSummary = ({ cartItems, change, setChange }) => {
   const submitAddress = async () => {
     try {
       const id = JSON.parse(localStorage.getItem("addressId"));
-
       if (!userGlobal.user_addresses.length) {
-        toast.success("Please add your first address before continue", {
+        toast.success("Please add your default address before continue", {
           position: "top-center",
           autoClose: 1500,
           hideProgressBar: true,
@@ -123,12 +122,7 @@ const OrderSummary = ({ cartItems, change, setChange }) => {
           draggable: true,
           progress: undefined,
         });
-      }
-
-      if (id) {
-        const results = await Axios.get(`${API_URL}/users/getaddress/${id}`);
-        setAddressCookie(JSON.stringify(results.data));
-      } else {
+      } else if (userGlobal.user_addresses.length) {
         const results = await Axios.post(`${API_URL}/users/getdefaultaddress`, {
           userId: userGlobal.id,
         });
@@ -142,9 +136,12 @@ const OrderSummary = ({ cartItems, change, setChange }) => {
           draggable: true,
           progress: undefined,
         });
+        navigate("/cart/payment");
+      } else if (id) {
+        const results = await Axios.get(`${API_URL}/users/getaddress/${id}`);
+        setAddressCookie(JSON.stringify(results.data));
+        navigate("/cart/payment");
       }
-      setChange(Math.random() + 1);
-      navigate("/cart/payment");
     } catch (err) {
       console.log(err);
     }
