@@ -32,7 +32,7 @@ const AdminLogin = () => {
                         type: "ADMIN_LOGIN",
                         payload: res.data.dataAdmin
                     })
-                    navigate('/category')
+                    navigate('/dashboard')
                 })
                 .catch(err => {
                     console.log(err)

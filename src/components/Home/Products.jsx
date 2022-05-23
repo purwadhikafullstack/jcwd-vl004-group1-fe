@@ -45,8 +45,9 @@ const Products = () => {
       .then((results) => {
         toast.success("Product has been added to cart !", {
           position: toast.POSITION.TOP_CENTER,
-          className: 'alert-addtocart'
+          className: 'alert-addtocart',
         });
+        window.location.reload();
       })
       .catch((err) => {
         console.log(err);
