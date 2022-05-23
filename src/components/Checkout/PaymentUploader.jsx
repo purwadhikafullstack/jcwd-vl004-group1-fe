@@ -128,7 +128,7 @@ const PaymentUploader = () => {
         "Upload Image Successful, our Admin is processing your purchase",
         {
           position: "top-center",
-          autoClose: 1500,
+          autoClose: 5000,
           hideProgressBar: true,
           closeOnClick: true,
           pauseOnHover: true,
