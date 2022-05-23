@@ -198,6 +198,7 @@ const EditProductMain = ({ products }) => {
                   <label className="form-label">Stock Ready</label>
                   <input
                     type="number"
+                    disabled
                     className="form-control"
                     id="product_stock_ready"
                     required
