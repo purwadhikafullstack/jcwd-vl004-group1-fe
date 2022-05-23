@@ -62,9 +62,13 @@ const CheckoutDetails = () => {
           setInvoiceHeaderIdCookie(
             JSON.stringify(results.data.unpaidInvoice.id)
           );
-          setTimeout(navigate, 5000);
-          navigate("/cart/paymentupload");
-          toast.success("Please complete or cancel your previous transaction", {
+          setTimeout(
+            navigate("/cart/paymentupload", {
+              replace: true,
+            }),
+            5000
+          );
+          toast.success("Please complete your previous transaction first", {
             position: "top-center",
             autoClose: 1500,
             hideProgressBar: true,

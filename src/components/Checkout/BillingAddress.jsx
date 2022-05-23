@@ -21,7 +21,7 @@ import useGeoLocation from "../../hooks/useGeoLocation";
 const BillingAddress = () => {
   const [cartItems, setCartItems] = useOutletContext([]);
   const [change, setChange] = useOutletContext(0);
-  const [data, setData] = useState({});
+  const [data, setData] = useState([]);
   const [provinceData, setProvincesData] = useState([]);
   const [cityData, setCityData] = useState([]);
   const [districtData, setDistrictData] = useState([]);
@@ -42,23 +42,9 @@ const BillingAddress = () => {
   const [longitude, setLongitude] = useState(0);
   let [isDefault, setIsDefault] = useState(false);
 
-  console.log(latitude);
-  console.log(longitude);
-
   // const location = useGeoLocation();
   const userGlobal = useSelector((state) => state.user);
   const navigate = useNavigate();
-
-  // useEffect(() => {
-  //   if (!("geolocation" in navigator)) {
-  //     onError({
-  //       code: 0,
-  //       message: "Geolocation not supported",
-  //     });
-  //   }
-
-  //   navigator.geolocation.getCurrentPosition(onSuccess, onError);
-  // }, []);
 
   const getLocation = () => {
     if (userGlobal.user_addresses.length === 6) {
@@ -93,6 +79,16 @@ const BillingAddress = () => {
     });
     setCartItems(results.data.carts);
   };
+
+  useEffect(() => {
+    const getUserAddresses = async () => {
+      const results = await Axios.get(
+        `${API_URL}/users/getaddresses/${userGlobal.id}`
+      );
+      setData(results.data);
+    };
+    getUserAddresses();
+  }, [userGlobal]);
 
   useEffect(() => {
     const getProvinces = async () => {
@@ -186,9 +182,15 @@ const BillingAddress = () => {
 
   const updateDefaultAddress = async (id) => {
     try {
-      await Axios.patch(`${API_URL}/users/updatedefaultaddress`, {
-        id,
-      });
+      const results = await Axios.patch(
+        `${API_URL}/users/updatedefaultaddress`,
+        {
+          id,
+          userId: userGlobal.id,
+        }
+      );
+      setData(results.data);
+      document.getElementById(`setDefault-${id}`).click();
     } catch (err) {
       console.log(err);
     }
@@ -216,10 +218,23 @@ const BillingAddress = () => {
   const newAddressHandler = async () => {
     try {
       if (!userGlobal.user_addresses.length) {
-        isDefault = true;
-      }
-
-      if (userGlobal.user_addresses.length < 6) {
+        const res = await Axios.post(`${API_URL}/users/newaddress`, {
+          address_line,
+          address_type,
+          province,
+          city,
+          district,
+          postal_code,
+          phone,
+          mobile,
+          userId: userGlobal.id,
+          isDefault: true,
+          latitude,
+          longitude,
+        });
+        setData(res.data.getAddresses);
+        window.location.reload();
+      } else if (userGlobal.user_addresses.length < 6) {
         const res = await Axios.post(`${API_URL}/users/newaddress`, {
           address_line,
           address_type,
@@ -234,13 +249,13 @@ const BillingAddress = () => {
           latitude,
           longitude,
         });
+        setData(res.data.getAddresses);
       }
-
       document.getElementById("my-modal-4").click();
       navigate("/cart/billing");
       toast.success("New Address Added!", {
         position: "top-center",
-        autoClose: 1500,
+        autoClose: 2000,
         hideProgressBar: true,
         closeOnClick: true,
         pauseOnHover: true,
@@ -254,12 +269,15 @@ const BillingAddress = () => {
 
   const deleteAddress = async (id) => {
     try {
-      await Axios.delete(`${API_URL}/users/deleteaddress/${id}`);
+      const results = await Axios.post(`${API_URL}/users/deleteaddress/${id}`, {
+        userId: userGlobal.id,
+      });
+      setData(results.data);
       localStorage.removeItem("addressId");
       removeAddressCookie();
       toast.success("Delete Successful!", {
         position: "top-center",
-        autoClose: 1500,
+        autoClose: 2000,
         hideProgressBar: true,
         closeOnClick: true,
         pauseOnHover: true,
@@ -294,7 +312,7 @@ const BillingAddress = () => {
       <>
         <div className="container">
           <div className="row justify-content-center align-items-center">
-            <h4 className="text-center text-accent">
+            <h4 className="text-center font-bold">
               Oops, We can't find any registered Address for{" "}
               {userGlobal.full_name}
             </h4>
@@ -503,7 +521,7 @@ const BillingAddress = () => {
   };
 
   const TableAddress = () => {
-    return userGlobal.user_addresses?.map((val) => {
+    return data?.map((val) => {
       return (
         <>
           {/* TABLE ADDRESS HERE */}
@@ -531,6 +549,7 @@ const BillingAddress = () => {
                     {val.isDefault ? null : (
                       <div className="dropdown h-1 flex items-center rounded-md justify-end">
                         <label
+                          id={`setDefault-${val.id}`}
                           tabindex="0"
                           className="m-1 hover:cursor-pointer tracking-widest"
                         >

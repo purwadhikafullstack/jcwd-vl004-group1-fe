@@ -44,6 +44,7 @@ const Detail = () => {
           position: toast.POSITION.TOP_CENTER,
           className: 'alert-addtocart'
         });
+        window.location.reload();
       })
       .catch((err) => {
         console.log(err);

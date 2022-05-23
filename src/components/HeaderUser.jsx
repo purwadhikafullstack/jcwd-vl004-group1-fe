@@ -9,6 +9,7 @@ import {
   removePaymentCookie,
   removeShipmentCookie,
 } from "../hooks/removeCookie";
+import { getInvoiceHeaderIdCookie } from "../hooks/getCookie";
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -94,30 +95,37 @@ const Header = () => {
                     </div>
                   ) : (
                     <>
-                    <Link to="/cart" className="cart-mobile-icon">
-                      <i className="fas fa-shopping-bag"></i>
-                      <span className="badge">{userGlobal.carts.length}</span>
-                    </Link>
-                    <div className="btn-group">
-                    <button
-                      type="button"
-                      className="name-button dropdown-toggle"
-                      data-toggle="dropdown"
-                      aria-haspopup="true"
-                      aria-expanded="false"
-                    >
-                      <i className="fas fa-user"></i>
-                    </button>
-                    <div className="dropdown-menu">
-                      <Link className="dropdown-item" to="/login">
-                        Login
+                      <Link
+                        to={
+                          getInvoiceHeaderIdCookie()
+                            ? "/cart/paymentupload"
+                            : "/cart"
+                        }
+                        className="cart-mobile-icon"
+                      >
+                        <i className="fas fa-shopping-bag"></i>
+                        <span className="badge">{userGlobal.carts.length}</span>
                       </Link>
+                      <div className="btn-group">
+                        <button
+                          type="button"
+                          className="name-button dropdown-toggle"
+                          data-toggle="dropdown"
+                          aria-haspopup="true"
+                          aria-expanded="false"
+                        >
+                          <i className="fas fa-user"></i>
+                        </button>
+                        <div className="dropdown-menu">
+                          <Link className="dropdown-item" to="/login">
+                            Login
+                          </Link>
 
-                        <Link className="dropdown-item" to="/register">
-                          Register
-                        </Link>
+                          <Link className="dropdown-item" to="/register">
+                            Register
+                          </Link>
+                        </div>
                       </div>
-                  </div>
                     </>
                   )}
                 </div>
@@ -159,13 +167,13 @@ const Header = () => {
                         class="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-100 rounded-box w-52"
                       >
                         <li>
-                            <a onClick={()=>navigate('/login')}>Login</a>
+                          <a onClick={() => navigate("/login")}>Login</a>
                         </li>
                         <li>
-                            <a onClick={()=>navigate('/register')}>Register</a>
+                          <a onClick={() => navigate("/register")}>Register</a>
                         </li>
                         <li>
-                            <a onClick={()=>navigate('/admin')}>Admin</a>
+                          <a onClick={() => navigate("/admin")}>Admin</a>
                         </li>
                       </ul>
                     </div>
@@ -175,7 +183,13 @@ const Header = () => {
                     <h1 className="text-gray-100 pr-7">
                       Welcome, {userGlobal.username}!
                     </h1>
-                    <Link to="/cart">
+                    <Link
+                      to={
+                        getInvoiceHeaderIdCookie()
+                          ? "/cart/paymentupload"
+                          : "/cart"
+                      }
+                    >
                       <i className="fas fa-shopping-bag"></i>
                       <span className="badge">{userGlobal.carts.length}</span>
                     </Link>
@@ -192,7 +206,7 @@ const Header = () => {
                         tabindex="0"
                         class="mt-3 p-2 shadow menu menu-compact dropdown-content bg-light rounded-box w-52"
                       >
-                        <li onClick={()=>navigate('/catalog')}>
+                        <li onClick={() => navigate("/catalog")}>
                           <a>CATALOG</a>
                         </li>
                         <li onClick={logout}>

@@ -5,6 +5,7 @@ import Axios from "axios";
 import { currencyFormatter } from "../../helpers/currencyFormatter";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
+import { removeInvoiceHeaderIdCookie } from "../../hooks/removeCookie";
 
 const Payment = () => {
   const [dataPayment, setDataPayment] = useState([]);
@@ -70,6 +71,7 @@ const Payment = () => {
         `${API_URL}/paymentsConfirmation/${idPayment}/accept`
       ).then((res) => {
         getPayment();
+        removeInvoiceHeaderIdCookie();
       });
     } catch (err) {
       console.log(err);
