@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { API_URL } from "../../constant/api";
 import Axios from "axios";
 import { currencyFormatter } from '../../helpers/currencyFormatter';
@@ -10,21 +11,37 @@ import 'react-toastify/dist/ReactToastify.css';
 const Recommend = () => {
   const [data, setData] = useState([]);
   const [upTo, setUpTo] = useState(false);
+  const [categoryId, setCategoryId] = useState(0);
   const userGlobal = useSelector((state) => state.user);
   const navigate = useNavigate();
+  const {id}= useParams();
 
   useEffect(() => {
-    getProducts();
+    getCategoryId();
     window.scrollTo(0, 0);
   }, []);
+
+  useEffect(() => {
+    getProducts()
+  }, [categoryId]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
     setUpTo(false)
   },[upTo]);
 
+  const getCategoryId = async () => {
+    await Axios.get(`${API_URL}/catalog/${id}`)
+      .then((results) => {
+        setCategoryId(results.data.productCategoryId)
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   const getProducts = async () => {
-    await Axios.get(`${API_URL}/catalog`)
+    await Axios.get(`${API_URL}/catalog/category/${categoryId}`)
       .then((results) => {
         results.data.map((item)=>{
           let sum = 0;

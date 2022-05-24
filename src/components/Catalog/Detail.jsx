@@ -36,7 +36,7 @@ const Detail = () => {
       navigate('/login')
     } else {
       await Axios.post(`${API_URL}/carts/add`, 
-      { quantity: 1,
+      { quantity: qty,
         productId: id,
         userId: userGlobal.id})
       .then((results) => {
@@ -55,6 +55,18 @@ const Detail = () => {
   useEffect(() => {
     getProducts();
   }, [id]);
+
+  const decrease = () => {
+    if(qty>1){
+      setQty(qty-1)
+    }
+  }
+
+  const increase = (stock) => {
+    if(qty<stock){
+      setQty(qty+1)
+    }
+  }
 
   return (
     <>
@@ -95,18 +107,28 @@ const Detail = () => {
                     </div>
                     <div className="flex-box d-flex justify-content-between align-items-center">
                       <h6>Quantity</h6>
-                      <select
-                        // value={qty}
-                        onChange={(e) => setQty(e.target.value)}
-                      >
-                        {[...Array(data.stock).keys()].map(
-                          (x) => (
-                            <option key={x + 1} value={x + 1}>
-                              {x + 1} pcs
-                            </option>
-                          )
-                        )}
-                      </select>
+                      <div className="flex border-1 rounded-md space-x-4 items-center justify-center align-middle">
+                        <button className={`${
+                          qty <= 1
+                            ? "text-2xl hover:pointer-events-none text-gray-400 m-2"
+                            : "text-2xl m-2"
+                        }`} onClick={()=>decrease()}>-</button>
+                        <input
+                          type="number"
+                          value={qty}
+                          pattern="[0-9]*"
+                          name="quantity"
+                          id="quantity"
+                          max={data.stock}
+                          min={1}
+                          required
+                        />
+                        <button className={`${
+                          qty > data.stock
+                            ? "text-2xl hover:pointer-events-none text-gray-400 m-2"
+                            : "text-2xl m-2"
+                        }`} onClick={()=>increase(data.stock)}>+</button>
+                      </div>
                     </div>
                     <button className="round-black-btn" onClick={addToCart}>
                       Add To Cart
