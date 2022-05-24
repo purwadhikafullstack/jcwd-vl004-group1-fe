@@ -35,19 +35,21 @@ const OrderSummary = ({ cartItems, change, setChange }) => {
   const [isConflicted, setIsConflicted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const cartCookie = getCartCookie() ? JSON.parse(getCartCookie()) : null;
+  const cartCookie = getCartCookie()
+    ? JSON.parse(getCartCookie("selectedCart"))
+    : null;
   const userGlobal = useSelector((state) => state.user);
 
   const addressCookie = getAddressCookie()
-    ? JSON.parse(getAddressCookie())
+    ? JSON.parse(getAddressCookie("selectedAddress"))
     : null;
 
   const paymentCookie = getPaymentCookie()
-    ? JSON.parse(getPaymentCookie())
+    ? JSON.parse(getPaymentCookie("selectedPayment"))
     : null;
 
   const shipmentCookie = getShipmentCookie()
-    ? JSON.parse(getShipmentCookie())
+    ? JSON.parse(getShipmentCookie("selectedShipment"))
     : null;
 
   const navigate = useNavigate();
@@ -110,15 +112,36 @@ const OrderSummary = ({ cartItems, change, setChange }) => {
   const submitAddress = async () => {
     try {
       const id = JSON.parse(localStorage.getItem("addressId"));
-      if (id) {
+      if (!userGlobal.user_addresses.length) {
+        toast.success("Please add your default address before continue", {
+          position: "top-center",
+          autoClose: 1500,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      } else if (userGlobal.user_addresses.length) {
+        const results = await Axios.post(`${API_URL}/users/getdefaultaddress`, {
+          userId: userGlobal.id,
+        });
+        setAddressCookie(JSON.stringify(results.data));
+        toast.success("Default Address Picked", {
+          position: "top-center",
+          autoClose: 1500,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+        navigate("/cart/payment");
+      } else if (id) {
         const results = await Axios.get(`${API_URL}/users/getaddress/${id}`);
         setAddressCookie(JSON.stringify(results.data));
-      } else {
-        const results = await Axios.get(`${API_URL}/users/getdefaultaddress`);
-        setAddressCookie(JSON.stringify(results.data));
+        navigate("/cart/payment");
       }
-      setChange(Math.random() + 1);
-      navigate("/cart/payment");
     } catch (err) {
       console.log(err);
     }
@@ -128,7 +151,7 @@ const OrderSummary = ({ cartItems, change, setChange }) => {
     try {
       const results = await Axios.post(`${API_URL}/carts/checkout`, {
         total: totalPrice,
-        status: "pending",
+        status: "unpaid",
         userAddressId: addressCookie.id,
         shipmentMasterId: shipmentCookie.id,
         userId: userGlobal.id,
@@ -141,7 +164,9 @@ const OrderSummary = ({ cartItems, change, setChange }) => {
       removeAddressCookie();
       removePaymentCookie();
       removeShipmentCookie();
-      navigate("/cart/paymentupload");
+      navigate("/cart/paymentupload", {
+        replace: true,
+      });
     } catch (err) {
       console.log(err);
     }
@@ -225,6 +250,7 @@ const OrderSummary = ({ cartItems, change, setChange }) => {
                       setIsClicked(true);
                     }}
                     className="btn btn-ghost text-accent btn-sm"
+                    disabled
                   >
                     Apply
                   </button>

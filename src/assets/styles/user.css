@@ -40,7 +40,7 @@ textarea:focus {
   padding: 0;
 }
 .Announcement {
-  background-color: white;
+  background-color: #e6e6e6;
   padding: 10px 0px 6px 0px;
 }
 .Announcement .col-md-6 p {
@@ -57,8 +57,6 @@ textarea:focus {
 .header {
   padding: 10px 0px 10px 0px;
   background: linear-gradient(190deg, rgba(1,1,1,0.9084676106770834) 0%, rgba(49,104,121,0.9868989832261029) 100%);
-  border-radius: 16px;
-  margin: 0px 10px;
   box-shadow: 5px 5px 5px grey;
 }
 .navbar-brand img {
@@ -916,5 +914,9 @@ textarea:focus {
 
 .swal-button--confirm:hover {
   border: 1px solid lightblue;
+}
+
+.fab {
+  color: #676767;
 }
 

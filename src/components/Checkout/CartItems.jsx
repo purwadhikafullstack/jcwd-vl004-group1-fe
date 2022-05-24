@@ -19,13 +19,7 @@ const CartItems = ({ val, setCartItems, cartItems }) => {
 
   const userGlobal = useSelector((state) => state.user);
   const userId = userGlobal.id;
-  const stockReady = val.product.warehouse_products[0].stock_ready;
   const getCart = getCartCookie() ? JSON.parse(getCartCookie()) : null;
-
-  const getUserCart = async () => {
-    const results = await Axios.get(`${API_URL}/carts/get/${userGlobal.id}`);
-    setCartItems(results.data.carts);
-  };
 
   const onDeleteCart = async (id) => {
     try {
@@ -54,9 +48,9 @@ const CartItems = ({ val, setCartItems, cartItems }) => {
         userId,
         quantity,
       });
-      setCartItems(results.data.getUserCart);
+      setCartItems(results.data);
 
-      if (getCart) setCartCookie(JSON.stringify(results.data.getUserCart));
+      if (getCart) setCartCookie(JSON.stringify(results.data));
     }),
     []
   );
@@ -64,8 +58,8 @@ const CartItems = ({ val, setCartItems, cartItems }) => {
   useEffect(() => {
     let maxQty = quantity;
 
-    if (maxQty > stockReady) {
-      maxQty = stockReady;
+    if (maxQty > +val.totalQty) {
+      maxQty = +val.totalQty;
     } else {
       qtyHandler(quantity);
     }
@@ -119,13 +113,13 @@ const CartItems = ({ val, setCartItems, cartItems }) => {
             <span className="text-1xl">{quantity}</span>
             <button
               className={`${
-                quantity === stockReady
+                quantity === +val.totalQty
                   ? "text-2xl hover:pointer-events-none text-gray-400"
                   : "text-2xl"
               }`}
               onClick={() =>
-                quantity === stockReady
-                  ? (quantity = stockReady)
+                quantity === +val.totalQty
+                  ? (quantity = +val.totalQty)
                   : setQuantity(quantity + 1)
               }
             >
@@ -134,9 +128,9 @@ const CartItems = ({ val, setCartItems, cartItems }) => {
           </div>
           <div>
             <p className="text-gray-400 text-xs text-center mt-1">
-              available: {stockReady}
+              available: {+val.totalQty}
             </p>
-            {quantity === stockReady ? (
+            {quantity === +val.totalQty ? (
               <p className="text-white bg-accent text-xs text-center mt-1">
                 Limited Stock
               </p>

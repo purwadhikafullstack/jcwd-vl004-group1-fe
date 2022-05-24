@@ -29,7 +29,7 @@ const MainProducts = () => {
             `${API_URL}/products?page=${currentPage}`
           );
           setData(results.data.rows);
-          setDataCount(results.data.count);
+          setDataCount(results.data.productCount);
         }
       } catch (err) {
         console.log(err);
@@ -99,7 +99,7 @@ const MainProducts = () => {
           return;
         }
         setData(results.data.rows);
-        setDataCount(results.data.count);
+        setDataCount(results.data.productCount);
       } catch (err) {
         console.log(err);
       }
@@ -115,8 +115,12 @@ const MainProducts = () => {
           name: search,
         }
       );
+      if (search) {
+        setDataCount(results.data.count);
+      } else {
+        setDataCount(results.data.productCount);
+      }
       setData(results.data.rows);
-      setDataCount(results.data.count);
     } catch (err) {
       console.log(err);
     }
@@ -180,13 +184,13 @@ const MainProducts = () => {
           <td>{val.product_category.name}</td>
           {val.warehouse_products[0].stock_ready < 10 ? (
             <td className="text-sm flex flex-col text-error font-bold mt-2">
-              {val.warehouse_products[0].stock_ready}{" "}
+              {val.totalStock}{" "}
               <span className="bg-error text-white text-xs font-bold">
                 Low Stocks
               </span>
             </td>
           ) : (
-            <td>{val.warehouse_products[0].stock_ready}</td>
+            <td>{val.totalStock}</td>
           )}
           <td>{val.warehouse_products[0].stock_reserved}</td>
           <td>{val.warehouse_products[0].warehouse.name}</td>
