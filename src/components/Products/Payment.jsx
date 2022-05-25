@@ -102,7 +102,12 @@ const Payment = () => {
           <td>{val.id}</td>
           <td>{val.updatedAt}</td>
           <td>{val.invoice_header.user.full_name}</td>
-          <td>{val.payment_proof}</td>
+          <td>
+            <img
+              src={`${API_URL}/${val.payment_proof}`}
+              className="w-20 m-auto"
+            ></img>
+          </td>
           <td>{currencyFormatter(val.invoice_header.total)}</td>
           <td className="font-semibold capitalize">
             {val.invoice_header.status === "approved" ? (
