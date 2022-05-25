@@ -141,10 +141,38 @@ const CartItems = ({ val, setCartItems, cartItems }) => {
       <td className="text-center">{currencyFormatter(val.subtotal)}</td>
 
       <td>
-        <i
-          onClick={() => onDeleteCart(val.id)}
-          className="hover:cursor-pointer fas fa-trash-alt"
-        ></i>
+        <label
+          className="hover:cursor-pointer fas fa-trash-alt modal-btn"
+          htmlFor={`my-modal-${val.id}`}
+        ></label>
+
+        <input
+          type="checkbox"
+          id={`my-modal-${val.id}`}
+          className="modal-toggle"
+        />
+        <label htmlFor={`my-modal-${val.id}`} className="modal cursor-pointer">
+          <label className="modal-box relative" htmlFor="">
+            <h3 className="text-lg font-bold">Deleting Cart</h3>
+            <h3 className="text-lg">
+              Are you sure you want to delete the item?
+            </h3>
+            <div className="space-x-2 mt-4">
+              <button
+                className="btn btn-accent text-white"
+                onClick={() => onDeleteCart(val.id)}
+              >
+                Proceed
+              </button>
+              <label
+                className="btn btn-error text-white"
+                htmlFor={`my-modal-${val.id}`}
+              >
+                Cancel
+              </label>
+            </div>
+          </label>
+        </label>
       </td>
     </tr>
   );

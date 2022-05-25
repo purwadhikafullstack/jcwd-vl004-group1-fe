@@ -67,10 +67,10 @@ const AddProductMain = () => {
       const results = await Axios.post(`${API_URL}/products/add`, formData);
       console.log(results.data);
       navigate("/products");
-      toast.success("Product Added!", {
-        position: "top-center",
-        autoClose: 2000,
-        hideProgressBar: true,
+      toast.success("New Product Has Been Added!", {
+        position: "top-right",
+        autoClose: 1500,
+        hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
