@@ -294,7 +294,7 @@ const ShippingTable = () => {
   // };
 
   return (
-    <div className="col-md-12 col-lg-7">
+    <div className="col-md-12 col-lg-12">
       <table className="table">
         {TableHead()}
         {/* <tbody>{TableBody()}</tbody> */}
