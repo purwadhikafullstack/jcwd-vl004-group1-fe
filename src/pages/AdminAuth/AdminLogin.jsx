@@ -37,7 +37,7 @@ const AdminLogin = () => {
             type: "ADMIN_LOGIN",
             payload: res.data.dataAdmin,
           });
-          navigate("/dashboard");
+          navigate("/products");
         })
         .catch((err) => {
           console.log(err);
@@ -109,8 +109,10 @@ const AdminLogin = () => {
                 </p>
               ) : null}
               {/* <button onClick={togglePassword}>Show Password</button> */}
-              <input onClick={togglePassword} type="checkbox" />
-              <span> Show Password</span>
+              <div className="mt-2">
+                <input onClick={togglePassword} type="checkbox" />
+                <span> Show Password</span>
+              </div>
             </div>
             <div></div>
             <div class="py-2">

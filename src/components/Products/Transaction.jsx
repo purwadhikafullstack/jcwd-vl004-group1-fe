@@ -11,7 +11,7 @@ const Transaction = () => {
   const [checkStockMessage, setcheckStockMessage] = useState("");
   const navigate = useNavigate();
 
-  const [sortValue, setSortValue] = useState("nonsort");
+  const [sortValue, setSortValue] = useState("updatedAt,ASC");
 
   const [date, setDate] = useState(new Date());
   const [enddate, setEndDate] = useState(new Date());
@@ -20,22 +20,13 @@ const Transaction = () => {
 
   useEffect(() => {
     getTransactions();
-  }, []);
+  }, [sortValue]);
 
-  useEffect(() => {});
   const getTransactions = async () => {
     try {
-      let results;
-      if (sortValue === "ASC") {
-        results = await Axios.get(`${API_URL}/transactions/asc`);
-        console.log("asc");
-      } else if (sortValue === "DESC") {
-        results = await Axios.get(`${API_URL}/transactions/desc`);
-        console.log("desc");
-      } else if (sortValue === "nonsort") {
-        results = await Axios.get(`${API_URL}/transactions`);
-        console.log("non");
-      }
+      let results = await Axios.post(`${API_URL}/transactions/`, {
+        sortValue,
+      });
       setDataTransactions(results.data);
     } catch (err) {
       console.log(err);
@@ -115,7 +106,11 @@ const Transaction = () => {
         >
           <td>{val.id}</td>
           <td>{val.number}</td>
-          <td>{val.updatedAt}</td>
+          <td>
+            {new Date(val.updatedAt).toLocaleDateString("id-ID")}
+            <span>&nbsp;&nbsp;&nbsp;</span>
+            {new Date(val.updatedAt).toLocaleTimeString("id-ID")}
+          </td>
           <td>{val.invoice_header.user.full_name}</td>
           <td>{val.invoice_header.warehouse.name}</td>
           <td>{val.invoice_header.user_address.province}</td>
@@ -257,7 +252,7 @@ const Transaction = () => {
                 }}
                 name="sort"
               >
-                <option name="sort" value="nonsort">
+                <option name="sort" value="updatedAt,ASC">
                   Filter By
                 </option>
                 {/* <option name="lowprice" value="lowprice">
@@ -266,10 +261,10 @@ const Transaction = () => {
                 <option name="highprice" value="highprice">
                   Highest Profit
                 </option> */}
-                <option name="neworderdate" value="ASC">
+                <option name="neworderdate" value="updatedAt,DESC">
                   Newest
                 </option>
-                <option name="newenddate" value="DESC">
+                <option name="newenddate" value="updatedAt,ASC">
                   Oldest
                 </option>
               </select>

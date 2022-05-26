@@ -112,8 +112,10 @@ const Login = () => {
                   {formik.errors.password}
                 </p>
               ) : null}
-              <input onClick={togglePassword} type="checkbox" />
-              <span> Show Password</span>
+              <div className="mt-2">
+                <input onClick={togglePassword} type="checkbox" />
+                <span> Show Password</span>
+              </div>
             </div>
             <div class="py-2">
               <button
