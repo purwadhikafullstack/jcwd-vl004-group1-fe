@@ -177,8 +177,10 @@ const AdminRegister = () => {
                   {formik.errors.confirmPassword}
                 </p>
               ) : null}
-              <input onClick={togglePassword} type="checkbox" />
-              <span> Show Password</span>
+              <div className="mt-2">
+                <input onClick={togglePassword} type="checkbox" />
+                <span> Show Password</span>
+              </div>
             </div>
             {successMessage ? (
               <h1 className="text-green-600">{successMessage}</h1>
