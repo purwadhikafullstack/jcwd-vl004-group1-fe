@@ -49,6 +49,7 @@ import BillingDetails from "./pages/BillingDetails";
 import PaymentDetails from "./pages/PaymentDetails";
 import Cart from "./components/Checkout/Cart";
 import PaymentUploader from "./components/Checkout/PaymentUploader";
+import Profile from "./pages/User/Profile";
 
 function App() {
   const dispatch = useDispatch();
@@ -173,6 +174,7 @@ function App() {
                 <Route path="payment" element={<PaymentDetails />} />
                 <Route path="paymentupload" element={<PaymentUploader />} />
               </Route>
+              <Route path="/profile" element={<Profile />} />
               <Route path="/detail/:id" element={<Details />} />
               <Route path="/catalog" element={<Catalog />} />
               <Route path="/" element={<Home />} />

@@ -80,11 +80,12 @@ const Payment = () => {
 
   const rejectPayment = async (idPayment) => {
     try {
-      await Axios.post(
+      const results = await Axios.post(
         `${API_URL}/paymentsConfirmation/${idPayment}/reject`
-      ).then((res) => {
-        getPayment();
-      });
+      );
+      console.log(results.data);
+      getPayment();
+      removeInvoiceHeaderIdCookie();
     } catch (err) {
       console.log(err);
     }

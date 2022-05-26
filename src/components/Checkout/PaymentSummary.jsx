@@ -6,7 +6,7 @@ import { currencyFormatter } from "../../helpers/currencyFormatter.js";
 import { setPaymentCookie, setShipmentCookie } from "../../hooks/setCookie.js";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext, NavLink } from "react-router-dom";
 
 const PaymentSummary = () => {
   const [cartItems, setCartItems] = useOutletContext();
@@ -215,6 +215,14 @@ const PaymentSummary = () => {
               </div>
             </div>
           </div>
+        </div>
+        <div className="items-start w-1/12">
+          <NavLink to="/cart/billing">
+            <div className="text-gray-600 hover:text-gray-500 text-sm space-x-2 my-3 flex group">
+              <i className="fas fa-arrow-left transition-all group-hover:mr-1"></i>
+              <h2 className="font-bold">Back</h2>
+            </div>
+          </NavLink>
         </div>
       </div>
     </>
