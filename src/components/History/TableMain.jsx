@@ -104,14 +104,22 @@ const TableMain = () => {
             <div className="border-4 shadow-sm">
               <div className="bg-gray-200">
                 <div className="space-y-2 text-justify p-3">
-                  <h1>Invoice ID: {val.id}</h1>
-                  <h1 className="font-bold">
-                    Transaction Status:
-                    <span className="bg-red text-accent uppercase">
+                  <h1 className="text-sm">Invoice ID: {val.id}</h1>
+                  <h1 className="font-bold text-sm">
+                    Transaction Status:{" "}
+                    <span
+                      className={
+                        val.status === "rejected"
+                          ? "bg-red text-error uppercase"
+                          : "bg-red text-accent uppercase"
+                      }
+                    >
                       {val.status}
                     </span>
                   </h1>
-                  <h1>Date: {val.createdAt.slice(0, 10)}</h1>
+                  <h1 className="text-sm">
+                    Date: {val.createdAt.slice(0, 10)}
+                  </h1>
                 </div>
               </div>
 
@@ -134,7 +142,7 @@ const TableMain = () => {
                         <th>{val.productId}</th>
                         <td className="flex flex-row justify-center">
                           <img
-                            className="mask mask-squircle w-8"
+                            className="mask mask-squircle w-10 bg-accent"
                             src={`${API_URL}/${val.product.product_image}`}
                           />
                         </td>
