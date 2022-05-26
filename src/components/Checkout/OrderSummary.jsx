@@ -52,6 +52,8 @@ const OrderSummary = ({ cartItems, change, setChange }) => {
     ? JSON.parse(getShipmentCookie("selectedShipment"))
     : null;
 
+  const addressId = JSON.parse(localStorage.getItem("addressId"));
+
   const navigate = useNavigate();
   const summaryGlobal = useSelector((state) => state.summary);
 
@@ -122,11 +124,10 @@ const OrderSummary = ({ cartItems, change, setChange }) => {
           draggable: true,
           progress: undefined,
         });
-      } else if (userGlobal.user_addresses.length) {
+      } else if (userGlobal.user_addresses.length && !addressId) {
         const results = await Axios.post(`${API_URL}/users/getdefaultaddress`, {
           userId: userGlobal.id,
         });
-        setAddressCookie(JSON.stringify(results.data));
         toast.success("Default Address Picked", {
           position: "top-center",
           autoClose: 1500,
@@ -136,9 +137,19 @@ const OrderSummary = ({ cartItems, change, setChange }) => {
           draggable: true,
           progress: undefined,
         });
+        setAddressCookie(JSON.stringify(results.data));
         navigate("/cart/payment");
       } else if (id) {
         const results = await Axios.get(`${API_URL}/users/getaddress/${id}`);
+        toast.success("Address selected.", {
+          position: "top-center",
+          autoClose: 1500,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
         setAddressCookie(JSON.stringify(results.data));
         navigate("/cart/payment");
       }
@@ -157,6 +168,17 @@ const OrderSummary = ({ cartItems, change, setChange }) => {
         userId: userGlobal.id,
         paymentOptionId: paymentCookie.id,
       });
+
+      toast.success("Success, proceed to confirm your payment!", {
+        position: "top-center",
+        autoClose: 1500,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+
       setInvoiceHeaderIdCookie(JSON.stringify(results.data.id));
       setChange(change + 1);
       localStorage.removeItem("addressId");

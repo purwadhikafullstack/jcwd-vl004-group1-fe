@@ -10,8 +10,6 @@ import {
 } from "../../hooks/getCookie";
 
 const SubmitPaymentButton = ({ submitCheckout }) => {
-  const [isLoading, setIsLoading] = useState(false);
-
   const navigate = useNavigate();
 
   const cartCookie = getCartCookie() ? JSON.parse(getCartCookie()) : null;
@@ -29,16 +27,48 @@ const SubmitPaymentButton = ({ submitCheckout }) => {
     : null;
 
   return (
-    <button
-      onClick={submitCheckout}
-      className={
-        cartCookie && addressCookie && paymentCookie && shipmentCookie
-          ? "mt-4 btn btn-block btn-accent text-white animate-bounce"
-          : "mt-4 btn btn-block btn-accent text-white disabled"
-      }
-    >
-      CHECKOUT
-    </button>
+    <div className="text-center">
+      <label
+        className={
+          cartCookie && addressCookie && paymentCookie && shipmentCookie
+            ? "mt-4 btn btn-block btn-accent text-white animate-bounce"
+            : "mt-4 btn btn-block btn-accent text-white disabled"
+        }
+        htmlFor={"my-modal-5"}
+      >
+        CHECKOUT
+      </label>
+
+      <input type="checkbox" id={"my-modal-5"} className="modal-toggle" />
+      <label htmlFor={"my-modal-5"} className="modal cursor-pointer">
+        <label className="modal-box relative" htmlFor="">
+          <div className="space-y-4">
+            <h1 className="font-bold text-accent animate-pulse">ATTENTION!</h1>
+            <h3 className="text-md">
+              Please make sure that all your data are correct before proceeding
+              to next step, you won't be able to modified the data until
+              cancellation, or finished transaction.
+            </h3>
+            <h3 className="font-bold text-accent">Proceed to Payment Page?</h3>
+          </div>
+
+          <div className="mt-4 items-center space-x-1">
+            <button
+              className="btn btn-accent text-white w-5/12"
+              onClick={submitCheckout}
+            >
+              YES, CONTINUE TO PAYMENT
+            </button>
+            <label
+              className="btn btn-error text-white w-5/12"
+              htmlFor={"my-modal-5"}
+            >
+              No, I want to change something.
+            </label>
+          </div>
+        </label>
+      </label>
+    </div>
   );
 };
 
