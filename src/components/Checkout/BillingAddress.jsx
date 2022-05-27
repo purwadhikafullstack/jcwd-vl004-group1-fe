@@ -208,51 +208,63 @@ const BillingAddress = () => {
 
   const newAddressHandler = async () => {
     try {
-      if (!userGlobal.user_addresses.length) {
-        const res = await Axios.post(`${API_URL}/users/newaddress`, {
-          address_line,
-          address_type,
-          province,
-          city,
-          district,
-          postal_code,
-          phone,
-          mobile,
-          userId: userGlobal.id,
-          isDefault: true,
-          latitude,
-          longitude,
+      if (!city || !address_line || !province) {
+        toast.success("Please complete all necesarry data before proceeding", {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
         });
-        setData(res.data.getAddresses);
-        window.location.reload();
-      } else if (userGlobal.user_addresses.length < 6) {
-        const res = await Axios.post(`${API_URL}/users/newaddress`, {
-          address_line,
-          address_type,
-          province,
-          city,
-          district,
-          postal_code,
-          phone,
-          mobile,
-          userId: userGlobal.id,
-          isDefault,
-          latitude,
-          longitude,
+      } else {
+        if (!userGlobal.user_addresses.length) {
+          const res = await Axios.post(`${API_URL}/users/newaddress`, {
+            address_line,
+            address_type,
+            province,
+            city,
+            district,
+            postal_code,
+            phone,
+            mobile,
+            userId: userGlobal.id,
+            isDefault: true,
+            latitude,
+            longitude,
+          });
+          setData(res.data.getAddresses);
+          window.location.reload();
+        } else if (userGlobal.user_addresses.length < 6) {
+          const res = await Axios.post(`${API_URL}/users/newaddress`, {
+            address_line,
+            address_type,
+            province,
+            city,
+            district,
+            postal_code,
+            phone,
+            mobile,
+            userId: userGlobal.id,
+            isDefault,
+            latitude,
+            longitude,
+          });
+          setData(res.data.getAddresses);
+        }
+        document.getElementById("my-modal-4").click();
+        navigate("/cart/billing");
+        toast.success("New Address Added!", {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
         });
-        setData(res.data.getAddresses);
       }
-      document.getElementById("my-modal-4").click();
-      navigate("/cart/billing");
-      toast.success("New Address Added!", {
-        position: "top-center",
-        autoClose: 2000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
     } catch (err) {
       console.log(err);
     }
@@ -334,7 +346,7 @@ const BillingAddress = () => {
                     <label class="label">
                       <div className="flex ">
                         <span className="label-text">
-                          Address{" "}
+                          * Address{" "}
                           <span className="text-gray-400 text-sm">
                             Ex: Jl. Kenangan Blok V2 No.9
                           </span>
@@ -370,7 +382,7 @@ const BillingAddress = () => {
                     <div>
                       <label className="label">
                         <div className="flex ">
-                          <span className="label-text">Province</span>
+                          <span className="label-text">* Province</span>
                         </div>
                       </label>
                       <select
@@ -398,7 +410,7 @@ const BillingAddress = () => {
                       <div>
                         <label className="label">
                           <div className="flex ">
-                            <span className="label-text">City</span>
+                            <span className="label-text">* City</span>
                           </div>
                         </label>
                         <select
@@ -708,7 +720,7 @@ const BillingAddress = () => {
                   <label class="label">
                     <div className="flex ">
                       <span className="label-text">
-                        Address{" "}
+                        Address <span className="text-error">*</span>{" "}
                         <span className="text-gray-400 text-sm">
                           Ex: Jl. Kenangan Blok V2 No.9
                         </span>
@@ -744,7 +756,9 @@ const BillingAddress = () => {
                   <div>
                     <label className="label">
                       <div className="flex ">
-                        <span className="label-text">Province</span>
+                        <span className="label-text">
+                          Province <span className="text-error">*</span>
+                        </span>
                       </div>
                     </label>
                     <select
@@ -772,7 +786,9 @@ const BillingAddress = () => {
                     <div>
                       <label className="label">
                         <div className="flex ">
-                          <span className="label-text">City</span>
+                          <span className="label-text">
+                            City <span className="text-error">*</span>
+                          </span>
                         </div>
                       </label>
                       <select
@@ -851,6 +867,11 @@ const BillingAddress = () => {
                         placeholder="Phone"
                         className="input input-bordered w-full max-w-xs"
                       />
+                    </div>
+                    <div className="mt-1">
+                      <p className="text-xs italic">
+                        <span className="text-error">* </span>Must be filled
+                      </p>
                     </div>
 
                     <button
