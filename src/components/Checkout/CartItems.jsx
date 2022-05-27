@@ -106,16 +106,13 @@ const CartItems = ({ val, setCartItems, cartItems }) => {
             </button>
             <span className="text-1xl">{quantity}</span>
             <button
-              className={`${
-                quantity === +val.totalQty
-                  ? "text-2xl hover:pointer-events-none text-gray-400"
-                  : "text-2xl"
-              }`}
-              onClick={() =>
-                quantity === +val.totalQty
-                  ? (quantity = +val.totalQty)
-                  : setQuantity(quantity + 1)
+              disabled={quantity >= +val.totalQty}
+              className={
+                val.quantity >= +val.totalQty
+                  ? "text-2xl text-gray-400 hover:pointer-events-none"
+                  : "text-2xl text-black"
               }
+              onClick={() => setQuantity(quantity + 1)}
             >
               +
             </button>
@@ -127,6 +124,10 @@ const CartItems = ({ val, setCartItems, cartItems }) => {
             {quantity === +val.totalQty ? (
               <p className="text-white bg-accent text-xs text-center mt-1">
                 Limited Stock
+              </p>
+            ) : quantity > +val.totalQty ? (
+              <p className="text-white bg-error text-xs text-center mt-1">
+                Need Adjusting
               </p>
             ) : null}
           </div>

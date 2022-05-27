@@ -168,7 +168,10 @@ const OrderSummary = ({ cartItems, change, setChange }) => {
         userId: userGlobal.id,
         paymentOptionId: paymentCookie.id,
       });
-
+      if (results.data.conflict) {
+        document.getElementById("submitPaymentModal").click();
+        return toast.warning(results.data.conflict);
+      }
       toast.success("Success, proceed to confirm your payment!", {
         position: "top-center",
         autoClose: 1500,
