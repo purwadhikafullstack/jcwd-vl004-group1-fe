@@ -37,17 +37,19 @@ const TableMain = () => {
   const updateDeliveryStatus = async (id) => {
     const results = await Axios.patch(`${API_URL}/carts/updatedelivery`, {
       id: id,
-      userId: userGlobal.id,
     });
-    toast.success("Confirmation received, thank you for your purchase!", {
-      position: "top-center",
-      autoClose: 5000,
-      hideProgressBar: true,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-    });
+    toast.success(
+      "Delivery confirmation received, thank you for your purchase!",
+      {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      }
+    );
     navigate("/");
   };
 
