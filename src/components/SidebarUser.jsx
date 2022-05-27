@@ -27,7 +27,7 @@ const SidebarUser = () => {
               <NavLink
                 activeclassname="active"
                 className="menu-link"
-                to="/notimplemented"
+                to="/profile"
               >
                 <i className="icon fas fa-user"></i>
                 <span className="text">Profile Settings</span>
@@ -47,7 +47,7 @@ const SidebarUser = () => {
               <NavLink
                 activeclassname="active"
                 className="menu-link"
-                to="/notimplemented"
+                to="/profile"
               >
                 <i className="icon far fa-sack-dollar"></i>
                 <span className="text">Payment</span>

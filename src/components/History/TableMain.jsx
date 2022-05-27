@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ReactPaginate from "react-paginate";
 import Axios from "axios";
 import { API_URL } from "../../constant/api";
 import { useSelector } from "react-redux";
 import { currencyFormatter } from "../../helpers/currencyFormatter";
+import { toast } from "react-toastify";
 
 const TableMain = () => {
   const [data, setData] = useState([]);
@@ -14,6 +15,13 @@ const TableMain = () => {
   console.log(data);
 
   const userGlobal = useSelector((state) => state.user);
+
+  const handlePageClick = (data) => {
+    let currentPage = data.selected + 1;
+    setCurrentPage(currentPage);
+  };
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const getInvoice = async () => {
@@ -26,9 +34,21 @@ const TableMain = () => {
     getInvoice();
   }, [userGlobal]);
 
-  const handlePageClick = (data) => {
-    let currentPage = data.selected + 1;
-    setCurrentPage(currentPage);
+  const updateDeliveryStatus = async (id) => {
+    const results = await Axios.patch(`${API_URL}/carts/updatedelivery`, {
+      id: id,
+      userId: userGlobal.id,
+    });
+    toast.success("Confirmation received, thank you for your purchase!", {
+      position: "top-center",
+      autoClose: 5000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
+    navigate("/");
   };
 
   return (
@@ -100,62 +120,111 @@ const TableMain = () => {
       <div className="overflow-x-auto space-y-10">
         {data.map((val) => {
           return (
-            //   HEADERNYA
-            <div className="border-4 shadow-sm">
-              <div className="bg-gray-200">
-                <div className="space-y-2 text-justify p-3">
-                  <h1 className="text-sm">Invoice ID: {val.id}</h1>
-                  <h1 className="font-bold text-sm">
-                    Transaction Status:{" "}
-                    <span
-                      className={
-                        val.status === "rejected"
-                          ? "bg-red text-error uppercase"
-                          : "bg-red text-accent uppercase"
-                      }
-                    >
-                      {val.status}
-                    </span>
-                  </h1>
-                  <h1 className="text-sm">
-                    Date: {val.createdAt.slice(0, 10)}
-                  </h1>
+            // HEADERNYA
+            <>
+              <div className="border-4 shadow-sm">
+                <div className="bg-gray-200">
+                  <div className="space-y-2 text-justify p-3">
+                    <h1 className="text-sm">Invoice ID: {val.id}</h1>
+                    <h1 className="font-bold text-sm">
+                      Transaction Status:{" "}
+                      <span
+                        className={
+                          val.status === "rejected"
+                            ? "bg-red text-error uppercase"
+                            : "bg-red text-accent uppercase"
+                        }
+                      >
+                        {val.status}
+                      </span>
+                    </h1>
+                    <h1 className="text-sm">
+                      Date: {val.createdAt.slice(0, 10)}
+                    </h1>
+                  </div>
                 </div>
-              </div>
 
-              <table className="table table-compact w-full text-center">
-                <thead>
-                  <tr className="">
-                    <th>ID</th>
-                    <th>Image</th>
-                    <th>Name</th>
-                    <th>Price</th>
-                    <th>Quantity</th>
-                    <th>Subtotal</th>
-                  </tr>
-                </thead>
-                {/* INVOICE ITEMS */}
-                {val.invoice_details.map((val) => {
-                  return (
-                    <tbody className="border-0">
-                      <tr>
-                        <th>{val.productId}</th>
-                        <td className="flex flex-row justify-center">
-                          <img
-                            className="mask mask-squircle w-10 bg-accent"
-                            src={`${API_URL}/${val.product.product_image}`}
-                          />
-                        </td>
-                        <td>{val.product.name}</td>
-                        <td>{currencyFormatter(val.price)}</td>
-                        <td>{val.quantity}</td>
-                        <td>{currencyFormatter(val.price * val.quantity)}</td>
-                      </tr>
-                    </tbody>
-                  );
-                })}
-              </table>
-            </div>
+                <table className="table table-compact w-full text-center">
+                  <thead>
+                    <tr className="">
+                      <th>ID</th>
+                      <th>Image</th>
+                      <th>Name</th>
+                      <th>Price</th>
+                      <th>Quantity</th>
+                      <th>Subtotal</th>
+                    </tr>
+                  </thead>
+                  {/* INVOICE ITEMS */}
+                  {val.invoice_details.map((val) => {
+                    return (
+                      <tbody className="border-0">
+                        <tr>
+                          <th>{val.productId}</th>
+                          <td className="flex flex-row justify-center">
+                            <img
+                              className="mask mask-squircle w-10"
+                              src={`${API_URL}/${val.product.product_image}`}
+                            />
+                          </td>
+                          <td>{val.product.name}</td>
+                          <td>{currencyFormatter(val.price)}</td>
+                          <td>{val.quantity}</td>
+                          <td>{currencyFormatter(val.price * val.quantity)}</td>
+                        </tr>
+                      </tbody>
+                    );
+                  })}
+                </table>
+
+                {/* History User Button Modal */}
+                <label
+                  className={
+                    val.status === "rejected" || val.status === "delivered"
+                      ? "btn btn-sm btn-accent text-white disabled m-2"
+                      : "btn btn-sm btn-accent text-white m-2 align-middle animate-bounce"
+                  }
+                  htmlFor={`my-modal-${val.id}`}
+                >
+                  Confirm Delivery
+                </label>
+
+                <input
+                  type="checkbox"
+                  id={`my-modal-${val.id}`}
+                  className="modal-toggle"
+                />
+                <label
+                  htmlFor={`my-modal-${val.id}`}
+                  className="modal cursor-pointer text-center"
+                >
+                  <label className="modal-box relative" htmlFor="">
+                    <h3 className="text-lg font-bold">Finishing Transaction</h3>
+                    <h3 className="text-lg">
+                      Confirm if your order has been delivered, note that you
+                      cannot undo any future changes. Continue?
+                    </h3>
+                    <div className="space-x-2 mt-4">
+                      <button
+                        onClick={() => {
+                          updateDeliveryStatus(val.id);
+                          document.getElementById(`my-modal-${val.id}`).click();
+                        }}
+                        className="btn btn-accent text-white"
+                      >
+                        Proceed
+                      </button>
+                      <label
+                        className="btn btn-error text-white"
+                        htmlFor={`my-modal-${val.id}`}
+                      >
+                        Cancel
+                      </label>
+                    </div>
+                  </label>
+                </label>
+              </div>
+            </>
           );
         })}
         <ReactPaginate

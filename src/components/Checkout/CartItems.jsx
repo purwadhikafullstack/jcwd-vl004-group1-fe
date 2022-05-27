@@ -7,12 +7,6 @@ import { useSelector } from "react-redux";
 import { getCartCookie } from "../../hooks/getCookie";
 import { setCartCookie } from "../../hooks/setCookie";
 import { toast } from "react-toastify";
-import {
-  removeAddressCookie,
-  removeCartCookie,
-  removePaymentCookie,
-  removeShipmentCookie,
-} from "../../hooks/removeCookie";
 
 const CartItems = ({ val, setCartItems, cartItems }) => {
   let [quantity, setQuantity] = useState(val.quantity);
