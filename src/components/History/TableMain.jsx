@@ -137,7 +137,9 @@ const TableMain = () => {
                             : "bg-red text-accent uppercase"
                         }
                       >
-                        {val.status}
+                        {val.status === "pending"
+                          ? `${val.status}`
+                          : val.status}
                       </span>
                     </h1>
                     <h1 className="text-sm">
@@ -182,7 +184,9 @@ const TableMain = () => {
                 {/* History User Button Modal */}
                 <label
                   className={
-                    val.status === "rejected" || val.status === "delivered"
+                    val.status === "rejected" ||
+                    val.status === "delivered" ||
+                    val.status === "pending"
                       ? "btn btn-sm btn-accent text-white disabled m-2"
                       : "btn btn-sm btn-accent text-white m-2 align-middle animate-bounce"
                   }
