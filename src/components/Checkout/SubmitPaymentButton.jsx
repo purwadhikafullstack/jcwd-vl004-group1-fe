@@ -62,6 +62,7 @@ const SubmitPaymentButton = ({ submitCheckout }) => {
             <label
               className="btn btn-error text-white w-5/12"
               htmlFor={"my-modal-5"}
+              id="submitPaymentModal"
             >
               No, I want to change something.
             </label>
