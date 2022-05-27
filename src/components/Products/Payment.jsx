@@ -11,7 +11,7 @@ const Payment = () => {
   const [dataPayment, setDataPayment] = useState([]);
   const navigate = useNavigate();
 
-  const [sortValue, setSortValue] = useState("nonsort");
+  const [sortValue, setSortValue] = useState("updatedAt,ASC");
 
   const [date, setDate] = useState(new Date());
   const [enddate, setEndDate] = useState(new Date());
@@ -24,16 +24,9 @@ const Payment = () => {
 
   const getPayment = async () => {
     try {
-      let results;
-      if (sortValue === "ASC") {
-        results = await Axios.get(`${API_URL}/paymentsConfirmation/asc`);
-        setDataPayment(results.data);
-      } else if (sortValue === "DESC") {
-        results = await Axios.get(`${API_URL}/paymentsConfirmation/desc`);
-        setDataPayment(results.data);
-      } else if (sortValue === "nonsort") {
-        results = await Axios.get(`${API_URL}/paymentsConfirmation`);
-      }
+      let results = await Axios.post(`${API_URL}/paymentsConfirmation/`, {
+        sortValue,
+      });
       setDataPayment(results.data);
     } catch (err) {
       console.log(err);
@@ -80,11 +73,12 @@ const Payment = () => {
 
   const rejectPayment = async (idPayment) => {
     try {
-      await Axios.post(
+      const results = await Axios.post(
         `${API_URL}/paymentsConfirmation/${idPayment}/reject`
-      ).then((res) => {
-        getPayment();
-      });
+      );
+      console.log(results.data);
+      getPayment();
+      removeInvoiceHeaderIdCookie();
     } catch (err) {
       console.log(err);
     }
@@ -100,9 +94,18 @@ const Payment = () => {
           }}
         >
           <td>{val.id}</td>
-          <td>{val.updatedAt}</td>
+          <td>
+            {new Date(val.updatedAt).toLocaleDateString("id-ID")}
+            <span>&nbsp;&nbsp;&nbsp;</span>
+            {new Date(val.updatedAt).toLocaleTimeString("id-ID")}
+          </td>
           <td>{val.invoice_header.user.full_name}</td>
-          <td>{val.payment_proof}</td>
+          <td>
+            <img
+              src={`${API_URL}/${val.payment_proof}`}
+              className="w-20 m-auto"
+            ></img>
+          </td>
           <td>{currencyFormatter(val.invoice_header.total)}</td>
           <td className="font-semibold capitalize">
             {val.invoice_header.status === "approved" ? (
@@ -220,7 +223,7 @@ const Payment = () => {
                 }}
                 name="sort"
               >
-                <option name="sort" value="nonsort">
+                <option name="sort" value="updatedAt,ASC">
                   Filter By
                 </option>
                 {/* <option name="lowprice" value="lowprice">
@@ -229,10 +232,10 @@ const Payment = () => {
                 <option name="highprice" value="highprice">
                   Highest Profit
                 </option> */}
-                <option name="neworderdate" value="ASC">
+                <option name="neworderdate" value="updatedAt,DESC">
                   Newest
                 </option>
-                <option name="newenddate" value="DESC">
+                <option name="newenddate" value="updatedAt,ASC">
                   Oldest
                 </option>
               </select>

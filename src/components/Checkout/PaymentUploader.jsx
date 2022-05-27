@@ -125,7 +125,7 @@ const PaymentUploader = () => {
         formData
       );
       toast.success(
-        "Upload Image Successful, our Admin is processing your purchase",
+        "Upload Image Successful, our Admin is processing your purchase, we will notify you! :)",
         {
           position: "top-center",
           autoClose: 5000,
@@ -286,7 +286,7 @@ const PaymentUploader = () => {
           <div className="mb-2 text-center items-center input-group-sm space-x-2">
             {paymentProofPreview ? (
               <label className="form-label text-sm animate-bounce">
-                Thank you!, our Admin is processing your purchase
+                Thank you!, our Admin is processing your purchase.
               </label>
             ) : (
               <label className="form-label text-sm">
@@ -316,7 +316,7 @@ const PaymentUploader = () => {
             )}
 
             <div className="flex items-center mt-4 space-x-2">
-              <button
+              {/* <button
                 onClick={onSubmitProof}
                 encType="multipart/form-data"
                 className={
@@ -326,7 +326,56 @@ const PaymentUploader = () => {
                 }
               >
                 Submit Proof
-              </button>
+              </button> */}
+
+              <label
+                className={
+                  payment_proof
+                    ? "btn btn-accent text-white rounded-none"
+                    : "btn btn-accent text-white disabled rounded-none"
+                }
+                encType="multipart/form-data"
+                htmlFor={"my-modal-5"}
+              >
+                Submit Proof
+              </label>
+
+              <input
+                type="checkbox"
+                id={"my-modal-5"}
+                className="modal-toggle"
+              />
+              <label htmlFor={"my-modal-5"} className="modal cursor-pointer">
+                <label className="modal-box relative" htmlFor="">
+                  <div className="space-y-4">
+                    <h1 className="font-bold text-accent animate-pulse">
+                      NOTES
+                    </h1>
+                    <h3 className="text-md">
+                      Make sure that your picture is clear as the sky! you won't
+                      be able to change it after submitting.
+                    </h3>
+                    <h3 className="font-bold text-accent">
+                      Finish uploading your payment confirmation?
+                    </h3>
+                  </div>
+
+                  <div className="mt-4 items-center space-x-1">
+                    <button
+                      className="btn btn-accent text-white w-5/12"
+                      onClick={onSubmitProof}
+                    >
+                      YES, FINISH PAYMENT
+                    </button>
+                    <label
+                      className="btn btn-error text-white w-5/12"
+                      htmlFor={"my-modal-5"}
+                    >
+                      No, I want to upload another picture
+                    </label>
+                  </div>
+                </label>
+              </label>
               <div>
                 {paymentProofPreview ? (
                   <label

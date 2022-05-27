@@ -198,6 +198,7 @@ const EditProductMain = ({ products }) => {
                   <label className="form-label">Stock Ready</label>
                   <input
                     type="number"
+                    disabled
                     className="form-control"
                     id="product_stock_ready"
                     required
@@ -235,6 +236,7 @@ const EditProductMain = ({ products }) => {
                 <div className="mb-2">
                   <label className="form-label">Warehouse</label>
                   <select
+                    disabled
                     className="form-select"
                     name="warehouseId"
                     value={warehouseId}

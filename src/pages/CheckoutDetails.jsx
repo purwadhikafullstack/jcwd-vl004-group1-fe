@@ -29,9 +29,7 @@ import { setInvoiceHeaderIdCookie } from "../hooks/setCookie";
 const CheckoutDetails = () => {
   const [change, setChange] = useState(1);
   const [cartItems, setCartItems] = useState([]);
-  const [invoiceHeaderId, setInvoiceHeaderId] = useState(0);
   const userGlobal = useSelector((state) => state.user);
-  const summaryGlobal = useSelector((state) => state.summary);
 
   const navigate = useNavigate();
 
@@ -43,10 +41,8 @@ const CheckoutDetails = () => {
     ? JSON.parse(getPaymentCookie())
     : null;
 
-  const cartCookie = getCartCookie() ? JSON.parse(getCartCookie()) : null;
-
-  const shipmentCookie = getShipmentCookie()
-    ? JSON.parse(getCartCookie())
+  const invoiceHeaderId = getInvoiceHeaderIdCookie()
+    ? JSON.parse(getInvoiceHeaderIdCookie("selectedInvoiceHeaderId"))
     : null;
 
   useEffect(() => {
@@ -93,11 +89,13 @@ const CheckoutDetails = () => {
       <Header />
       <div
         style={{
-          backgroundImage: `url(https://wallpaperaccess.com/full/1448083.jpg)`,
+          backgroundImage: invoiceHeaderId
+            ? `url(https://www.dropbox.com/s/lpdaewpet58mawn/002.png?dl=1)`
+            : `url(https://wallpaperaccess.com/full/1448083.jpg)`,
           backgroundRepeat: "no-repeat",
-          backgroundSize: 350,
-          backgroundPositionY: 80,
-          backgroundPositionX: -50,
+          backgroundSize: invoiceHeaderId ? 750 : 350,
+          backgroundPositionY: invoiceHeaderId ? 180 : 80,
+          backgroundPositionX: invoiceHeaderId ? -250 : -50,
           opacity: 80,
         }}
       >

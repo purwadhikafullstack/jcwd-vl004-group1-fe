@@ -202,15 +202,6 @@ const BillingAddress = () => {
     removePaymentCookie("selectedPayment");
     removeShipmentCookie("selectedShipment");
     setLocStorage(0);
-    toast.success("Automatically Set to Default Address", {
-      position: "top-center",
-      autoClose: 1500,
-      hideProgressBar: true,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-    });
     setChange(Math.random() + 3);
     getUserCart();
   };
@@ -584,10 +575,48 @@ const BillingAddress = () => {
                       {val.isDefault ? null : (
                         <>
                           <td>
-                            <i
-                              onClick={() => deleteAddress(val.id)}
-                              className="hover:cursor-pointer fas fa-trash-alt align-middle mr-2"
-                            ></i>
+                            <div className="text-center">
+                              <label
+                                className="hover:cursor-pointer fas fa-trash-alt modal-btn"
+                                htmlFor={`my-modal-${val.id}`}
+                              ></label>
+
+                              <input
+                                type="checkbox"
+                                id={`my-modal-${val.id}`}
+                                className="modal-toggle"
+                              />
+                              <label
+                                htmlFor={`my-modal-${val.id}`}
+                                className="modal cursor-pointer"
+                              >
+                                <label
+                                  className="modal-box relative"
+                                  htmlFor=""
+                                >
+                                  <h3 className="text-lg font-bold text-accent">
+                                    Deleting Address
+                                  </h3>
+                                  <h3 className="text-lg font-bold">
+                                    Are you sure you want to delete the item?
+                                  </h3>
+                                  <div className="space-x-2 mt-4">
+                                    <button
+                                      className="btn btn-accent text-white"
+                                      onClick={() => deleteAddress(val.id)}
+                                    >
+                                      Proceed
+                                    </button>
+                                    <label
+                                      className="btn btn-error text-white"
+                                      htmlFor={`my-modal-${val.id}`}
+                                    >
+                                      Cancel
+                                    </label>
+                                  </div>
+                                </label>
+                              </label>
+                            </div>
                           </td>
                           {/* Choosing the Selected Address */}
                           <button
