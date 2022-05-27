@@ -6,9 +6,18 @@ import { currencyFormatter } from "../../helpers/currencyFormatter";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import { removeInvoiceHeaderIdCookie } from "../../hooks/removeCookie";
+import ReactPaginate from "react-paginate";
 
 const Payment = () => {
   const [dataPayment, setDataPayment] = useState([]);
+
+  const [dataCount, setDataCount] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
+  const handlePageClick = (data) => {
+    let currentPage = data.selected + 1;
+    setCurrentPage(currentPage);
+  };
+
   const navigate = useNavigate();
 
   const [sortValue, setSortValue] = useState("updatedAt,ASC");
@@ -249,25 +258,18 @@ const Payment = () => {
           {TableHead()}
           <tbody>{TableBody()}</tbody>
         </table>
-        <nav aria-label="Page navigation example">
-          <ul class="pagination justify-content-center">
-            <li class="page-item disabled">
-              <a class="page-link" href="#" tabindex="-1">
-                Previous
-              </a>
-            </li>
-            {/* {pagination.map((item)=> {
-                return (
-                    <li className="page-item" key={item} onClick={()=>selectpage(item)}><button className="page-link">{item}</button></li>
-                )
-                })} */}
-            <li class="page-item">
-              <a class="page-link" href="#">
-                Next
-              </a>
-            </li>
-          </ul>
-        </nav>
+        <ReactPaginate
+          className="flex justify-center space-x-4 text-accent mt-6"
+          previousLabel={"<<"}
+          nextLabel={">>"}
+          breakLabel={"..."}
+          pageCount={Math.ceil(dataCount / 10)}
+          marginPagesDisplayed={2}
+          onPageChange={handlePageClick}
+          activeClassName={
+            "btn-active btn btn-xs hover:bg-accent bg-accent text-white border-none animate-bounce"
+          }
+        />
       </div>
     </section>
   );

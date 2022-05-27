@@ -5,11 +5,19 @@ import Axios from "axios";
 import { toast } from "react-toastify";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
+import ReactPaginate from "react-paginate";
 
 const Transaction = () => {
   const [dataTransactions, setDataTransactions] = useState([]);
   const [checkStockMessage, setcheckStockMessage] = useState("");
   const navigate = useNavigate();
+
+  const [dataCount, setDataCount] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
+  const handlePageClick = (data) => {
+    let currentPage = data.selected + 1;
+    setCurrentPage(currentPage);
+  };
 
   const [sortValue, setSortValue] = useState("updatedAt,ASC");
 
@@ -281,25 +289,18 @@ const Transaction = () => {
         <p class="pagination justify-content-center text-pink-500 font-semibold">
           {checkStockMessage}
         </p>
-        <nav aria-label="Page navigation example">
-          <ul class="pagination justify-content-center">
-            <li class="page-item disabled">
-              <a class="page-link" href="#" tabindex="-1">
-                Previous
-              </a>
-            </li>
-            {/* {pagination.map((item)=> {
-                return (
-                    <li className="page-item" key={item} onClick={()=>selectpage(item)}><button className="page-link">{item}</button></li>
-                )
-                })} */}
-            <li class="page-item">
-              <a class="page-link" href="#">
-                Next
-              </a>
-            </li>
-          </ul>
-        </nav>
+        <ReactPaginate
+          className="flex justify-center space-x-4 text-accent mt-6"
+          previousLabel={"<<"}
+          nextLabel={">>"}
+          breakLabel={"..."}
+          pageCount={Math.ceil(dataCount / 10)}
+          marginPagesDisplayed={2}
+          onPageChange={handlePageClick}
+          activeClassName={
+            "btn-active btn btn-xs hover:bg-accent bg-accent text-white border-none animate-bounce"
+          }
+        />
       </div>
     </section>
   );

@@ -13,6 +13,7 @@ const Transaction = () => {
   const [dataToRequestTable, setDataToRequestTable] = useState([]);
   const [dataInvoiceHeader, setDataInvoiceHeader] = useState({});
   const [transactionId, setTransactionId] = useState(0);
+  const [number, setNumber] = useState(0);
   const [requestedAmount, setRequestedAmount] = useState(0);
   const [totalRequestedAmount, setTotalRequestedAmount] = useState(0);
   const [modalErrMessage, setmodalErrMessage] = useState("");
@@ -31,6 +32,7 @@ const Transaction = () => {
       setTransactionId(results.data.id);
       setDataInvoiceHeader(results.data.invoice_header);
       setDataInvoiceDetail(results.data.invoice_header.invoice_details);
+      setNumber(results.data.number);
     } catch (err) {
       console.log(err);
     }
@@ -60,8 +62,6 @@ const Transaction = () => {
     return (
       <thead>
         <tr className="">
-          <th>ID</th>
-          <th>Number</th>
           <th>Products</th>
           <th>Warehouse</th>
           <th>Stock Available</th>
@@ -78,8 +78,6 @@ const Transaction = () => {
     return dataInvoiceDetail.map((val, i) => {
       return (
         <tr>
-          <td>1</td>
-          <td>123456</td>
           <td>{val.product.name}</td>
           <td>{val.warehouse.name}</td>
           <td>{val.warehouseStock}</td>
@@ -250,7 +248,9 @@ const Transaction = () => {
                     >
                       <i className="fa fa-arrow-left" aria-hidden="true"></i>
                     </Link>
-                    <h2 className="content-title text-2xl">Transaction {id}</h2>
+                    <h2 className="content-title text-2xl">
+                      Transaction {id} - {number}
+                    </h2>
                   </div>
                 </div>
               </div>
