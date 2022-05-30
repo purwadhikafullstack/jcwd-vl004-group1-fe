@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Axios from "axios";
 import { API_URL } from "../../constant/api";
+import { toast } from "react-toastify";
 
 const AddProductMain = () => {
   const [previewImage, setPreviewImage] = useState(
@@ -51,7 +52,7 @@ const AddProductMain = () => {
     getCategories();
   }, []);
 
-  const onSubmit = async () => {
+  const onSubmit = async (e) => {
     try {
       const formData = new FormData();
       formData.append("product_image", product_image);
@@ -66,6 +67,15 @@ const AddProductMain = () => {
       const results = await Axios.post(`${API_URL}/products/add`, formData);
       console.log(results.data);
       navigate("/products");
+      toast.success("New Product Has Been Added!", {
+        position: "top-right",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
     } catch (err) {
       console.log(err);
     }

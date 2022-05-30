@@ -6,7 +6,7 @@ import { currencyFormatter } from "../../helpers/currencyFormatter.js";
 import { setPaymentCookie, setShipmentCookie } from "../../hooks/setCookie.js";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext, NavLink } from "react-router-dom";
 
 const PaymentSummary = () => {
   const [cartItems, setCartItems] = useOutletContext();
@@ -24,7 +24,12 @@ const PaymentSummary = () => {
 
   const getUserCart = async () => {
     try {
-      const results = await Axios.get(`${API_URL}/carts/get/${userGlobal.id}`);
+      const results = await Axios.post(
+        `${API_URL}/carts/get/${userGlobal.id}`,
+        {
+          userId: userGlobal.id,
+        }
+      );
       setCartItems(results.data.carts);
     } catch (err) {
       console.log(err);
@@ -116,7 +121,7 @@ const PaymentSummary = () => {
       <div className="w-1/2 flex flex-col space-y-2">
         {/* PRODUCT SUMMARY */}
         <div className=" w-full rounded-xl shadow-sm ">
-          <div className="p-16 rounded-t-xl">
+          <div className="p-8 rounded-t-xl">
             <div className="flex flex-col">
               <h2 className="font-bold">Here is your Order Details :</h2>
               <div className="flex justify-between items-center">
@@ -210,6 +215,14 @@ const PaymentSummary = () => {
               </div>
             </div>
           </div>
+        </div>
+        <div className="items-start w-1/12">
+          <NavLink to="/cart/billing">
+            <div className="text-gray-600 hover:text-gray-500 text-sm space-x-2 my-3 flex group">
+              <i className="fas fa-arrow-left transition-all group-hover:mr-1"></i>
+              <h2 className="font-bold">Back</h2>
+            </div>
+          </NavLink>
         </div>
       </div>
     </>

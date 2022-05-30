@@ -7,25 +7,13 @@ import { useSelector } from "react-redux";
 import { getCartCookie } from "../../hooks/getCookie";
 import { setCartCookie } from "../../hooks/setCookie";
 import { toast } from "react-toastify";
-import {
-  removeAddressCookie,
-  removeCartCookie,
-  removePaymentCookie,
-  removeShipmentCookie,
-} from "../../hooks/removeCookie";
 
 const CartItems = ({ val, setCartItems, cartItems }) => {
   let [quantity, setQuantity] = useState(val.quantity);
 
   const userGlobal = useSelector((state) => state.user);
   const userId = userGlobal.id;
-  const stockReady = val.product.warehouse_products[0].stock_ready;
   const getCart = getCartCookie() ? JSON.parse(getCartCookie()) : null;
-
-  const getUserCart = async () => {
-    const results = await Axios.get(`${API_URL}/carts/get/${userGlobal.id}`);
-    setCartItems(results.data.carts);
-  };
 
   const onDeleteCart = async (id) => {
     try {
@@ -54,9 +42,9 @@ const CartItems = ({ val, setCartItems, cartItems }) => {
         userId,
         quantity,
       });
-      setCartItems(results.data.getUserCart);
+      setCartItems(results.data);
 
-      if (getCart) setCartCookie(JSON.stringify(results.data.getUserCart));
+      if (getCart) setCartCookie(JSON.stringify(results.data));
     }),
     []
   );
@@ -64,8 +52,8 @@ const CartItems = ({ val, setCartItems, cartItems }) => {
   useEffect(() => {
     let maxQty = quantity;
 
-    if (maxQty > stockReady) {
-      maxQty = stockReady;
+    if (maxQty > +val.totalQty) {
+      maxQty = +val.totalQty;
     } else {
       qtyHandler(quantity);
     }
@@ -118,27 +106,28 @@ const CartItems = ({ val, setCartItems, cartItems }) => {
             </button>
             <span className="text-1xl">{quantity}</span>
             <button
-              className={`${
-                quantity === stockReady
-                  ? "text-2xl hover:pointer-events-none text-gray-400"
-                  : "text-2xl"
-              }`}
-              onClick={() =>
-                quantity === stockReady
-                  ? (quantity = stockReady)
-                  : setQuantity(quantity + 1)
+              disabled={quantity >= +val.totalQty}
+              className={
+                val.quantity >= +val.totalQty
+                  ? "text-2xl text-gray-400 hover:pointer-events-none"
+                  : "text-2xl text-black"
               }
+              onClick={() => setQuantity(quantity + 1)}
             >
               +
             </button>
           </div>
           <div>
             <p className="text-gray-400 text-xs text-center mt-1">
-              available: {stockReady}
+              available: {+val.totalQty}
             </p>
-            {quantity === stockReady ? (
+            {quantity === +val.totalQty ? (
               <p className="text-white bg-accent text-xs text-center mt-1">
                 Limited Stock
+              </p>
+            ) : quantity > +val.totalQty ? (
+              <p className="text-white bg-error text-xs text-center mt-1">
+                Need Adjusting
               </p>
             ) : null}
           </div>
@@ -147,10 +136,38 @@ const CartItems = ({ val, setCartItems, cartItems }) => {
       <td className="text-center">{currencyFormatter(val.subtotal)}</td>
 
       <td>
-        <i
-          onClick={() => onDeleteCart(val.id)}
-          className="hover:cursor-pointer fas fa-trash-alt"
-        ></i>
+        <label
+          className="hover:cursor-pointer fas fa-trash-alt modal-btn"
+          htmlFor={`my-modal-${val.id}`}
+        ></label>
+
+        <input
+          type="checkbox"
+          id={`my-modal-${val.id}`}
+          className="modal-toggle"
+        />
+        <label htmlFor={`my-modal-${val.id}`} className="modal cursor-pointer">
+          <label className="modal-box relative" htmlFor="">
+            <h3 className="text-lg font-bold">Deleting Cart</h3>
+            <h3 className="text-lg">
+              Are you sure you want to delete the item?
+            </h3>
+            <div className="space-x-2 mt-4">
+              <button
+                className="btn btn-accent text-white"
+                onClick={() => onDeleteCart(val.id)}
+              >
+                Proceed
+              </button>
+              <label
+                className="btn btn-error text-white"
+                htmlFor={`my-modal-${val.id}`}
+              >
+                Cancel
+              </label>
+            </div>
+          </label>
+        </label>
       </td>
     </tr>
   );

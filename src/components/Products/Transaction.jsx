@@ -5,13 +5,21 @@ import Axios from "axios";
 import { toast } from "react-toastify";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
+import ReactPaginate from "react-paginate";
 
 const Transaction = () => {
   const [dataTransactions, setDataTransactions] = useState([]);
   const [checkStockMessage, setcheckStockMessage] = useState("");
   const navigate = useNavigate();
 
-  const [sortValue, setSortValue] = useState("nonsort");
+  const [dataCount, setDataCount] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
+  const handlePageClick = (data) => {
+    let currentPage = data.selected + 1;
+    setCurrentPage(currentPage);
+  };
+
+  const [sortValue, setSortValue] = useState("updatedAt,ASC");
 
   const [date, setDate] = useState(new Date());
   const [enddate, setEndDate] = useState(new Date());
@@ -20,22 +28,13 @@ const Transaction = () => {
 
   useEffect(() => {
     getTransactions();
-  }, []);
+  }, [sortValue]);
 
-  useEffect(() => {});
   const getTransactions = async () => {
     try {
-      let results;
-      if (sortValue === "ASC") {
-        results = await Axios.get(`${API_URL}/transactions/asc`);
-        console.log("asc");
-      } else if (sortValue === "DESC") {
-        results = await Axios.get(`${API_URL}/transactions/desc`);
-        console.log("desc");
-      } else if (sortValue === "nonsort") {
-        results = await Axios.get(`${API_URL}/transactions`);
-        console.log("non");
-      }
+      let results = await Axios.post(`${API_URL}/transactions/`, {
+        sortValue,
+      });
       setDataTransactions(results.data);
     } catch (err) {
       console.log(err);
@@ -115,7 +114,11 @@ const Transaction = () => {
         >
           <td>{val.id}</td>
           <td>{val.number}</td>
-          <td>{val.updatedAt}</td>
+          <td>
+            {new Date(val.updatedAt).toLocaleDateString("id-ID")}
+            <span>&nbsp;&nbsp;&nbsp;</span>
+            {new Date(val.updatedAt).toLocaleTimeString("id-ID")}
+          </td>
           <td>{val.invoice_header.user.full_name}</td>
           <td>{val.invoice_header.warehouse.name}</td>
           <td>{val.invoice_header.user_address.province}</td>
@@ -257,7 +260,7 @@ const Transaction = () => {
                 }}
                 name="sort"
               >
-                <option name="sort" value="nonsort">
+                <option name="sort" value="updatedAt,ASC">
                   Filter By
                 </option>
                 {/* <option name="lowprice" value="lowprice">
@@ -266,10 +269,10 @@ const Transaction = () => {
                 <option name="highprice" value="highprice">
                   Highest Profit
                 </option> */}
-                <option name="neworderdate" value="ASC">
+                <option name="neworderdate" value="updatedAt,DESC">
                   Newest
                 </option>
-                <option name="newenddate" value="DESC">
+                <option name="newenddate" value="updatedAt,ASC">
                   Oldest
                 </option>
               </select>
@@ -286,25 +289,18 @@ const Transaction = () => {
         <p class="pagination justify-content-center text-pink-500 font-semibold">
           {checkStockMessage}
         </p>
-        <nav aria-label="Page navigation example">
-          <ul class="pagination justify-content-center">
-            <li class="page-item disabled">
-              <a class="page-link" href="#" tabindex="-1">
-                Previous
-              </a>
-            </li>
-            {/* {pagination.map((item)=> {
-                return (
-                    <li className="page-item" key={item} onClick={()=>selectpage(item)}><button className="page-link">{item}</button></li>
-                )
-                })} */}
-            <li class="page-item">
-              <a class="page-link" href="#">
-                Next
-              </a>
-            </li>
-          </ul>
-        </nav>
+        <ReactPaginate
+          className="flex justify-center space-x-4 text-accent mt-6"
+          previousLabel={"<<"}
+          nextLabel={">>"}
+          breakLabel={"..."}
+          pageCount={Math.ceil(dataCount / 10)}
+          marginPagesDisplayed={2}
+          onPageChange={handlePageClick}
+          activeClassName={
+            "btn-active btn btn-xs hover:bg-accent bg-accent text-white border-none animate-bounce"
+          }
+        />
       </div>
     </section>
   );

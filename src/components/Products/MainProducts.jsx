@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, Navigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { API_URL } from "../../constant/api";
 import Axios from "axios";
 import { toast } from "react-toastify";
@@ -21,6 +21,8 @@ const MainProducts = () => {
     setCurrentPage(currentPage);
   };
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     const getProducts = async () => {
       try {
@@ -29,7 +31,7 @@ const MainProducts = () => {
             `${API_URL}/products?page=${currentPage}`
           );
           setData(results.data.rows);
-          setDataCount(results.data.count);
+          setDataCount(results.data.productCount);
         }
       } catch (err) {
         console.log(err);
@@ -64,9 +66,11 @@ const MainProducts = () => {
 
   const onDelete = async (id) => {
     try {
-      await Axios.delete(`${API_URL}/products/delete/${id}`);
+      const results = await Axios.delete(`${API_URL}/products/delete/${id}`);
       toast("Product Has Been Deleted");
-      Navigate("/products");
+      setData(results.data.rows);
+      setDataCount(results.data.productCount);
+      navigate("/products");
     } catch (err) {
       console.log(err);
     }
@@ -99,7 +103,7 @@ const MainProducts = () => {
           return;
         }
         setData(results.data.rows);
-        setDataCount(results.data.count);
+        setDataCount(results.data.productCount);
       } catch (err) {
         console.log(err);
       }
@@ -115,8 +119,12 @@ const MainProducts = () => {
           name: search,
         }
       );
+      if (search) {
+        setDataCount(results.data.count);
+      } else {
+        setDataCount(results.data.productCount);
+      }
       setData(results.data.rows);
-      setDataCount(results.data.count);
     } catch (err) {
       console.log(err);
     }
@@ -159,7 +167,7 @@ const MainProducts = () => {
   };
 
   const TableBody = () => {
-    return data.map((val, idx) => {
+    return data?.map((val, idx) => {
       return (
         <tr key={idx}>
           <td>
@@ -178,15 +186,15 @@ const MainProducts = () => {
           <td>{val.description.slice(0, 12)}...</td>
           <td className="tracking-wide">{currencyFormatter(val.price)}</td>
           <td>{val.product_category.name}</td>
-          {val.warehouse_products[0].stock_ready < 10 ? (
+          {val.totalStock < 10 ? (
             <td className="text-sm flex flex-col text-error font-bold mt-2">
-              {val.warehouse_products[0].stock_ready}{" "}
+              {val.totalStock}{" "}
               <span className="bg-error text-white text-xs font-bold">
                 Low Stocks
               </span>
             </td>
           ) : (
-            <td>{val.warehouse_products[0].stock_ready}</td>
+            <td>{val.totalStock}</td>
           )}
           <td>{val.warehouse_products[0].stock_reserved}</td>
           <td>{val.warehouse_products[0].warehouse.name}</td>
@@ -198,13 +206,47 @@ const MainProducts = () => {
               >
                 <i className="fas fa-pen"></i>
               </Link>
-              <Link
-                to="#"
+
+              <label
                 className="btn btn-sm btn-error p-2 pb-3"
-                onClick={() => onDelete(val.id)}
+                htmlFor={`my-modal-${val.id}`}
               >
                 <i className="fas fa-trash-alt"></i>
-              </Link>
+              </label>
+
+              <input
+                type="checkbox"
+                id={`my-modal-${val.id}`}
+                className="modal-toggle"
+              />
+              <label
+                htmlFor={`my-modal-${val.id}`}
+                className="modal cursor-pointer"
+              >
+                <label className="modal-box relative" htmlFor="">
+                  <h3 className="text-lg font-bold">Deleting Product</h3>
+                  <h3 className="text-lg">
+                    Are you sure you want to delete this product?
+                  </h3>
+                  <div className="space-x-2 mt-4">
+                    <button
+                      className="btn btn-accent text-white"
+                      onClick={() => {
+                        onDelete(val.id);
+                        document.getElementById(`my-modal-${val.id}`).click();
+                      }}
+                    >
+                      Proceed
+                    </button>
+                    <label
+                      className="btn btn-error text-white"
+                      htmlFor={`my-modal-${val.id}`}
+                    >
+                      Cancel
+                    </label>
+                  </div>
+                </label>
+              </label>
             </div>
           </td>
         </tr>
